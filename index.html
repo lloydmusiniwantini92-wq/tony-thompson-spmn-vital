@@ -14,10 +14,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap"
           rel="stylesheet" />
 
-    <!-- ✅ Favicon -->
-    <link rel="icon" type="image/png" href="/assets/images/logoFull.png" />
+    <!-- ✅ Favicon (relative path for Netlify) -->
+    <link rel="icon" type="image/png" href="./assets/images/logoFull.png" />
 
-    <!-- ✅ Video warm-up (silent preload without warnings) -->
+    <!-- ✅ Video warm-up (compatible with production build) -->
     <script type="module">
         const warmVideo = (url) => {
             const v = document.createElement("video");
@@ -28,25 +28,28 @@
             document.body.appendChild(v);
             v.oncanplaythrough = () => v.remove();
         };
-        warmVideo(`${import.meta.env.BASE_URL}assets/videos/tonyWin.mp4`);
+        warmVideo("./assets/videos/tonyWin.mp4");
     </script>
 
     <!-- ✅ Theme & OG tags -->
     <meta name="theme-color" content="#000000" />
-    <meta property="og:title" content="Tony Thompson | Empower Your Growth Journey" />
+    <meta property="og:title"
+          content="Tony Thompson | Empower Your Growth Journey" />
     <meta property="og:description"
           content="Join Tony Thompson and take control of your personal and professional growth." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/assets/images/logoFull.png" />
+    <meta property="og:image" content="./assets/images/logoFull.png" />
 
-    <!-- Remove if you don't plan to add this file -->
-    <!-- <link rel="manifest" href="/manifest.json" /> -->
+    <!-- ✅ Optional manifest -->
+    <!-- <link rel="manifest" href="./manifest.json" /> -->
 
     <script src="https://js.stripe.com/v3/" async></script>
 </head>
 
 <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- ✅ Use relative path so Vite injects correct hashed file -->
+    <script type="module" src="./src/main.jsx"></script>
 </body>
 </html>

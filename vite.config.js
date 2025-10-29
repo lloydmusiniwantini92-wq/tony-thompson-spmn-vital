@@ -1,17 +1,17 @@
-// ✅ vite.config.js — FINAL NETLIFY + NGROK COMPATIBLE
+// ✅ vite.config.js — Final Netlify + Local Fix
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteCompression from "vite-plugin-compression";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 export default defineConfig(({ command }) => ({
-    // ✅ CRUCIAL FIX for Netlify: forces Vite to use relative paths
+    // ✅ Key: make all build paths relative for Netlify
     base: "./",
 
     plugins: [
         react(),
 
-        // ✅ Run compression only in production
+        // ✅ Compress only in production
         command === "build" &&
         viteCompression({
             algorithm: "brotliCompress",
@@ -20,7 +20,7 @@ export default defineConfig(({ command }) => ({
             deleteOriginFile: false,
         }),
 
-        // ✅ Run image optimizer only in production
+        // ✅ Optimize images only for production
         command === "build" &&
         ViteImageOptimizer({
             jpg: { quality: 78 },
@@ -40,6 +40,7 @@ export default defineConfig(({ command }) => ({
             },
         },
         chunkSizeWarningLimit: 900,
+        outDir: "dist", // ensure correct output folder
     },
 
     server: {
