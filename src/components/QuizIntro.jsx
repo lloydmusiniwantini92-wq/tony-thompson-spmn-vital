@@ -1,4 +1,4 @@
-// ✅ QuizIntro.jsx — Refined spacing + balanced “TAKE THE QUIZ” button
+// ✅ QuizIntro.jsx — “READY TO RISE?” (Client-Approved Copy Integration)
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Quiz from "../pages/Quiz";
@@ -20,7 +20,7 @@ export default function QuizIntro() {
                     >
                         {/* === TITLE === */}
                         <motion.h1
-                            className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight tracking-tight"
+                            className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight tracking-tight uppercase"
                             initial="hidden"
                             animate="visible"
                             variants={{
@@ -28,7 +28,7 @@ export default function QuizIntro() {
                                 visible: { transition: { staggerChildren: 0.15 } },
                             }}
                         >
-                            {["Ready", "to", "take", "control", "of", "your", "life?"].map((word, i) => (
+                            {["Ready", "to", "Rise?"].map((word, i) => (
                                 <motion.span
                                     key={i}
                                     className="inline-block mx-1"
@@ -53,8 +53,9 @@ export default function QuizIntro() {
                             transition={{ delay: 1.3, duration: 1 }}
                             className="text-base md:text-xl font-medium text-white/90 mb-16 max-w-[700px]"
                         >
-                            Begin your <span className="font-bold">transformation</span> journey. Uncover your next level with{" "}
-                            <span className="font-bold">Tony Thompson’s</span> path to growth and mastery.
+                            Take control of your career, your business, and your life. Sign up today and get your{" "}
+                            <span className="font-semibold">complimentary playbook</span> — place your first block and{" "}
+                            <span className="font-semibold">start leveling up.</span>
                         </motion.p>
 
                         {/* === PURPLE BUTTON (UNIFORM SPACING, SMALLER FONT) === */}

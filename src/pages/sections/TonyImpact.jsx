@@ -1,14 +1,14 @@
-// ✅ src/pages/sections/TonyImpact.jsx — “Impact in Motion” (Animated Stats)
+// ✅ src/pages/sections/TonyImpact.jsx — “SEE THE IMPACT” (Updated Client Copy)
 import React from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
 
 export default function TonyImpact() {
     const stats = [
-        { label: "Professionals Empowered", value: 10000, suffix: "+" },
-        { label: "Cities Reached", value: 120, suffix: "+" },
-        { label: "Awards & Honors", value: 35, suffix: "+" },
-        { label: "Years Leading Change", value: 20, suffix: "+" },
+        { label: "Speaking Engagements", value: 200, suffix: "+" },
+        { label: "Professionals Reached Nationwide", value: 10000, suffix: "+" },
+        { label: "Featured In", value: 4, suffix: "+" },
+        { label: "Top Originators Coached", value: 1, suffix: "+" },
     ];
 
     return (
@@ -26,7 +26,7 @@ export default function TonyImpact() {
                 className="text-[clamp(3rem,8vw,7rem)] font-extrabold text-center mb-6 tracking-tight 
                     text-white"
             >
-                Impact in Motion
+                SEE THE IMPACT
             </motion.h2>
 
             {/* === Tagline === */}
@@ -37,7 +37,7 @@ export default function TonyImpact() {
                 viewport={{ once: true }}
                 className="text-gray-400 text-sm md:text-base text-center mb-16 font-light tracking-wide"
             >
-                Built from Purpose. Measured by Change.
+                Tony’s reach continues to expand — empowering, equipping, and transforming lives.
             </motion.p>
 
             {/* === Stats Grid === */}
@@ -46,6 +46,26 @@ export default function TonyImpact() {
                     <AnimatedStat key={i} value={s.value} label={s.label} suffix={s.suffix} delay={i * 0.3} />
                 ))}
             </div>
+
+            {/* === Descriptive Text Below Stats === */}
+            <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.8 }}
+                viewport={{ once: true }}
+                className="max-w-3xl text-center text-gray-300 text-base md:text-lg mt-16 px-6 leading-relaxed"
+            >
+                <p className="mb-3">
+                    Featured in <span className="text-white font-semibold">Scotsman Guide</span>,{" "}
+                    <span className="text-white font-semibold">Housing Wire</span>,{" "}
+                    <span className="text-white font-semibold">National Mortgage News</span>, and more.
+                </p>
+                <p>
+                    Coaches top originators through his{" "}
+                    <span className="text-[#9b26b6] font-semibold">Growth Platform</span>,
+                    transforming leadership and performance across the nation.
+                </p>
+            </motion.div>
         </section>
     );
 }

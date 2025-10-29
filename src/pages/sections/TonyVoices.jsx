@@ -1,3 +1,4 @@
+// ✅ src/pages/sections/TonyVoices.jsx — “HEAR THE VOICES” (Updated Client Copy)
 import React from "react";
 import PartnersShowcase from "./PartnersShowcase";
 
@@ -14,16 +15,37 @@ export default function TonyVoices() {
                     bg-gradient-to-r from-[#7a1a8f] via-[#9b26b6] to-[#b14fc0]
                     text-transparent bg-clip-text drop-shadow-[0_2px_12px_rgba(155,38,182,0.25)]"
                 >
-                    Tony's voice across the industry
+                    HEAR THE VOICES
                 </h1>
 
-                <p
-                    className="mt-6 text-[1.1rem] md:text-[1.25rem] leading-[1.8] max-w-3xl mx-auto 
-                    text-[#444] font-medium tracking-wide"
+                <div
+                    className="mt-10 text-[1.1rem] md:text-[1.25rem] leading-[1.8] max-w-3xl mx-auto 
+                    text-[#444] font-medium tracking-wide space-y-8"
                 >
-                    Tony has been recognized as a leading voice in the housing and mortgage industry —
-                    featured by premier media outlets and institutions shaping the future of real estate.
-                </p>
+                    <p>
+                        “Tony Thompson connects with his audience — every word drives action.”
+                        <br />
+                        <span className="block mt-2 text-[#9b26b6] font-semibold">
+                            — Le Tran, AVP Mortgage Underwriting
+                        </span>
+                    </p>
+
+                    <p>
+                        “When Tony speaks, he doesn’t just deliver a message — he changes the game.”
+                        <br />
+                        <span className="block mt-2 text-[#9b26b6] font-semibold">
+                            — Industry Leader
+                        </span>
+                    </p>
+
+                    <p>
+                        “One of the most powerful and engaging speakers in the industry.”
+                        <br />
+                        <span className="block mt-2 text-[#9b26b6] font-semibold">
+                            — Lindsi Flynn, CMO
+                        </span>
+                    </p>
+                </div>
             </div>
 
             {/* === PARTNERS GRID SECTION === */}

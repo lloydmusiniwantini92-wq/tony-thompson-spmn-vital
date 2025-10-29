@@ -1,3 +1,4 @@
+// ✅ src/components/sections/TonyMission.jsx — Updated with client-approved copy
 import React from "react";
 import { motion } from "framer-motion";
 import missionBg from "../../assets/images/mission.jpg"; // ✅ Background image
@@ -36,11 +37,11 @@ export default function TonyMission() {
                     tracking-tight leading-[1] drop-shadow-[0_0_35px_rgba(0,0,0,0.6)] z-[2]
                     font-['Press_Start_2P'] md:font-sans"
             >
-                THE MISSION CODE
+                SET YOUR MISSION
             </motion.h2>
 
             {/* === BODY TEXT === */}
-            <motion.p
+            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
@@ -48,10 +49,16 @@ export default function TonyMission() {
                 className="max-w-3xl text-center text-base md:text-lg text-gray-300 leading-relaxed
                     px-6 font-light tracking-wide z-[2]"
             >
-                To architect pathways where talent meets transformation. <br />
-                Tony’s mission isn’t to create followers — it’s to develop leaders. <br />
-                Every idea, system, and framework he builds amplifies human excellence.
-            </motion.p>
+                <p className="mb-4 text-white text-lg md:text-xl font-semibold">
+                    Lead. Influence. Leave Your Mark.
+                </p>
+                <p>
+                    Tony’s mission is to help professionals in real estate and finance
+                    sharpen their skills, amplify their influence, and build legacies that
+                    outlast any single move. Every action is a block placed toward a bigger
+                    picture.
+                </p>
+            </motion.div>
 
             {/* === LIGHT FLOOR === */}
             <div

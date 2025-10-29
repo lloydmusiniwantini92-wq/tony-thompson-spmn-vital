@@ -1,4 +1,5 @@
-import React, { useMemo, useState, useEffect } from "react";
+// ✅ src/pages/Quiz.jsx — Pop-Out with Animated Success Flow + Seamless TierList Redirect
+import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import QuizFooter from "../components/QuizFooter";
 
@@ -7,50 +8,56 @@ import step2Img from "../assets/quiz/step2.jpg";
 import step3Img from "../assets/quiz/step3.jpg";
 import step4Img from "../assets/quiz/step4.jpg";
 
+// Placeholder email send stub — integrate with backend or email API later
+async function sendPlaybookEmail(form) {
+    return new Promise((resolve) => setTimeout(resolve, 2000));
+}
+
 export default function Quiz() {
     const [stepIndex, setStepIndex] = useState(0);
     const [selected, setSelected] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", phone: "" });
-    const [showButton, setShowButton] = useState(true);
+    const [showPopup, setShowPopup] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [redirecting, setRedirecting] = useState(false);
 
     const steps = useMemo(
         () => [
             {
                 id: 1,
-                title: "What best describes your current career focus?",
+                title: "Which block are you ready to place first?",
                 options: [
-                    "Building my client base and influence",
-                    "Improving my leadership and communication",
-                    "Expanding into mentorship or coaching",
-                    "Finding better work-life balance",
+                    "Financial growth — secure your future, control your wealth.",
+                    "Leadership impact — influence teams and clients with confidence.",
+                    "Legacy & purpose — make your mark that lasts beyond today.",
                 ],
                 image: step1Img,
             },
             {
                 id: 2,
-                title: "What motivates you most right now?",
+                title: "Which skill do you want to unlock next?",
                 options: [
-                    "Financial growth and recognition",
-                    "Creating impact in my community",
-                    "Networking with other professionals",
-                    "Developing long-term stability",
+                    "Personal branding & visibility — get seen and recognized.",
+                    "Team leadership & performance — lead stronger, achieve more.",
+                    "Mindset & confidence — overcome limits, take bold action.",
+                    "Client relationship management — build loyalty and close deals.",
                 ],
                 image: step2Img,
             },
             {
                 id: 3,
-                title: "Which area do you want to strengthen most?",
+                title: "How do you want your next level to play out?",
                 options: [
-                    "Personal branding & visibility",
-                    "Team leadership & performance",
-                    "Mindset & confidence",
-                    "Client relationship management",
+                    "Quick wins — immediate strategies you can implement now.",
+                    "Long-term mastery — frameworks for sustained growth.",
+                    "Network & connections — learn alongside top professionals.",
                 ],
                 image: step3Img,
             },
             {
                 id: 4,
-                title: "Get your personalized program suggestion",
+                title: "Your Tailored Level-Up Plan",
                 isFinal: true,
                 image: step4Img,
             },
@@ -67,11 +74,27 @@ export default function Quiz() {
         setStepIndex((i) => Math.min(i + 1, stepCount - 1));
     };
 
-    const handleBack = () => {
-        setStepIndex((i) => Math.max(i - 1, 0));
+    const handleBack = () => setStepIndex((i) => Math.max(i - 1, 0));
+
+    const fade = {
+        initial: { opacity: 0, y: 16 },
+        animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+        exit: { opacity: 0, y: -16, transition: { duration: 0.3, ease: "easeIn" } },
     };
 
-    // ✅ Use the same universal target mechanism as the rest of the site
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setShowPopup(true);
+    };
+
+    const handleClaim = async () => {
+        setLoading(true);
+        await sendPlaybookEmail(form); // simulate API call
+        setLoading(false);
+        setSuccess(true);
+    };
+
+    // ✅ Universal scrollToPrograms logic (no visible scroll)
     const scrollToPrograms = () => {
         const target = "#programs";
         if (window.location.pathname === "/") {
@@ -83,26 +106,16 @@ export default function Quiz() {
                 return;
             }
         }
-        // Navigate home with target param so App.jsx listener scrolls reliably
+        // Navigate home with target param so App.jsx listener handles fade/scroll
         window.location.href = `/?target=${encodeURIComponent(target)}`;
     };
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const footerQuiz = document.querySelector("#footerquiz");
-            if (footerQuiz) {
-                const rect = footerQuiz.getBoundingClientRect();
-                setShowButton(rect.top >= window.innerHeight * 0.8);
-            }
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    const fade = {
-        initial: { opacity: 0, y: 16 },
-        animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
-        exit: { opacity: 0, y: -16, transition: { duration: 0.3, ease: "easeIn" } },
+    const handleClose = () => {
+        setShowPopup(false);
+        setRedirecting(true);
+        setTimeout(() => {
+            scrollToPrograms(); // ✅ fade + param redirect using existing app logic
+        }, 1200);
     };
 
     return (
@@ -146,7 +159,7 @@ export default function Quiz() {
                                             <p className="text-xs font-semibold tracking-[0.12em] text-gray-400 mb-3">
                                                 STEP {stepIndex + 1} OF {stepCount}
                                             </p>
-                                            <h1 className="text-[40px] md:text-[56px] font-black mb-10 text-white">
+                                            <h1 className="text-[40px] md:text-[56px] font-black mb-10 text-white uppercase">
                                                 {step.title}
                                             </h1>
 
@@ -158,8 +171,8 @@ export default function Quiz() {
                                                             key={opt}
                                                             onClick={() => setSelected(i)}
                                                             className={`group relative flex items-center justify-between rounded-xl border p-5 transition-all ${active
-                                                                ? "border-[#9b26b6] bg-[#9b26b6] text-white"
-                                                                : "border-gray-600 hover:border-[#9b26b6] hover:bg-[#1a001d]"
+                                                                    ? "border-[#9b26b6] bg-[#9b26b6] text-white"
+                                                                    : "border-gray-600 hover:border-[#9b26b6] hover:bg-[#1a001d]"
                                                                 }`}
                                                         >
                                                             <span className="text-[18px] font-semibold pr-10">
@@ -167,8 +180,8 @@ export default function Quiz() {
                                                             </span>
                                                             <span
                                                                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${active
-                                                                    ? "border-white"
-                                                                    : "border-gray-400 group-hover:border-[#9b26b6]"
+                                                                        ? "border-white"
+                                                                        : "border-gray-400 group-hover:border-[#9b26b6]"
                                                                     }`}
                                                             >
                                                                 <span
@@ -196,8 +209,8 @@ export default function Quiz() {
                                         onClick={handleNext}
                                         disabled={selected === null}
                                         className={`rounded-full px-8 py-3 font-bold transition ${selected === null
-                                            ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                                            : "bg-[#9b26b6] text-white hover:opacity-90 shadow-[0_0_10px_rgba(155,38,182,0.4)]"
+                                                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                                                : "bg-[#9b26b6] text-white hover:opacity-90 shadow-[0_0_10px_rgba(155,38,182,0.4)]"
                                             }`}
                                     >
                                         Next
@@ -236,9 +249,15 @@ export default function Quiz() {
                             </motion.div>
 
                             <div className="w-full md:w-1/2 min-h-screen flex flex-col justify-center relative z-10">
-                                <motion.form className="grid grid-cols-1 gap-8 max-w-xl mx-auto text-white -translate-y-[60px]">
-                                    <motion.h3 className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] drop-shadow-[0_0_25px_rgba(155,38,182,0.5)] mb-4 text-center">
-                                        Your Personalized Program Suggestion
+                                <motion.form
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        setShowPopup(true);
+                                    }}
+                                    className="grid grid-cols-1 gap-8 max-w-xl mx-auto text-white -translate-y-[60px]"
+                                >
+                                    <motion.h3 className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] drop-shadow-[0_0_25px_rgba(155,38,182,0.5)] mb-4 text-center uppercase">
+                                        Your Tailored Level-Up Plan
                                     </motion.h3>
 
                                     {[
@@ -247,42 +266,113 @@ export default function Quiz() {
                                         { label: "Phone", type: "tel", key: "phone", placeholder: "Enter your phone number" },
                                     ].map((field) => (
                                         <div key={field.key}>
-                                            <label className="block text-sm font-semibold mb-2 text-gray-400">
-                                                {field.label}
-                                            </label>
+                                            <label className="block text-sm font-semibold mb-2 text-gray-400">{field.label}</label>
                                             <input
                                                 required
                                                 type={field.type}
                                                 value={form[field.key]}
-                                                onChange={(e) =>
-                                                    setForm({ ...form, [field.key]: e.target.value })
-                                                }
+                                                onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
                                                 placeholder={field.placeholder}
                                                 className="w-full bg-transparent border-b border-[#9b26b6]/40 text-white placeholder-gray-500 py-3 text-lg focus:outline-none focus:border-[#9b26b6] caret-white transition-all duration-300"
                                             />
                                         </div>
                                     ))}
-                                </motion.form>
 
-                                <AnimatePresence>
-                                    {showButton && (
-                                        <motion.button
-                                            key="suggestedButton"
-                                            onClick={scrollToPrograms}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: 30 }}
-                                            transition={{ duration: 0.6, ease: "easeOut" }}
-                                            className="fixed bottom-0 right-[10%] mb-6 inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-black bg-[#9b26b6] hover:bg-[#b14fc0] border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.9)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
-                                        >
-                                            View Your Suggested Program →
-                                        </motion.button>
-                                    )}
-                                </AnimatePresence>
+                                    <motion.button
+                                        type="submit"
+                                        className="mt-4 inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-black bg-[#9b26b6] hover:bg-[#b14fc0] border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.9)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
+                                    >
+                                        Get Your Personalized Program → Build Your Next Level Today
+                                    </motion.button>
+
+                                    <p className="mt-12 text-center text-gray-300 px-6 leading-relaxed max-w-xl mx-auto">
+                                        Take control of your career, business, and life. Receive your complimentary playbook, scorecards, and quizzes — place your first block and start leveling up immediately.
+                                    </p>
+                                </motion.form>
                             </div>
                         </>
                     )}
                 </section>
+
+                {/* === POP-OUT MODAL === */}
+                <AnimatePresence>
+                    {showPopup && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm"
+                        >
+                            <motion.div
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.9, opacity: 0 }}
+                                transition={{ duration: 0.5, ease: "easeOut" }}
+                                className="bg-white text-black rounded-2xl shadow-[0_0_40px_rgba(155,38,182,0.6)] max-w-lg w-[90%] p-10 text-center relative"
+                            >
+                                {!success ? (
+                                    !loading ? (
+                                        <>
+                                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] mb-6">
+                                                Wow! You’re a Rare Fit for Our Elevate Program
+                                            </h2>
+                                            <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                                                Only 1 in 50 participants reaches this level — and you’re one of them. Your tailored playbook is ready, and we’re excited to guide you to your next-level growth today.
+                                            </p>
+                                            <button
+                                                onClick={handleClaim}
+                                                className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-[#9b26b6] hover:bg-[#b14fc0] border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
+                                            >
+                                                Claim My Tailored Playbook
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="flex flex-col items-center justify-center py-10"
+                                        >
+                                            <motion.div
+                                                animate={{ rotate: 360 }}
+                                                transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
+                                                className="w-12 h-12 border-4 border-[#9b26b6] border-t-transparent rounded-full mb-6"
+                                            />
+                                            <p className="text-lg text-gray-600">Building your personalized playbook...</p>
+                                        </motion.div>
+                                    )
+                                ) : (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+                                        <h2 className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] mb-6">
+                                            Your Playbook Is On Its Way!
+                                        </h2>
+                                        <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                                            We’ve sent your personalized Level-Up Playbook to your inbox. Check your email for your next steps — and welcome to the Elevate community.
+                                        </p>
+                                        <button
+                                            onClick={handleClose}
+                                            className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-[#9b26b6] hover:bg-[#b14fc0] border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
+                                        >
+                                            Close
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* === FADE REDIRECT OVERLAY === */}
+                <AnimatePresence>
+                    {redirecting && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.8, ease: "easeInOut" }}
+                            className="fixed inset-0 bg-black z-[9999]"
+                        />
+                    )}
+                </AnimatePresence>
 
                 <section className="w-full" id="footerquiz">
                     <QuizFooter />
