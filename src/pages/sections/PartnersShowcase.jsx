@@ -1,6 +1,5 @@
 import React from "react";
 import mba from "../../assets/partners/mba.png";
-import namb from "../../assets/partners/namb.png";
 import nmn from "../../assets/partners/nmn.png";
 import scotsman from "../../assets/partners/scotsman.png";
 import inman from "../../assets/partners/inman.png";
