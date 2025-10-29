@@ -5,6 +5,9 @@ import viteCompression from "vite-plugin-compression";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer"; // ✅ fixed named import
 
 export default defineConfig(({ command }) => ({
+    // ✅ Fix for Netlify + BASE_URL + MIME issues
+    base: "./",
+
     plugins: [
         react(),
 
@@ -39,15 +42,13 @@ export default defineConfig(({ command }) => ({
         chunkSizeWarningLimit: 900,
     },
 
-    // ✅ Added ngrok + external access support
+    // ✅ Local + ngrok + external testing support
     server: {
         open: true, // auto-open browser on `npm run dev`
         port: 5173, // default Vite port
         host: true, // allow LAN and external access
         allowedHosts: [
-            // ✅ ngrok or any other reverse-proxy/dev domain
             "purringly-unfrisking-suzie.ngrok-free.dev",
-            // wildcard fallback for future ngrok tunnels
             ".ngrok-free.dev",
             "localhost",
             "127.0.0.1",
