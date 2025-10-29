@@ -1,3 +1,4 @@
+// ✅ src/components/Testimonials.jsx — Clean, NAMB removed + fully functional
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVideoModal } from "../context/VideoModalContext";
@@ -11,6 +12,7 @@ import v3 from "../assets/testimonials/testimonialVideo3.mp4";
 import v4 from "../assets/testimonials/testimonialVideo4.mp4";
 import "../styles/testimonials.css";
 
+// ✅ Partner logos
 import mba from "../assets/partners/mba.png";
 import nmn from "../assets/partners/nmn.png";
 import scotsman from "../assets/partners/scotsman.png";
@@ -24,8 +26,7 @@ export default function Testimonials() {
             img: t1,
             name: "Jane Smith",
             role: "VP, Horizon",
-            quote:
-                "Working with Tony didn’t just redefine our strategy — it redefined our mindset.",
+            quote: "Working with Tony didn’t just redefine our strategy — it redefined our mindset.",
             video: v1,
         },
         {
@@ -33,8 +34,7 @@ export default function Testimonials() {
             img: t2,
             name: "Mark Lee",
             role: "Founder, DiverseGrowth",
-            quote:
-                "Tony unlocked a level of confidence and performance we didn’t think possible.",
+            quote: "Tony unlocked a level of confidence and performance we didn’t think possible.",
             video: v2,
         },
         {
@@ -42,8 +42,7 @@ export default function Testimonials() {
             img: t3,
             name: "Sophie K.",
             role: "Brand Director, Maven",
-            quote:
-                "Every interaction with Tony is a masterclass in clarity, focus, and results.",
+            quote: "Every interaction with Tony is a masterclass in clarity, focus, and results.",
             video: v3,
         },
         {
@@ -51,12 +50,12 @@ export default function Testimonials() {
             img: t4,
             name: "Lucas Howard",
             role: "Head of Ops, Stellar",
-            quote:
-                "Tony has that rare precision that moves teams and transforms outcomes.",
+            quote: "Tony has that rare precision that moves teams and transforms outcomes.",
             video: v4,
         },
     ];
 
+    // ✅ NAMB removed entirely
     const partners = [
         { name: "MBA", logo: mba },
         { name: "National Mortgage News", logo: nmn },
@@ -67,24 +66,24 @@ export default function Testimonials() {
 
     const [active, setActive] = useState(0);
     const intervalRef = useRef(null);
-    const { openVideo, closeVideo } = useVideoModal();
+    const { openVideo } = useVideoModal();
 
-    // Keep scroll position at testimonials after modal close
     const openVideoFromTestimonials = (videoSrc) => {
-        const scrollY = window.scrollY; // preserve vertical position
+        const scrollY = window.scrollY;
         openVideo(videoSrc);
-        const handleScrollRestore = () => {
-            window.scrollTo({ top: scrollY, behavior: "instant" });
-            const el = document.querySelector("#testimonials");
-            if (el) {
-                window.lenis
-                    ? window.lenis.scrollTo(el, { duration: 0.6, offset: -50 })
-                    : el.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-            window.removeEventListener("focus", handleScrollRestore);
-        };
-        // Restore after modal closes (focus back)
-        window.addEventListener("focus", handleScrollRestore, { once: true });
+        window.addEventListener(
+            "focus",
+            () => {
+                window.scrollTo({ top: scrollY, behavior: "instant" });
+                const el = document.querySelector("#testimonials");
+                if (el) {
+                    window.lenis
+                        ? window.lenis.scrollTo(el, { duration: 0.6, offset: -50 })
+                        : el.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            },
+            { once: true }
+        );
     };
 
     useEffect(() => {
@@ -121,13 +120,7 @@ export default function Testimonials() {
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 1.0, ease: [0.25, 1, 0.3, 1] }}
                             >
-                                <p
-                                    className="text-[clamp(2rem,3.5vw,3rem)] font-extrabold leading-[1.2] mb-6 md:mb-10 tracking-tight text-white"
-                                    style={{
-                                        textShadow:
-                                            "0 0 40px rgba(0,0,0,0.35), 0 3px 10px rgba(0,0,0,0.45)",
-                                    }}
-                                >
+                                <p className="text-[clamp(2rem,3.5vw,3rem)] font-extrabold leading-[1.2] mb-6 md:mb-10 tracking-tight text-white">
                                     “{testimonials[active].quote}”
                                 </p>
                                 <div className="text-xl md:text-2xl font-semibold tracking-wide">
@@ -143,7 +136,7 @@ export default function Testimonials() {
                         </AnimatePresence>
                     </div>
 
-                    {/* Avatar Cluster - bottom-left */}
+                    {/* Avatar Cluster */}
                     <div className="absolute bottom-[6rem] left-[8%] flex gap-8 z-30">
                         {testimonials.map((t, i) => (
                             <motion.div
@@ -157,42 +150,22 @@ export default function Testimonials() {
                                     boxShadow:
                                         "0 0 60px rgba(155,38,182,0.9), 0 0 40px rgba(255,255,255,0.2)",
                                 }}
-                                transition={{
-                                    duration: 0.35,
-                                    ease: [0.25, 1, 0.3, 1],
-                                }}
-                                className={`relative w-[82px] h-[82px] md:w-[105px] md:h-[105px] rounded-full overflow-hidden cursor-pointer transition-all duration-500 border-[4px] ${i === active
-                                        ? "border-white shadow-[0_0_25px_rgba(255,255,255,0.7)]"
-                                        : "border-white/40"
+                                transition={{ duration: 0.35 }}
+                                className={`relative w-[82px] h-[82px] md:w-[105px] md:h-[105px] rounded-full overflow-hidden cursor-pointer border-[4px] ${i === active
+                                    ? "border-white shadow-[0_0_25px_rgba(255,255,255,0.7)]"
+                                    : "border-white/40"
                                     }`}
                             >
                                 <img
                                     src={t.img}
                                     alt={t.name}
-                                    className="w-full h-full object-cover transition-all duration-700"
+                                    className="w-full h-full object-cover"
                                     style={{
                                         filter:
-                                            i === active
-                                                ? "brightness(1.1)"
-                                                : "brightness(0.85)",
+                                            i === active ? "brightness(1.1)" : "brightness(0.85)",
                                     }}
                                 />
-                                <div className="absolute inset-0 rounded-full bg-[#9b26b6]/0 hover:bg-[#9b26b6]/45 transition-all duration-500" />
                             </motion.div>
-                        ))}
-                    </div>
-
-                    {/* Nav dots - below first card */}
-                    <div className="absolute bottom-[3rem] left-[8%] flex gap-4 z-20">
-                        {testimonials.map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setActive(i)}
-                                className={`w-[14px] h-[14px] rounded-full transition-all duration-500 ${i === active
-                                        ? "bg-white scale-125 shadow-[0_0_12px_rgba(255,255,255,0.8)]"
-                                        : "bg-white/40 hover:bg-white/70"
-                                    }`}
-                            />
                         ))}
                     </div>
                 </div>
@@ -215,7 +188,6 @@ export default function Testimonials() {
                         />
                     </AnimatePresence>
 
-                    {/* Hover Overlay */}
                     <motion.div
                         className="absolute inset-0 bg-[#9b26b6]/0 group-hover:bg-[#9b26b6]/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-700 cursor-pointer"
                         onClick={() => openVideoFromTestimonials(testimonials[active].video)}
@@ -233,14 +205,13 @@ export default function Testimonials() {
             </div>
 
             {/* Partners */}
-            <div className="relative z-10 w-full text-center bg-white pt-[3rem] pb-[5rem] mt-0">
+            <div className="relative z-10 w-full text-center bg-white pt-[3rem] pb-[5rem]">
                 <h3 className="text-xl md:text-2xl font-bold text-[#111] tracking-wider mb-3">
                     Trusted by Industry Leaders
                 </h3>
                 <h4 className="text-[#9b26b6] text-lg md:text-xl font-semibold mb-8">
                     As Featured In
                 </h4>
-
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 px-8 max-w-7xl mx-auto items-center justify-items-center">
                     {partners.map((partner) => (
                         <div
