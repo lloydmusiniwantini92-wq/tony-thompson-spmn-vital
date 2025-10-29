@@ -1,11 +1,11 @@
-// ✅ vite.config.js
+// ✅ vite.config.js — FINAL NETLIFY + NGROK COMPATIBLE
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteCompression from "vite-plugin-compression";
-import { ViteImageOptimizer } from "vite-plugin-image-optimizer"; // ✅ fixed named import
+import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 export default defineConfig(({ command }) => ({
-    // ✅ Fix for Netlify + BASE_URL + MIME issues
+    // ✅ CRUCIAL FIX for Netlify: forces Vite to use relative paths
     base: "./",
 
     plugins: [
@@ -42,11 +42,10 @@ export default defineConfig(({ command }) => ({
         chunkSizeWarningLimit: 900,
     },
 
-    // ✅ Local + ngrok + external testing support
     server: {
-        open: true, // auto-open browser on `npm run dev`
-        port: 5173, // default Vite port
-        host: true, // allow LAN and external access
+        open: true,
+        port: 5173,
+        host: true,
         allowedHosts: [
             "purringly-unfrisking-suzie.ngrok-free.dev",
             ".ngrok-free.dev",
