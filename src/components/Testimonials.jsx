@@ -12,7 +12,6 @@ import v4 from "../assets/testimonials/testimonialVideo4.mp4";
 import "../styles/testimonials.css";
 
 import mba from "../assets/partners/mba.png";
-import namb from "../assets/partners/namb.png";
 import nmn from "../assets/partners/nmn.png";
 import scotsman from "../assets/partners/scotsman.png";
 import inman from "../assets/partners/inman.png";
@@ -60,7 +59,6 @@ export default function Testimonials() {
 
     const partners = [
         { name: "MBA", logo: mba },
-        { name: "NAMB", logo: namb },
         { name: "National Mortgage News", logo: nmn },
         { name: "Scotsman Guide", logo: scotsman },
         { name: "Inman", logo: inman },
