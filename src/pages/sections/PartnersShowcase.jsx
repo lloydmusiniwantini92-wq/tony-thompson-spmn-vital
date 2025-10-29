@@ -8,7 +8,6 @@ import mpa from "../../assets/partners/mpa.jpg";
 export default function PartnersShowcase() {
     const partners = [
         { name: "MBA", logo: mba },
-        { name: "NAMB", logo: namb },
         { name: "National Mortgage News", logo: nmn },
         { name: "Scotsman Guide", logo: scotsman },
         { name: "Inman", logo: inman },
