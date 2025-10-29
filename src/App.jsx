@@ -1,3 +1,4 @@
+// ✅ src/App.jsx — Final Scroll Boot Fix (Guaranteed Top + No Footer Jump)
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -25,11 +26,9 @@ import QuizIntro from "./components/QuizIntro";
 
 import { VideoModalProvider } from "./context/VideoModalContext";
 import { QuizOverlayProvider } from "./context/QuizOverlayContext";
-
-// ✨ dreamy fade imports
 import { dreamyOverlayStyle, animateDreamyPulse } from "./utils/fadeStyles.js";
 
-/* === PRE-MOUNT OVERLAY to block Hero flash + dreamy haze === */
+/* === PRE-MOUNT DREAMY OVERLAY === */
 function preMountFade() {
     if (document.getElementById("fade-preoverlay")) return;
     const overlay = document.createElement("div");
@@ -44,7 +43,7 @@ function preMountFade() {
         ...dreamyOverlayStyle,
     });
     document.body.appendChild(overlay);
-    animateDreamyPulse(overlay); // shimmer breathing effect
+    animateDreamyPulse(overlay);
 }
 
 export default function App() {
@@ -53,11 +52,53 @@ export default function App() {
     const location = useLocation();
     const isHome = location.pathname === "/";
 
-    /* === LENIS Smooth Scroll === */
+    /* =========================================================
+       🧩 FORCE SCROLL RESET (prevents landing at footer)
+       ========================================================= */
+    useEffect(() => {
+        const unlockScroll = () => {
+            document.documentElement.style.overflow = "visible";
+            document.body.style.overflow = "visible";
+            document.documentElement.style.height = "auto";
+            document.body.style.height = "auto";
+        };
+
+        // Reset all scroll locks & force top
+        unlockScroll();
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+
+        setTimeout(() => {
+            unlockScroll();
+            window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }, 600);
+
+        // Clear any URL fragments or lingering params
+        if (window.location.hash || window.location.search) {
+            window.history.replaceState({}, "", "/");
+        }
+    }, []);
+
+    /* =========================================================
+       🌀 LENIS INITIALIZATION (safe + forced top start)
+       ========================================================= */
     useEffect(() => {
         let lenis;
         let rafId;
-        const startLenis = () => {
+
+        const enableScroll = () => {
+            document.documentElement.style.overflow = "visible";
+            document.body.style.overflow = "visible";
+            document.documentElement.style.height = "auto";
+            document.body.style.height = "auto";
+        };
+
+        const initLenis = () => {
+            enableScroll();
+
             lenis = new Lenis({
                 duration: 1.05,
                 easing: (t) => 1 - Math.pow(1 - t, 3),
@@ -65,6 +106,7 @@ export default function App() {
                 syncTouch: false,
                 gestureOrientation: "vertical",
             });
+
             window.lenis = lenis;
 
             const raf = (time) => {
@@ -72,17 +114,36 @@ export default function App() {
                 rafId = requestAnimationFrame(raf);
             };
             rafId = requestAnimationFrame(raf);
-            lenis.scrollTo(0, { immediate: true });
+
+            // 🩵 guarantee top start
+            setTimeout(() => {
+                enableScroll();
+                lenis.scrollTo(0, { immediate: true });
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }, 350);
         };
 
-        startLenis();
+        if (document.readyState === "complete") {
+            initLenis();
+        } else {
+            window.addEventListener("load", initLenis, { once: true });
+        }
+
+        const watchdog = setInterval(() => {
+            if (document.body.scrollHeight < window.innerHeight) enableScroll();
+        }, 1200);
+
         return () => {
             cancelAnimationFrame(rafId);
+            clearInterval(watchdog);
             if (lenis) lenis.destroy();
         };
     }, []);
 
-    /* === UNIVERSAL ?target= SCROLL LISTENER — FADE OVER SCROLL (NO HERO FLASH + dreamy) === */
+    /* =========================================================
+       ✨ ?target= Scroll Param (Fade Transition)
+       ========================================================= */
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const targetParam = params.get("target");
@@ -91,14 +152,8 @@ export default function App() {
         const cleanTarget = targetParam.replace(/^#/, "").trim();
 
         const doFadeScroll = async () => {
-            // 1️⃣ Instantly cover Hero with dreamy haze
             preMountFade();
-
             const { smoothFadeScroll } = await import("./utils/smoothFadeScroll.js");
-
-            const el =
-                document.getElementById(cleanTarget) ||
-                document.querySelector(`.${cleanTarget}`);
 
             const removePreOverlay = () => {
                 const pre = document.getElementById("fade-preoverlay");
@@ -108,30 +163,33 @@ export default function App() {
                 }
             };
 
+            const go = () => {
+                smoothFadeScroll(`#${cleanTarget}`).then(removePreOverlay);
+                window.history.replaceState({}, "", "/");
+            };
+
+            let el = document.getElementById(cleanTarget);
             if (!el) {
                 let tries = 0;
                 const interval = setInterval(() => {
-                    const found =
-                        document.getElementById(cleanTarget) ||
-                        document.querySelector(`.${cleanTarget}`);
-                    if (found || tries > 40) {
+                    el = document.getElementById(cleanTarget);
+                    if (el || tries > 40) {
                         clearInterval(interval);
-                        smoothFadeScroll(`#${cleanTarget}`).then(removePreOverlay);
-                        window.history.replaceState({}, "", "/");
+                        go();
                     }
                     tries++;
                 }, 200);
-            } else {
-                smoothFadeScroll(`#${cleanTarget}`).then(removePreOverlay);
-                window.history.replaceState({}, "", "/");
-            }
+            } else go();
         };
 
-        setTimeout(doFadeScroll, 500);
+        setTimeout(doFadeScroll, 900);
     }, [location.pathname]);
 
     const heroVisibleForOverlay = isHome ? heroVisible : false;
 
+    /* =========================================================
+       🎬 MAIN RENDER
+       ========================================================= */
     return (
         <VideoModalProvider>
             <QuizOverlayProvider>
@@ -142,7 +200,8 @@ export default function App() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.6, ease: [0.25, 1, 0.3, 1] }}
-                        className="bg-black text-white overflow-x-hidden relative min-h-screen flex flex-col"
+                        className="bg-black text-white overflow-x-hidden relative flex flex-col"
+                        style={{ minHeight: "100vh" }}
                     >
                         <ScrollToTop />
 
@@ -157,7 +216,7 @@ export default function App() {
 
                         <ScrollFog />
 
-                        {/* === PAGE ROUTES + TRANSITIONS === */}
+                        {/* === ROUTES === */}
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={location.pathname}
@@ -168,7 +227,6 @@ export default function App() {
                             >
                                 <Suspense fallback={<div className="h-screen bg-black" />}>
                                     <Routes location={location} key={location.pathname}>
-                                        {/* === HOME === */}
                                         <Route
                                             path="/"
                                             element={
@@ -183,16 +241,12 @@ export default function App() {
                                                 </div>
                                             }
                                         />
-
-                                        {/* === OTHER ROUTES === */}
                                         <Route path="/lets-win" element={<LetsWin />} />
                                         <Route path="/about-tony" element={<AboutTony />} />
                                         <Route path="/shop" element={<Shop />} />
                                         <Route path="/thank-you" element={<ThankYou />} />
                                         <Route path="/go" element={<Go />} />
                                         <Route path="/quiz-intro" element={<QuizIntro />} />
-
-                                        {/* === Legal Pages === */}
                                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                         <Route path="/terms" element={<Terms />} />
                                     </Routes>

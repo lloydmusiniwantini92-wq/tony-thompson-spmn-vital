@@ -1,25 +1,42 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+/* ===============================================
+   ✅ src/index.css — Correct import order for Vite
+   =============================================== */
+
+/* === External + Local Imports FIRST === */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap");
 @import "./styles/hero.css";
 @import "./styles/_zmap.css";
 
+/* === Tailwind Layers NEXT === */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-    @apply bg-[#000] text-white;
-    font-family: 'Montserrat', sans-serif;
+/* === Root Structure === */
+html,
+body,
+#root {
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
     overflow-x: hidden;
     overscroll-behavior: none;
 }
 
-/* enable natural smooth scrolling */
-html {
-    scroll-behavior: smooth;
+/* === Base === */
+body {
+    @apply bg-[#000] text-white;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    overflow-y: visible; /* ✅ allow Lenis to handle scrolling */
 }
 
-/* Section Haze for transitions */
+/* === Disable native smooth scroll (Lenis controls it) === */
+html {
+    scroll-behavior: auto !important;
+}
+
+/* === Section Haze for transitions === */
 .section-haze::before,
 .section-haze::after {
     content: "";
@@ -42,7 +59,7 @@ html {
     bottom: -80px;
 }
 
-/* Smooth haze drift */
+/* === Smooth haze drift === */
 @keyframes hazeDrift {
     0%, 100% {
         transform: translateY(0);
@@ -59,20 +76,7 @@ html {
     animation: hazeDrift 25s ease-in-out infinite;
 }
 
-/* PRESS PLAY shimmer */
-@keyframes pressPlayGlow {
-    0%, 100% {
-        background-position: 0% 50%;
-        filter: drop-shadow(0 0 6px rgba(155,38,182,0.4)) drop-shadow(0 0 14px rgba(177,79,192,0.3));
-    }
-
-    50% {
-        background-position: 100% 50%;
-        filter: drop-shadow(0 0 12px rgba(255,255,255,0.8)) drop-shadow(0 0 26px rgba(155,38,182,0.7)) drop-shadow(0 0 48px rgba(177,79,192,0.6));
-    }
-}
-
-/* PRESS PLAY shimmer */
+/* === PRESS PLAY shimmer === */
 @keyframes pressPlayGlow {
     0%, 100% {
         background-position: 0% 50%;
@@ -89,25 +93,16 @@ html {
     background-size: 200% auto;
     animation: pressPlayGlow 5s ease-in-out infinite;
 }
-html {
-    scroll-behavior: auto !important; /* turn off native smooth scrolling */
-}
-html, body, #root {
-    height: 100%;
-}
 
-body {
-    margin: 0;
+/* === Quiz overlay — hide UI === */
+body.quiz-active .fixed-layer,
+body.quiz-active .global-overlay,
+body.quiz-active #hamburger,
+body.quiz-active .logo-container,
+body.quiz-active [class*="logo"],
+body.quiz-active [class*="menu"] {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s ease-in-out;
 }
-    /* === Hide all UI during quiz overlay (portal-safe) === */
-    body.quiz-active .fixed-layer,
-    body.quiz-active .global-overlay,
-    body.quiz-active #hamburger,
-    body.quiz-active .logo-container,
-    body.quiz-active [class*="logo"],
-    body.quiz-active [class*="menu"] {
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        transition: opacity 0.3s ease-in-out;
-    }

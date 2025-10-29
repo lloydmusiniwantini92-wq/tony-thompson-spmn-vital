@@ -1,4 +1,4 @@
-// ✅ src/components/MeetTony.jsx — Responsive + Unified Gradient Purple 
+// ✅ src/components/MeetTony.jsx — Fixed Scroll Collapse (no visual change)
 import React, { useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -27,11 +27,12 @@ export default function MeetTony() {
         <section
             id="meet-tony"
             ref={ref}
-            className="relative w-full min-h-screen bg-black text-white overflow-hidden"
+            className="relative w-full min-h-screen bg-black text-white overflow-hidden flex flex-col"
+            style={{ contain: "layout paint style" }}
         >
-            <div className="relative z-10 flex flex-col md:flex-row min-h-screen">
+            <div className="relative z-10 flex flex-col md:flex-row flex-1">
                 {/* LEFT COLUMN */}
-                <div className="w-full md:w-1/3 bg-gradient-to-b from-[#9b26b6]/85 via-[#9b26b6]/70 to-[#b14fc0]/85 flex flex-col justify-between md:justify-center">
+                <div className="w-full md:w-1/3 bg-gradient-to-b from-[#9b26b6]/85 via-[#9b26b6]/70 to-[#b14fc0]/85 flex flex-col justify-between md:justify-center min-h-[60vh]">
                     <div className="px-[6vw] py-[6vh] flex flex-col flex-1 text-white">
                         {/* MEET Heading */}
                         <motion.h1
@@ -139,7 +140,7 @@ export default function MeetTony() {
                 </div>
 
                 {/* RIGHT COLUMN */}
-                <div className="relative w-full md:w-2/3 flex items-start justify-start bg-black mt-8 md:mt-0">
+                <div className="relative w-full md:w-2/3 flex items-start justify-start bg-black md:min-h-[100vh] min-h-[70vh]">
                     <motion.img
                         src={meetTonyImg}
                         alt="Tony Thompson"
@@ -149,7 +150,7 @@ export default function MeetTony() {
                             scale: inView ? 1 : 1.04,
                         }}
                         transition={{ duration: 1.2 }}
-                        className="relative md:absolute inset-0 w-full h-auto md:h-full object-cover object-center"
+                        className="absolute inset-0 w-full h-full object-cover object-center"
                     />
 
                     <motion.div

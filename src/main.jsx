@@ -1,28 +1,22 @@
-// ✅ src/main.jsx — production setup
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import App from "./App.jsx"; // 👈 back to optimized App (with Lenis)
-import TestimonialDetail from "./pages/TestimonialDetail.jsx";
-import AboutTony from "./pages/AboutTony.jsx";
-import { QuizOverlayProvider } from "./context/QuizOverlayContext.jsx";
-
+import { BrowserRouter } from "react-router-dom";
+import App from "./App.jsx";
 import "./index.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-    <BrowserRouter>
-        <QuizOverlayProvider>
-            <Routes>
-                {/* Main multi-section landing page */}
-                <Route path="/*" element={<App />} />
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
-                {/* Cinematic About Tony page */}
-                <Route path="/about-tony" element={<AboutTony />} />
+// 🩵 Scroll reset before React mounts
+window.scrollTo(0, 0);
+document.body.style.overflow = "visible";
+document.documentElement.style.overflow = "visible";
+document.body.style.height = "auto";
+document.documentElement.style.height = "auto";
 
-                {/* Individual Testimonial detail route */}
-                <Route path="/testimonials/:id" element={<TestimonialDetail />} />
-            </Routes>
-        </QuizOverlayProvider>
-    </BrowserRouter>
+root.render(
+    <React.StrictMode>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+            <App />
+        </BrowserRouter>
+    </React.StrictMode>
 );

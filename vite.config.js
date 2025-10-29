@@ -1,17 +1,17 @@
-// ✅ vite.config.js — Final Netlify + Local Fix
+// ✅ vite.config.js — Clean GitHub Pages Build (no Netlify)
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteCompression from "vite-plugin-compression";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 export default defineConfig(({ command }) => ({
-    // ✅ Key: make all build paths relative for Netlify
-    base: "./",
+    // ✅ GitHub Pages base path (matches repo name)
+    base: "/tony-thompson-spmn-vital/",
 
     plugins: [
         react(),
 
-        // ✅ Compress only in production
+        // ✅ Production-only compression
         command === "build" &&
         viteCompression({
             algorithm: "brotliCompress",
@@ -20,7 +20,7 @@ export default defineConfig(({ command }) => ({
             deleteOriginFile: false,
         }),
 
-        // ✅ Optimize images only for production
+        // ✅ Image optimization for GH Pages
         command === "build" &&
         ViteImageOptimizer({
             jpg: { quality: 78 },
@@ -40,7 +40,7 @@ export default defineConfig(({ command }) => ({
             },
         },
         chunkSizeWarningLimit: 900,
-        outDir: "dist", // ensure correct output folder
+        outDir: "dist",
     },
 
     server: {

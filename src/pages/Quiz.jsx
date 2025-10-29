@@ -1,6 +1,7 @@
-// ✅ src/pages/Quiz.jsx — Pop-Out with Animated Success Flow + Seamless TierList Redirect
+// ✅ src/pages/Quiz.jsx — Pop-Out with Animated Success Flow + Seamless TierList Redirect (Fixed Heading Visibility)
 import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import QuizFooter from "../components/QuizFooter";
 
 import step1Img from "../assets/quiz/step1.jpg";
@@ -14,6 +15,7 @@ async function sendPlaybookEmail(form) {
 }
 
 export default function Quiz() {
+    const navigate = useNavigate();
     const [stepIndex, setStepIndex] = useState(0);
     const [selected, setSelected] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", phone: "" });
@@ -94,27 +96,11 @@ export default function Quiz() {
         setSuccess(true);
     };
 
-    // ✅ Universal scrollToPrograms logic (no visible scroll)
-    const scrollToPrograms = () => {
-        const target = "#programs";
-        if (window.location.pathname === "/") {
-            const el = document.querySelector("#programs, #tiers, [id*='program']");
-            if (el) {
-                window.lenis
-                    ? window.lenis.scrollTo(el, { duration: 1.4, offset: -20 })
-                    : el.scrollIntoView({ behavior: "smooth", block: "start" });
-                return;
-            }
-        }
-        // Navigate home with target param so App.jsx listener handles fade/scroll
-        window.location.href = `/?target=${encodeURIComponent(target)}`;
-    };
-
     const handleClose = () => {
         setShowPopup(false);
         setRedirecting(true);
         setTimeout(() => {
-            scrollToPrograms(); // ✅ fade + param redirect using existing app logic
+            navigate("/?target=#tiers"); // fade-based route param redirect
         }, 1200);
     };
 
@@ -171,17 +157,15 @@ export default function Quiz() {
                                                             key={opt}
                                                             onClick={() => setSelected(i)}
                                                             className={`group relative flex items-center justify-between rounded-xl border p-5 transition-all ${active
-                                                                    ? "border-[#9b26b6] bg-[#9b26b6] text-white"
-                                                                    : "border-gray-600 hover:border-[#9b26b6] hover:bg-[#1a001d]"
+                                                                ? "border-[#9b26b6] bg-[#9b26b6] text-white"
+                                                                : "border-gray-600 hover:border-[#9b26b6] hover:bg-[#1a001d]"
                                                                 }`}
                                                         >
-                                                            <span className="text-[18px] font-semibold pr-10">
-                                                                {opt}
-                                                            </span>
+                                                            <span className="text-[18px] font-semibold pr-10">{opt}</span>
                                                             <span
                                                                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${active
-                                                                        ? "border-white"
-                                                                        : "border-gray-400 group-hover:border-[#9b26b6]"
+                                                                    ? "border-white"
+                                                                    : "border-gray-400 group-hover:border-[#9b26b6]"
                                                                     }`}
                                                             >
                                                                 <span
@@ -209,8 +193,8 @@ export default function Quiz() {
                                         onClick={handleNext}
                                         disabled={selected === null}
                                         className={`rounded-full px-8 py-3 font-bold transition ${selected === null
-                                                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                                                : "bg-[#9b26b6] text-white hover:opacity-90 shadow-[0_0_10px_rgba(155,38,182,0.4)]"
+                                            ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                                            : "bg-[#9b26b6] text-white hover:opacity-90 shadow-[0_0_10px_rgba(155,38,182,0.4)]"
                                             }`}
                                     >
                                         Next
@@ -238,7 +222,7 @@ export default function Quiz() {
                         </>
                     ) : (
                         <>
-                            {/* === FINAL FORM === */}
+                            {/* === FINAL FORM (Fixed Heading Visibility) === */}
                             <motion.div className="hidden md:block w-1/2 relative z-0">
                                 <motion.img
                                     key={step.image}
@@ -254,9 +238,14 @@ export default function Quiz() {
                                         e.preventDefault();
                                         setShowPopup(true);
                                     }}
-                                    className="grid grid-cols-1 gap-8 max-w-xl mx-auto text-white -translate-y-[60px]"
+                                    className="grid grid-cols-1 gap-8 max-w-xl mx-auto text-white px-6 md:px-12"
                                 >
-                                    <motion.h3 className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] drop-shadow-[0_0_25px_rgba(155,38,182,0.5)] mb-4 text-center uppercase">
+                                    <motion.h3
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.7, ease: "easeOut" }}
+                                        className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] drop-shadow-[0_0_25px_rgba(155,38,182,0.5)] mb-8 text-center uppercase leading-tight"
+                                    >
                                         Your Tailored Level-Up Plan
                                     </motion.h3>
 
@@ -266,7 +255,9 @@ export default function Quiz() {
                                         { label: "Phone", type: "tel", key: "phone", placeholder: "Enter your phone number" },
                                     ].map((field) => (
                                         <div key={field.key}>
-                                            <label className="block text-sm font-semibold mb-2 text-gray-400">{field.label}</label>
+                                            <label className="block text-sm font-semibold mb-2 text-gray-400">
+                                                {field.label}
+                                            </label>
                                             <input
                                                 required
                                                 type={field.type}
