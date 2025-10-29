@@ -14,10 +14,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap"
           rel="stylesheet" />
 
-    <!-- ✅ Favicon (relative path for Netlify) -->
-    <link rel="icon" type="image/png" href="./assets/images/logoFull.png" />
+    <!-- ✅ Favicon (absolute path for public assets) -->
+    <link rel="icon" type="image/png" href="/assets/images/logoFull.png" />
 
-    <!-- ✅ Video warm-up (compatible with production build) -->
+    <!-- ✅ Video warm-up (works in both dev and production) -->
     <script type="module">
         const warmVideo = (url) => {
             const v = document.createElement("video");
@@ -28,20 +28,15 @@
             document.body.appendChild(v);
             v.oncanplaythrough = () => v.remove();
         };
-        warmVideo("./assets/videos/tonyWin.mp4");
+        warmVideo("/videos/tonyWin.mp4");
     </script>
 
     <!-- ✅ Theme & OG tags -->
     <meta name="theme-color" content="#000000" />
-    <meta property="og:title"
-          content="Tony Thompson | Empower Your Growth Journey" />
-    <meta property="og:description"
-          content="Join Tony Thompson and take control of your personal and professional growth." />
+    <meta property="og:title" content="Tony Thompson | Empower Your Growth Journey" />
+    <meta property="og:description" content="Join Tony Thompson and take control of your personal and professional growth." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="./assets/images/logoFull.png" />
-
-    <!-- ✅ Optional manifest -->
-    <!-- <link rel="manifest" href="./manifest.json" /> -->
+    <meta property="og:image" content="/assets/images/logoFull.png" />
 
     <script src="https://js.stripe.com/v3/" async></script>
 </head>
@@ -49,7 +44,7 @@
 <body>
     <div id="root"></div>
 
-    <!-- ✅ Use relative path so Vite injects correct hashed file -->
-    <script type="module" src="./src/main.jsx"></script>
+    <!-- ✅ Use root-relative path so Netlify knows where main.jsx is -->
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
