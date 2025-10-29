@@ -1,0 +1,58 @@
+/* =======================================
+   Z-MAP — Layered Visual Depth Hierarchy
+   Project: Tony Thompson Membership Site
+   Author: seanr / Great Zim Technology
+   ======================================= */
+
+/* Root-level variables define logical “domains”
+   Each domain gets a numeric range for safe local stacking */
+
+:root {
+    /* === Core Structure === */
+    --z-bg: 1; /* Background images, textures */
+    --z-ambient: 5; /* Ambient visuals like Tetris, glows */
+    --z-content: 50; /* Base content & CTAs */
+    --z-widget: 100; /* Floating video widget, scroll indicator */
+    --z-menu: 800; /* Navigation overlay, hamburger menu */
+    --z-logo: 9999; /* Brand logo (always visible) */
+    --z-modal: 10000; /* Video or global modals */
+    --z-system: 20000; /* Reserved for global chat, alerts, or loaders */
+    /* === Internal Sub-Steps (Optional Fine Control) === */
+    --z-menu-bg: 790; /* Purple overlay background */
+    --z-menu-item: 810; /* Active nav links inside menu */
+    --z-modal-overlay: 9995;
+    --z-modal-content: 10000;
+}
+
+/* === Utility Classes (if you want to use directly in CSS) === */
+.z-bg {
+    z-index: var(--z-bg);
+}
+
+.z-ambient {
+    z-index: var(--z-ambient);
+}
+
+.z-content {
+    z-index: var(--z-content);
+}
+
+.z-widget {
+    z-index: var(--z-widget);
+}
+
+.z-menu {
+    z-index: var(--z-menu);
+}
+
+.z-logo {
+    z-index: var(--z-logo);
+}
+
+.z-modal {
+    z-index: var(--z-modal);
+}
+
+.z-system {
+    z-index: var(--z-system);
+}

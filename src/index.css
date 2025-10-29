@@ -1,0 +1,113 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+@import "./styles/hero.css";
+@import "./styles/_zmap.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-[#000] text-white;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+}
+
+/* enable natural smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Section Haze for transitions */
+.section-haze::before,
+.section-haze::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 160px;
+    background: radial-gradient(ellipse at center, rgba(155,38,182,0.25), rgba(0,0,0,0.9));
+    filter: blur(60px);
+    opacity: 0.45;
+    transition: opacity 0.8s ease-in-out;
+    pointer-events: none;
+}
+
+.section-haze::before {
+    top: -80px;
+}
+
+.section-haze::after {
+    bottom: -80px;
+}
+
+/* Smooth haze drift */
+@keyframes hazeDrift {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translateY(-20px);
+        opacity: 0.9;
+    }
+}
+
+.animate-hazeDrift {
+    animation: hazeDrift 25s ease-in-out infinite;
+}
+
+/* PRESS PLAY shimmer */
+@keyframes pressPlayGlow {
+    0%, 100% {
+        background-position: 0% 50%;
+        filter: drop-shadow(0 0 6px rgba(155,38,182,0.4)) drop-shadow(0 0 14px rgba(177,79,192,0.3));
+    }
+
+    50% {
+        background-position: 100% 50%;
+        filter: drop-shadow(0 0 12px rgba(255,255,255,0.8)) drop-shadow(0 0 26px rgba(155,38,182,0.7)) drop-shadow(0 0 48px rgba(177,79,192,0.6));
+    }
+}
+
+/* PRESS PLAY shimmer */
+@keyframes pressPlayGlow {
+    0%, 100% {
+        background-position: 0% 50%;
+        filter: drop-shadow(0 0 6px rgba(155,38,182,0.4)) drop-shadow(0 0 14px rgba(177,79,192,0.3));
+    }
+
+    50% {
+        background-position: 100% 50%;
+        filter: drop-shadow(0 0 12px rgba(255,255,255,0.8)) drop-shadow(0 0 26px rgba(155,38,182,0.7)) drop-shadow(0 0 48px rgba(177,79,192,0.6));
+    }
+}
+
+.animate-pressPlayGlow {
+    background-size: 200% auto;
+    animation: pressPlayGlow 5s ease-in-out infinite;
+}
+html {
+    scroll-behavior: auto !important; /* turn off native smooth scrolling */
+}
+html, body, #root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+}
+    /* === Hide all UI during quiz overlay (portal-safe) === */
+    body.quiz-active .fixed-layer,
+    body.quiz-active .global-overlay,
+    body.quiz-active #hamburger,
+    body.quiz-active .logo-container,
+    body.quiz-active [class*="logo"],
+    body.quiz-active [class*="menu"] {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transition: opacity 0.3s ease-in-out;
+    }

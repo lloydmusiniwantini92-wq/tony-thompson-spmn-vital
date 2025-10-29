@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Tony Thompson | Empower Your Growth Journey</title>
+    <meta name="description"
+          content="Tony Thompson helps you unlock your full potential through mentorship, strategy, and growth programs that elevate your career and life." />
+
+    <!-- ✅ Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap"
+          rel="stylesheet" />
+
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/logoFull.png" />
+
+    <!-- ✅ Video warm-up (silent preload without warnings) -->
+    <script type="module">
+        const warmVideo = (url) => {
+            const v = document.createElement("video");
+            v.src = url;
+            v.preload = "auto";
+            v.muted = true;
+            v.style.display = "none";
+            document.body.appendChild(v);
+            v.oncanplaythrough = () => v.remove();
+        };
+        warmVideo(`${import.meta.env.BASE_URL}assets/videos/tonyWin.mp4`);
+    </script>
+
+    <!-- ✅ Theme & OG tags -->
+    <meta name="theme-color" content="#000000" />
+    <meta property="og:title" content="Tony Thompson | Empower Your Growth Journey" />
+    <meta property="og:description"
+          content="Join Tony Thompson and take control of your personal and professional growth." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/assets/images/logoFull.png" />
+
+    <!-- Remove if you don't plan to add this file -->
+    <!-- <link rel="manifest" href="/manifest.json" /> -->
+
+    <script src="https://js.stripe.com/v3/" async></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

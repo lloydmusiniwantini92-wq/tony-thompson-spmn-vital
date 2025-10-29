@@ -1,0 +1,356 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap");
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background: #111;
+    overflow-x: hidden;
+}
+/* === PP TALISMAN DISPLAY === */
+@font-face {
+    font-family: "PP Talisman Display";
+    src: url("/src/assets/fonts/PPTalismanDisplay.otf") format("opentype");
+    font-weight: 400 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Disable browser smooth scroll, let Lenis handle it */
+html {
+    scroll-behavior: auto !important;
+}
+
+body {
+    scroll-snap-type: none !important;
+}
+
+section {
+    scroll-snap-align: none !important;
+}
+
+/* Hide scrollbars */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Prevent global GPU thrash */
+* {
+    will-change: unset !important;
+    backface-visibility: visible !important;
+}
+
+/* Dedicated layer for hero */
+.hero {
+    transform: translateZ(0);
+    will-change: opacity;
+}
+
+/* === Hamburger & overlay animations === */
+.hamburger span {
+    display: block;
+    width: 30px;
+    height: 3px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px,5px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px,-6px);
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.95);
+    transform: translateX(100%);
+    transition: transform 0.5s ease;
+    z-index: 9999;
+}
+
+    .menu-overlay.active {
+        transform: translateX(0);
+    }
+
+.menu-item {
+    position: relative;
+    display: flex;
+    color: white;
+    text-transform: uppercase;
+    font-family: 'Press Start 2P';
+    transition: color .4s, transform .4s;
+}
+
+    .menu-item:hover {
+        color: #9b26b6;
+        transform: translateX(4px);
+    }
+
+/* =========================================================
+   UNIVERSAL CINEMATIC VIDEO ENVIRONMENT (GLOBAL TONY STYLE)
+   ========================================================= */
+
+/* Ambient purple environment for all video modals or wrappers */
+.video-cinematic-environment {
+    background: radial-gradient(circle at center, rgba(155, 38, 182, 0.25) 0%, rgba(0, 0, 0, 0.95) 65%);
+    background-blend-mode: screen;
+    backdrop-filter: blur(80px);
+    -webkit-backdrop-filter: blur(80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Purple-glow video frame for any embedded or modal video */
+.video-cinematic-frame {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 90px 40px rgba(155, 38, 182, 0.25), inset 0 0 120px rgba(155, 38, 182, 0.08);
+}
+
+    /* Soft purple vignette overlay inside video frame */
+    .video-cinematic-frame::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 70%, rgba(155, 38, 182, 0.15) 100%);
+        pointer-events: none;
+        z-index: 1;
+    }
+/* =========================================================
+   📱 UNIVERSAL MOBILE RESPONSIVENESS ENHANCEMENTS
+   (Non-destructive – preserves all desktop visuals)
+   ========================================================= */
+
+/* === Meta-safe viewport (add to <head> if missing) ===
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> */
+
+/* === Prevent horizontal scroll on small screens === */
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden !important;
+}
+
+/* === Fluid typography === */
+h1, h2, h3, h4 {
+    font-size: clamp(1.4rem, 4vw, 3rem);
+    line-height: 1.1;
+}
+
+p, span, li, a {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    line-height: 1.4;
+}
+
+/* === Mobile container padding === */
+section, .container, .wrapper {
+    padding-left: clamp(1rem, 4vw, 3rem);
+    padding-right: clamp(1rem, 4vw, 3rem);
+}
+
+/* === Responsive menu overlay === */
+.menu-overlay {
+    width: 100%;
+    right: 0;
+}
+
+/* =========================================================
+   📱 MOBILE MENU WIDTH ADJUSTMENT (≤767 px)
+   ========================================================= */
+@media (max-width: 767px) {
+    .menu-overlay {
+        width: 80% !important; /* overlay covers only 80% of screen */
+        right: 0 !important; /* slide in from right edge */
+        left: auto !important; /* prevent stretching across */
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 2rem 1.5rem;
+    }
+
+    .menu-item {
+        text-align: left;
+        font-size: clamp(1.1rem, 4vw, 1.6rem);
+        line-height: 1.3;
+    }
+}
+
+
+/* === Touch-friendly tap targets === */
+button, a {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* === Safe-area inset support (for iPhones with notch) === */
+body {
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-top: env(safe-area-inset-top);
+}
+
+/* === Reduce heavy GPU hints on low-end devices === */
+@media (max-width: 600px) {
+    * {
+        will-change: auto !important;
+        backface-visibility: hidden !important;
+    }
+}
+
+/* === Image scaling sanity === */
+img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+/* =========================================================
+   📱 MEET TONY — MOBILE RESPONSIVE FIX (≤767 px)
+   ========================================================= */
+@media (max-width: 767px) {
+    /* Stack both columns vertically */
+    #meet-tony > .relative.z-10.flex {
+        flex-direction: column !important;
+        min-height: auto !important;
+    }
+
+    /* Left gradient column — full width */
+    #meet-tony .bg-gradient-to-b {
+        width: 100% !important;
+        padding: 2.5rem 1.5rem !important;
+    }
+
+    /* "MEET" heading scales and stays visible */
+    #meet-tony h1 {
+        font-size: clamp(2rem, 9vw, 3.5rem) !important;
+        text-align: left !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* Bio text scales properly */
+    #meet-tony p {
+        font-size: clamp(0.9rem, 2.8vw, 1.05rem) !important;
+        line-height: 1.6 !important;
+    }
+
+    /* "KNOW TONY" button moves above image */
+    #meet-tony .cursor-pointer.group {
+        margin: 2rem auto 1.5rem !important;
+        align-self: center !important;
+        order: -1 !important; /* bring it above image */
+    }
+
+    /* Right column — image below, full width */
+    #meet-tony .relative.w-2\/3 {
+        width: 100% !important;
+        height: auto !important;
+        display: flex !important;
+        align-items: flex-end !important;
+        justify-content: center !important;
+    }
+
+    #meet-tony img {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        object-position: center top !important;
+    }
+
+    /* "TONY" heading scales and centers */
+    #meet-tony h2 {
+        font-size: clamp(2.5rem, 8vw, 4rem) !important;
+        text-align: center !important;
+        margin-top: 1rem !important;
+    }
+
+    /* White dots reposition */
+    #meet-tony .text-white.text-\[clamp\(2\.8rem, 9vw, 9rem\)\] {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        display: block !important;
+        text-align: center !important;
+        font-size: clamp(2rem, 8vw, 3.5rem) !important;
+        margin-top: 1rem !important;
+    }
+}
+/* =========================================================
+   📱 MEET TONY — IMAGE + VIDEO WIDGET LAYOUT FIX
+   ========================================================= */
+#meet-tony .relative.w-2\/3 {
+    width: 100% !important;
+    height: 100vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: none !important;
+}
+
+#meet-tony img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+#meet-tony {
+    background: transparent !important;
+}
+/* =========================================================
+   📱 MEET TONY — Mobile Video Background (≤767px)
+   ========================================================= */
+/* =========================================================
+   📱 MEET TONY — Remove Black Gap + Full Video Span
+   ========================================================= */
+@media (max-width: 767px) {
+    #meet-tony .bg-black {
+        background: none !important;
+    }
+
+    #meet-tony video {
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: cover !important;
+        object-position: center center !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #meet-tony .relative.w-2\/3 {
+        height: 100vh !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Hide "TONY" heading over video on mobile */
+    #meet-tony h2 {
+        display: none !important;
+    }
+}
+
