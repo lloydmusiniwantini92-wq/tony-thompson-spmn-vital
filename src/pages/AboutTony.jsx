@@ -1,4 +1,4 @@
-// ✅ Cinematic AboutTony.jsx — CTA Restored, Scroll Fixed (anchor moved above CTA)
+// ✅ src/pages/AboutTony.jsx — Fixed (No Duplicate Hamburger Menu)
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
@@ -8,11 +8,9 @@ import TonyJourney from "./sections/TonyJourney";
 import TonyMission from "./sections/TonyMission";
 import TonyImpact from "./sections/TonyImpact";
 import TonyVoices from "./sections/TonyVoices";
-import TonyCTA from "./sections/TonyCTA"; // ✅ Restored CTA import
+import TonyCTA from "./sections/TonyCTA"; // ✅ Final Call-to-Action
 
 // === Global Components ===
-import FixedLayer from "../components/FixedLayer";
-import GlobalOverlayInline from "../components/GlobalOverlay";
 import ScrollFog from "../components/ScrollFog";
 
 // === Contexts ===
@@ -37,14 +35,7 @@ export default function AboutTony() {
                     ref={containerRef}
                     className="bg-black text-white overflow-x-hidden overflow-hidden relative min-h-screen flex flex-col"
                 >
-                    {/* === FIXED LAYERS === */}
-                    <FixedLayer>
-                        <GlobalOverlayInline
-                            menuOpen={menuOpen}
-                            setMenuOpen={setMenuOpen}
-                            heroVisible={heroVisible}
-                        />
-                    </FixedLayer>
+                    {/* === Removed FixedLayer + GlobalOverlayInline (to avoid duplicate hamburger) === */}
                     <ScrollFog />
 
                     {/* === MAIN SCROLL SEQUENCE === */}
@@ -54,6 +45,7 @@ export default function AboutTony() {
                         transition={{ duration: 1.4, ease: [0.25, 1, 0.3, 1] }}
                         className="w-full space-y-0"
                     >
+                        {/* === HERO === */}
                         <motion.div
                             initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -62,6 +54,7 @@ export default function AboutTony() {
                             <AboutTonyHero />
                         </motion.div>
 
+                        {/* === JOURNEY === */}
                         <motion.section
                             initial={{ opacity: 0, y: 60 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -72,6 +65,7 @@ export default function AboutTony() {
                             <TonyJourney />
                         </motion.section>
 
+                        {/* === MISSION === */}
                         <motion.section
                             initial={{ opacity: 0, scale: 0.97 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -82,6 +76,7 @@ export default function AboutTony() {
                             <TonyMission />
                         </motion.section>
 
+                        {/* === IMPACT === */}
                         <motion.section
                             initial={{ opacity: 0, y: 80 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -104,6 +99,7 @@ export default function AboutTony() {
                             />
                         </motion.section>
 
+                        {/* === VOICES === */}
                         <motion.section
                             initial={{ opacity: 0, y: 80 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -114,10 +110,10 @@ export default function AboutTony() {
                             <TonyVoices />
                         </motion.section>
 
-                        {/* ✅ Moved local anchor ABOVE CTA */}
+                        {/* ✅ Anchor above CTA */}
                         <section id="programs" className="h-[1px] w-full"></section>
 
-                        {/* ✅ Final Call-to-Action (two TT tiles) */}
+                        {/* === FINAL CTA === */}
                         <motion.section
                             initial={{ opacity: 0, y: 100 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +125,7 @@ export default function AboutTony() {
                         </motion.section>
                     </motion.div>
 
-                    {/* === Ambient Scroll Lighting === */}
+                    {/* === Ambient Scroll Glow === */}
                     <motion.div
                         className="pointer-events-none fixed inset-0 bg-gradient-to-t from-[#9b26b6]/10 via-transparent to-[#9b26b6]/5 mix-blend-soft-light"
                         animate={{

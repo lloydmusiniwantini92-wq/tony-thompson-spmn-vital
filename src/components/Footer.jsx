@@ -1,3 +1,4 @@
+// ✅ src/components/Footer.jsx — Updated CTA: “Join Tony’s Newsletter Today”
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -90,13 +91,13 @@ export default function Footer() {
 
     return (
         <footer id="contact" className="text-white font-sans bg-[#111] flex flex-col relative">
-            {/* === CONNECT FORM AREA === */}
+            {/* === NEWSLETTER FORM AREA === */}
             <section className="relative text-center py-16 bg-gradient-to-r from-brandPurple to-brandAccent flex flex-col justify-center overflow-hidden">
                 <h2 className="text-3xl md:text-4xl font-bold mb-3 z-20 tracking-tight text-white">
-                    CONNECT WITH TONY TODAY
+                    JOIN TONY’S NEWSLETTER TODAY
                 </h2>
                 <p className="text-sm md:text-base text-white/85 max-w-xl mx-auto mb-8 z-20">
-                    Join Tony’s network — where strategy, purpose, and opportunity connect.
+                    Get the latest insights, strategies, and opportunities directly from Tony.
                 </p>
 
                 <div className="relative max-w-xl mx-auto w-full px-4 z-20">

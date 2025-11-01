@@ -1,4 +1,4 @@
-// ✅ src/App.jsx — Final Scroll Boot Fix (Guaranteed Top + No Footer Jump)
+// ✅ src/App.jsx — Clean Final + Fast Debug Mode (Logs Fog, Scroll, Nav, Hamburger)
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -28,7 +28,9 @@ import { VideoModalProvider } from "./context/VideoModalContext";
 import { QuizOverlayProvider } from "./context/QuizOverlayContext";
 import { dreamyOverlayStyle, animateDreamyPulse } from "./utils/fadeStyles.js";
 
-/* === PRE-MOUNT DREAMY OVERLAY === */
+/* =========================================================
+   🩵 DREAMY PRE-MOUNT OVERLAY (used in ?target fades)
+   ========================================================= */
 function preMountFade() {
     if (document.getElementById("fade-preoverlay")) return;
     const overlay = document.createElement("div");
@@ -44,6 +46,59 @@ function preMountFade() {
     });
     document.body.appendChild(overlay);
     animateDreamyPulse(overlay);
+}
+
+/* =========================================================
+   🧩 FAST DEBUG MODE — Minimal Smart Logger
+   ========================================================= */
+if (import.meta.env.MODE === "development" && !window.__FAST_DEBUG) {
+    window.__FAST_DEBUG = true;
+    window.__DEBUG = true; // toggle false to silence logs
+
+    const log = (...args) => {
+        if (!window.__DEBUG) return;
+        const time = new Date().toISOString().split("T")[1].split(".")[0];
+        console.log(`%c[DEBUG ${time}]`, "color:#9b26b6;font-weight:bold", ...args);
+    };
+
+    // 🌀 Watch Lenis
+    const watchLenis = () => {
+        if (window.lenis) {
+            window.lenis.on("scroll", (e) => log("🌀 Scrolling:", e.targetScroll));
+            window.lenis.on("scrollEnd", () => log("✅ Scroll Ended"));
+            log("Lenis initialized ✅");
+        } else setTimeout(watchLenis, 400);
+    };
+    watchLenis();
+
+    // 🌫️ Hook global fog
+    const origFog = window.triggerGlobalFog;
+    window.triggerGlobalFog = (fn) => {
+        log("🌫️ Fog START");
+        if (typeof origFog === "function") origFog(fn);
+        else fn?.();
+        setTimeout(() => log("🌫️ Fog END (timeout)"), 1800);
+    };
+
+    // 🧭 Route change detection
+    const pushState = history.pushState;
+    history.pushState = function () {
+        log("🧭 Route change:", arguments[2]);
+        return pushState.apply(this, arguments);
+    };
+
+    // 🍔 Hamburger observer
+    const observer = new MutationObserver(() => {
+        const btn = document.getElementById("hamburger");
+        if (btn && !btn.dataset.debugHooked) {
+            btn.dataset.debugHooked = "1";
+            btn.addEventListener("click", () => log("🍔 Hamburger toggled"));
+            log("🍔 Hamburger hooked");
+        }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    log("🚀 Fast Debug Mode Ready");
 }
 
 export default function App() {
@@ -63,7 +118,6 @@ export default function App() {
             document.body.style.height = "auto";
         };
 
-        // Reset all scroll locks & force top
         unlockScroll();
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
@@ -72,18 +126,15 @@ export default function App() {
         setTimeout(() => {
             unlockScroll();
             window.scrollTo(0, 0);
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
         }, 600);
 
-        // Clear any URL fragments or lingering params
         if (window.location.hash || window.location.search) {
             window.history.replaceState({}, "", "/");
         }
     }, []);
 
     /* =========================================================
-       🌀 LENIS INITIALIZATION (safe + forced top start)
+       🌀 LENIS INITIALIZATION
        ========================================================= */
     useEffect(() => {
         let lenis;
@@ -115,7 +166,7 @@ export default function App() {
             };
             rafId = requestAnimationFrame(raf);
 
-            // 🩵 guarantee top start
+            // Guarantee top start
             setTimeout(() => {
                 enableScroll();
                 lenis.scrollTo(0, { immediate: true });
@@ -205,7 +256,7 @@ export default function App() {
                     >
                         <ScrollToTop />
 
-                        {/* === Global Overlay === */}
+                        {/* === Global Overlay (Hamburger, Logo, etc.) === */}
                         <div className="fixed top-0 left-0 w-full z-[2147483646] pointer-events-auto">
                             <GlobalOverlay
                                 menuOpen={menuOpen}
@@ -254,7 +305,7 @@ export default function App() {
                             </motion.div>
                         </AnimatePresence>
 
-                        {/* === Global Footer === */}
+                        {/* === Footer (Global) === */}
                         <Footer />
                     </motion.main>
                 </AnimatePresence>

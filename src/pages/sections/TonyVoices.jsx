@@ -1,4 +1,4 @@
-// ✅ src/pages/sections/TonyVoices.jsx — “HEAR THE VOICES” (Updated Client Copy)
+// ✅ src/pages/sections/TonyVoices.jsx — Clean Montserrat Edition (No 2P Font)
 import React from "react";
 import PartnersShowcase from "./PartnersShowcase";
 
@@ -6,21 +6,22 @@ export default function TonyVoices() {
     return (
         <section
             id="tony-voices"
-            className="w-full bg-white text-black flex flex-col items-center justify-center py-24 px-6"
+            className="w-full bg-white text-black flex flex-col items-center justify-center py-24 px-6 overflow-hidden"
         >
-            {/* === Heading & Description === */}
-            <div className="max-w-5xl text-center mb-16">
+            {/* === HEADING & DESCRIPTION === */}
+            <div className="max-w-6xl text-center mb-20 flex flex-col items-center justify-center">
                 <h1
-                    className="text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold uppercase tracking-tight
+                    className="text-[clamp(3rem,8vw,8rem)] font-extrabold uppercase tracking-tight
                     bg-gradient-to-r from-[#7a1a8f] via-[#9b26b6] to-[#b14fc0]
-                    text-transparent bg-clip-text drop-shadow-[0_2px_12px_rgba(155,38,182,0.25)]"
+                    text-transparent bg-clip-text drop-shadow-[0_2px_15px_rgba(155,38,182,0.35)]
+                    leading-[1.05] md:font-sans text-center mx-auto"
                 >
                     HEAR THE VOICES
                 </h1>
 
                 <div
-                    className="mt-10 text-[1.1rem] md:text-[1.25rem] leading-[1.8] max-w-3xl mx-auto 
-                    text-[#444] font-medium tracking-wide space-y-8"
+                    className="mt-12 text-[1.1rem] md:text-[1.25rem] leading-[1.8]
+                    max-w-3xl mx-auto text-[#333] font-medium tracking-wide space-y-10 text-center"
                 >
                     <p>
                         “Tony Thompson connects with his audience — every word drives action.”
@@ -48,11 +49,11 @@ export default function TonyVoices() {
                 </div>
             </div>
 
-            {/* === PARTNERS GRID SECTION === */}
+            {/* === PARTNERS GRID SHOWCASE === */}
             <PartnersShowcase />
 
-            {/* === Ambient Gradient Divider === */}
-            <div className="w-full mt-20 h-[1px] bg-gradient-to-r from-transparent via-[#9b26b6]/60 to-transparent" />
+            {/* === AMBIENT GRADIENT DIVIDER === */}
+            <div className="w-full mt-24 h-[1px] bg-gradient-to-r from-transparent via-[#9b26b6]/60 to-transparent" />
         </section>
     );
 }

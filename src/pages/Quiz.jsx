@@ -1,5 +1,5 @@
-// ✅ src/pages/Quiz.jsx — Pop-Out with Animated Success Flow + Seamless TierList Redirect (Fixed Heading Visibility)
-import React, { useMemo, useState } from "react";
+// ✅ src/pages/Quiz.jsx — Final Form with Real-Time Validation + “Get Win” Buttons + Edge Handling
+import React, { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import QuizFooter from "../components/QuizFooter";
@@ -9,7 +9,6 @@ import step2Img from "../assets/quiz/step2.jpg";
 import step3Img from "../assets/quiz/step3.jpg";
 import step4Img from "../assets/quiz/step4.jpg";
 
-// Placeholder email send stub — integrate with backend or email API later
 async function sendPlaybookEmail(form) {
     return new Promise((resolve) => setTimeout(resolve, 2000));
 }
@@ -19,6 +18,7 @@ export default function Quiz() {
     const [stepIndex, setStepIndex] = useState(0);
     const [selected, setSelected] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", phone: "" });
+    const [errors, setErrors] = useState({});
     const [showPopup, setShowPopup] = useState(false);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -84,14 +84,25 @@ export default function Quiz() {
         exit: { opacity: 0, y: -16, transition: { duration: 0.3, ease: "easeIn" } },
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setShowPopup(true);
-    };
+    // 🧠 Real-time validation
+    useEffect(() => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^\d{7,15}$/;
+
+        const newErrors = {};
+        if (!form.name.trim()) newErrors.name = "Name is required.";
+        if (!form.email.trim()) newErrors.email = "Email is required.";
+        else if (!emailRegex.test(form.email)) newErrors.email = "Invalid email format.";
+        if (!form.phone.trim()) newErrors.phone = "Phone is required.";
+        else if (!phoneRegex.test(form.phone.replace(/\D/g, "")))
+            newErrors.phone = "Enter a valid phone number.";
+        setErrors(newErrors);
+    }, [form]);
 
     const handleClaim = async () => {
+        if (Object.keys(errors).length > 0) return;
         setLoading(true);
-        await sendPlaybookEmail(form); // simulate API call
+        await sendPlaybookEmail(form);
         setLoading(false);
         setSuccess(true);
     };
@@ -99,9 +110,7 @@ export default function Quiz() {
     const handleClose = () => {
         setShowPopup(false);
         setRedirecting(true);
-        setTimeout(() => {
-            navigate("/?target=#tiers"); // fade-based route param redirect
-        }, 1200);
+        setTimeout(() => navigate("/?target=#tiers"), 1200);
     };
 
     return (
@@ -120,7 +129,8 @@ export default function Quiz() {
                         <>
                             {/* === QUESTIONS === */}
                             <div className="w-full md:w-1/2 min-h-screen flex flex-col relative z-10">
-                                <div className="flex-1 overflow-y-auto px-6 md:px-16 pt-10 pb-24">
+                                <div className="flex-1 overflow-y-auto px-6 md:px-16 pt-10 pb-32 md:pb-28">
+                                    {/* Progress Bar */}
                                     <div className="flex gap-6 mb-10">
                                         {Array.from({ length: stepCount }).map((_, i) => (
                                             <div key={i} className="h-[6px] w-24 rounded-full bg-gray-700 overflow-hidden">
@@ -129,23 +139,20 @@ export default function Quiz() {
                                                         }`}
                                                     style={{
                                                         width:
-                                                            i < stepIndex
-                                                                ? "100%"
-                                                                : i === stepIndex
-                                                                    ? "55%"
-                                                                    : "0%",
+                                                            i < stepIndex ? "100%" : i === stepIndex ? "55%" : "0%",
                                                     }}
                                                 />
                                             </div>
                                         ))}
                                     </div>
 
+                                    {/* Question + Options */}
                                     <AnimatePresence mode="wait">
                                         <motion.div key={step.id} {...fade}>
                                             <p className="text-xs font-semibold tracking-[0.12em] text-gray-400 mb-3">
                                                 STEP {stepIndex + 1} OF {stepCount}
                                             </p>
-                                            <h1 className="text-[40px] md:text-[56px] font-black mb-10 text-white uppercase">
+                                            <h1 className="text-[32px] md:text-[48px] font-black mb-8 text-white uppercase">
                                                 {step.title}
                                             </h1>
 
@@ -156,16 +163,17 @@ export default function Quiz() {
                                                         <button
                                                             key={opt}
                                                             onClick={() => setSelected(i)}
-                                                            className={`group relative flex items-center justify-between rounded-xl border p-5 transition-all ${active
-                                                                ? "border-[#9b26b6] bg-[#9b26b6] text-white"
-                                                                : "border-gray-600 hover:border-[#9b26b6] hover:bg-[#1a001d]"
+                                                            className={`group relative flex items-center justify-between rounded-xl border p-4 md:p-5 transition-all ${active
+                                                                    ? "border-[#9b26b6] bg-[#9b26b6] text-white"
+                                                                    : "border-gray-600 hover:border-[#9b26b6] hover:bg-[#1a001d]"
                                                                 }`}
+                                                            style={{ fontSize: "clamp(0.9rem, 1vw, 1.05rem)" }}
                                                         >
-                                                            <span className="text-[18px] font-semibold pr-10">{opt}</span>
+                                                            <span className="font-semibold pr-6">{opt}</span>
                                                             <span
                                                                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${active
-                                                                    ? "border-white"
-                                                                    : "border-gray-400 group-hover:border-[#9b26b6]"
+                                                                        ? "border-white"
+                                                                        : "border-gray-400 group-hover:border-[#9b26b6]"
                                                                     }`}
                                                             >
                                                                 <span
@@ -181,20 +189,27 @@ export default function Quiz() {
                                     </AnimatePresence>
                                 </div>
 
-                                <div className="absolute bottom-10 left-0 right-0 flex justify-between px-10">
+                                {/* Navigation Buttons */}
+                                <div className="absolute bottom-8 left-0 right-0 flex justify-between px-8 md:px-16 z-30">
                                     <button
                                         onClick={handleBack}
                                         disabled={stepIndex === 0}
-                                        className="rounded-full px-8 py-3 font-bold bg-[#1a001d] text-white hover:bg-[#9b26b6]/30 transition disabled:opacity-40"
+                                        className="rounded-full w-[160px] md:w-[180px] h-[54px] font-bold 
+                                        bg-gradient-to-br from-[#b14fc0]/90 to-[#9b26b6]/80 
+                                        text-white uppercase shadow-[0_0_25px_rgba(155,38,182,0.7)] 
+                                        border border-white/20 hover:opacity-90 transition-all duration-500 
+                                        disabled:opacity-40"
                                     >
                                         Back
                                     </button>
                                     <button
                                         onClick={handleNext}
                                         disabled={selected === null}
-                                        className={`rounded-full px-8 py-3 font-bold transition ${selected === null
-                                            ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                                            : "bg-[#9b26b6] text-white hover:opacity-90 shadow-[0_0_10px_rgba(155,38,182,0.4)]"
+                                        className={`rounded-full w-[160px] md:w-[180px] h-[54px] font-bold uppercase transition-all duration-500 
+                                        border border-white/20 shadow-[0_0_25px_rgba(155,38,182,0.7)] 
+                                        ${selected === null
+                                                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                                                : "bg-gradient-to-br from-[#b14fc0]/90 to-[#9b26b6]/80 text-white hover:opacity-90"
                                             }`}
                                     >
                                         Next
@@ -222,21 +237,16 @@ export default function Quiz() {
                         </>
                     ) : (
                         <>
-                            {/* === FINAL FORM (Fixed Heading Visibility) === */}
+                            {/* === FINAL FORM WITH LIVE VALIDATION === */}
                             <motion.div className="hidden md:block w-1/2 relative z-0">
-                                <motion.img
-                                    key={step.image}
-                                    src={step.image}
-                                    alt="Final Visual"
-                                    className="w-full h-full object-cover"
-                                />
+                                <motion.img key={step.image} src={step.image} alt="Final Visual" className="w-full h-full object-cover" />
                             </motion.div>
 
                             <div className="w-full md:w-1/2 min-h-screen flex flex-col justify-center relative z-10">
                                 <motion.form
                                     onSubmit={(e) => {
                                         e.preventDefault();
-                                        setShowPopup(true);
+                                        if (Object.keys(errors).length === 0) setShowPopup(true);
                                     }}
                                     className="grid grid-cols-1 gap-8 max-w-xl mx-auto text-white px-6 md:px-12"
                                 >
@@ -255,37 +265,47 @@ export default function Quiz() {
                                         { label: "Phone", type: "tel", key: "phone", placeholder: "Enter your phone number" },
                                     ].map((field) => (
                                         <div key={field.key}>
-                                            <label className="block text-sm font-semibold mb-2 text-gray-400">
-                                                {field.label}
-                                            </label>
+                                            <label className="block text-sm font-semibold mb-2 text-gray-400">{field.label}</label>
                                             <input
                                                 required
                                                 type={field.type}
                                                 value={form[field.key]}
                                                 onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
                                                 placeholder={field.placeholder}
-                                                className="w-full bg-transparent border-b border-[#9b26b6]/40 text-white placeholder-gray-500 py-3 text-lg focus:outline-none focus:border-[#9b26b6] caret-white transition-all duration-300"
+                                                className={`w-full bg-transparent border-b text-white placeholder-gray-500 py-3 text-lg focus:outline-none caret-white transition-all duration-300 ${errors[field.key]
+                                                        ? "border-red-500 focus:border-red-500"
+                                                        : form[field.key]
+                                                            ? "border-[#9b26b6]"
+                                                            : "border-[#9b26b6]/40"
+                                                    }`}
                                             />
+                                            {errors[field.key] && (
+                                                <p className="text-xs text-red-500 mt-1">{errors[field.key]}</p>
+                                            )}
                                         </div>
                                     ))}
 
-                                    <motion.button
-                                        type="submit"
-                                        className="mt-4 inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-black bg-[#9b26b6] hover:bg-[#b14fc0] border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.9)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
-                                    >
-                                        Get Your Personalized Program → Build Your Next Level Today
-                                    </motion.button>
+                                        <motion.button
+                                            type="submit"
+                                            disabled={loading}
+                                            className={`mt-4 inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold 
+        text-black bg-gradient-to-br from-[#b14fc0] to-[#9b26b6]
+        border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.9)] 
+        hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500 
+        uppercase ${loading ? "opacity-60 cursor-wait" : "hover:opacity-90"}`}
+                                        >
+                                            {loading
+                                                ? "Submitting..."
+                                                : "Get Your Personalized Program → Build Your Next Level Today"}
+                                        </motion.button>
 
-                                    <p className="mt-12 text-center text-gray-300 px-6 leading-relaxed max-w-xl mx-auto">
-                                        Take control of your career, business, and life. Receive your complimentary playbook, scorecards, and quizzes — place your first block and start leveling up immediately.
-                                    </p>
                                 </motion.form>
                             </div>
                         </>
                     )}
                 </section>
 
-                {/* === POP-OUT MODAL === */}
+                {/* === POPUP MODAL === */}
                 <AnimatePresence>
                     {showPopup && (
                         <motion.div
@@ -308,10 +328,11 @@ export default function Quiz() {
                                                 Wow! You’re a Rare Fit for Our Elevate Program
                                             </h2>
                                             <p className="text-lg text-gray-700 leading-relaxed mb-8">
-                                                Only 1 in 50 participants reaches this level — and you’re one of them. Your tailored playbook is ready, and we’re excited to guide you to your next-level growth today.
+                                                Only 1 in 50 participants reaches this level — and you’re one of them.
                                             </p>
                                             <button
                                                 onClick={handleClaim}
+                                                disabled={Object.keys(errors).length > 0}
                                                 className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-[#9b26b6] hover:bg-[#b14fc0] border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
                                             >
                                                 Claim My Tailored Playbook
@@ -337,7 +358,7 @@ export default function Quiz() {
                                             Your Playbook Is On Its Way!
                                         </h2>
                                         <p className="text-lg text-gray-700 leading-relaxed mb-8">
-                                            We’ve sent your personalized Level-Up Playbook to your inbox. Check your email for your next steps — and welcome to the Elevate community.
+                                            Check your inbox for your next steps — welcome to the Elevate community.
                                         </p>
                                         <button
                                             onClick={handleClose}
@@ -352,7 +373,7 @@ export default function Quiz() {
                     )}
                 </AnimatePresence>
 
-                {/* === FADE REDIRECT OVERLAY === */}
+                {/* === FADE REDIRECT === */}
                 <AnimatePresence>
                     {redirecting && (
                         <motion.div

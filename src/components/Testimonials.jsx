@@ -1,4 +1,4 @@
-// ✅ src/components/Testimonials.jsx — Clean, NAMB removed + fully functional
+// ✅ src/components/Testimonials.jsx — Circular avatars smaller on mobile only (everything else untouched)
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVideoModal } from "../context/VideoModalContext";
@@ -12,7 +12,6 @@ import v3 from "../assets/testimonials/testimonialVideo3.mp4";
 import v4 from "../assets/testimonials/testimonialVideo4.mp4";
 import "../styles/testimonials.css";
 
-// ✅ Partner logos
 import mba from "../assets/partners/mba.png";
 import nmn from "../assets/partners/nmn.png";
 import scotsman from "../assets/partners/scotsman.png";
@@ -26,7 +25,8 @@ export default function Testimonials() {
             img: t1,
             name: "Jane Smith",
             role: "VP, Horizon",
-            quote: "Working with Tony didn’t just redefine our strategy — it redefined our mindset.",
+            quote:
+                "Working with Tony didn’t just redefine our strategy — it redefined our mindset.",
             video: v1,
         },
         {
@@ -34,7 +34,8 @@ export default function Testimonials() {
             img: t2,
             name: "Mark Lee",
             role: "Founder, DiverseGrowth",
-            quote: "Tony unlocked a level of confidence and performance we didn’t think possible.",
+            quote:
+                "Tony unlocked a level of confidence and performance we didn’t think possible.",
             video: v2,
         },
         {
@@ -42,7 +43,8 @@ export default function Testimonials() {
             img: t3,
             name: "Sophie K.",
             role: "Brand Director, Maven",
-            quote: "Every interaction with Tony is a masterclass in clarity, focus, and results.",
+            quote:
+                "Every interaction with Tony is a masterclass in clarity, focus, and results.",
             video: v3,
         },
         {
@@ -50,12 +52,12 @@ export default function Testimonials() {
             img: t4,
             name: "Lucas Howard",
             role: "Head of Ops, Stellar",
-            quote: "Tony has that rare precision that moves teams and transforms outcomes.",
+            quote:
+                "Tony has that rare precision that moves teams and transforms outcomes.",
             video: v4,
         },
     ];
 
-    // ✅ NAMB removed entirely
     const partners = [
         { name: "MBA", logo: mba },
         { name: "National Mortgage News", logo: nmn },
@@ -137,7 +139,7 @@ export default function Testimonials() {
                     </div>
 
                     {/* Avatar Cluster */}
-                    <div className="absolute bottom-[6rem] left-[8%] flex gap-8 z-30">
+                    <div className="absolute bottom-[6rem] left-[8%] flex gap-6 sm:gap-8 z-30 flex-wrap">
                         {testimonials.map((t, i) => (
                             <motion.div
                                 key={t.id}
@@ -151,10 +153,10 @@ export default function Testimonials() {
                                         "0 0 60px rgba(155,38,182,0.9), 0 0 40px rgba(255,255,255,0.2)",
                                 }}
                                 transition={{ duration: 0.35 }}
-                                className={`relative w-[82px] h-[82px] md:w-[105px] md:h-[105px] rounded-full overflow-hidden cursor-pointer border-[4px] ${i === active
-                                    ? "border-white shadow-[0_0_25px_rgba(255,255,255,0.7)]"
-                                    : "border-white/40"
-                                    }`}
+                                className={`relative rounded-full overflow-hidden cursor-pointer border-[3px] sm:border-[4px] ${i === active
+                                        ? "border-white shadow-[0_0_25px_rgba(255,255,255,0.7)]"
+                                        : "border-white/40"
+                                    } w-[65px] h-[65px] sm:w-[82px] sm:h-[82px] md:w-[105px] md:h-[105px]`}
                             >
                                 <img
                                     src={t.img}

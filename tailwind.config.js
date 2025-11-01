@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+    important: true, // ✅ ensures your custom CSS overrides Tailwind utilities
     content: [
         "./index.html",
         "./src/**/*.{js,jsx,ts,tsx}",

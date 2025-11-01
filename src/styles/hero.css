@@ -1,37 +1,34 @@
+/* =========================================================
+   🦋 HERO SECTION — Cinematic Entry
+   ========================================================= */
+
 .hero {
     position: relative;
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    z-index: 1; /* keep hero below overlays */
-    /* isolation: isolate; ❌ removed */
+    z-index: 1;
 }
 
-/* === Tetris BG === */
 .tetris-bg {
     position: absolute;
     inset: 0;
     z-index: 2;
-    pointer-events: none;
     opacity: 0.25;
+    pointer-events: none;
 }
 
 .tetris-t {
-    position: absolute;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-    .tetris-t .t-row.top {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-    }
-
+    .tetris-t .t-row.top,
     .tetris-t .t-row.bottom {
         display: flex;
         justify-content: center;
+        gap: 12px;
     }
 
     .tetris-t .t-row div {
@@ -39,23 +36,17 @@
         height: 40px;
         background: #555;
         border-radius: 3px;
-        box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 8px rgba(0,0,0,0.5);
         animation: tetrisFall 24s ease-in-out infinite;
     }
 
-.left-t {
-    left: calc(5% + 10cm);
-    top: 50%;
-    transform: translateY(-50%) scale(1.3);
-}
-
 @keyframes tetrisFall {
-    0%, 25% {
+    0%,25% {
         transform: translateY(0) rotate(0deg);
         opacity: 1;
     }
 
-    50%, 75% {
+    50%,75% {
         transform: translateY(100px) rotate(360deg);
         opacity: 0.4;
     }
@@ -66,9 +57,12 @@
     }
 }
 
-/* === Floating / Glow / Pulse === */
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
 @keyframes float {
-    0%, 100% {
+    0%,100% {
         transform: translateY(0) rotate(0deg);
     }
 
@@ -77,105 +71,23 @@
     }
 }
 
-.animate-float {
-    animation: float 4s ease-in-out infinite;
-}
-
-@keyframes pulseGlow {
-    0%, 100% {
-        opacity: 0.6;
-    }
-
-    50% {
-        opacity: 1;
-    }
-}
-
-.animate-pulseGlow {
-    animation: pulseGlow 2.5s ease-in-out infinite;
-}
-
-/* === Mini Tetris === */
-.mini-tetris {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    align-items: center;
-    animation: floatMini 6s ease-in-out infinite;
-}
-
-    .mini-tetris .flex {
-        display: flex;
-        gap: 4px;
-    }
-
-.block-piece {
-    width: 12px;
-    height: 12px;
-    background: #777;
-    border-radius: 2px;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-    animation: miniTetrisPulse 5s ease-in-out infinite;
-}
-
-@keyframes miniTetrisPulse {
-    0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-        background: #777;
-    }
-
-    50% {
-        opacity: 0.6;
-        transform: scale(0.9);
-        background: #9b26b6;
-    }
-}
-
-@keyframes floatMini {
-    0%, 100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-3px);
-    }
-}
-
-/* === Video Widget === */
+/* CTA video widget */
 .video-widget {
     width: 6.5cm;
     height: 2.3cm;
     border-radius: 50px;
-    background: linear-gradient(135deg, #b14fc0, #9b26b6);
-    box-shadow: 0 0 14px rgba(155, 38, 182, 0.8);
+    background: linear-gradient(135deg,#b14fc0,#9b26b6);
+    box-shadow: 0 0 14px rgba(155,38,182,0.8);
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
     .video-widget:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(177, 79, 192, 0.9);
+        box-shadow: 0 0 20px rgba(177,79,192,0.9);
     }
 
-/* === PressPlay Glow === */
-@keyframes pressPlayGlow {
-    0%, 100% {
-        filter: drop-shadow(0 0 2px #fff);
-    }
-
-    50% {
-        filter: drop-shadow(0 0 6px #fff);
-    }
-}
-
-.animate-pressPlayGlow {
-    animation: pressPlayGlow 2.8s ease-in-out infinite;
-}
-
-/* === Scroll Indicator === */
 .scroll-indicator span {
     letter-spacing: 2px;
-    color: inherit;
 }
 
 .arrow {
@@ -186,11 +98,10 @@
     border-bottom: 2px solid #9b26b6;
     transform: rotate(45deg);
     animation: arrowBounce 2.5s ease-in-out infinite;
-    box-shadow: 0 0 6px rgba(155, 38, 182, 0.5);
 }
 
 @keyframes arrowBounce {
-    0%, 100% {
+    0%,100% {
         transform: translateY(0) rotate(45deg);
     }
 
@@ -198,68 +109,3 @@
         transform: translateY(8px) rotate(45deg);
     }
 }
-
-/* === FIX: background layering === */
-.hero-bg {
-    will-change: opacity;
-    contain: none; /* ✅ allow overlays and logos above */
-    transform: translateZ(0);
-    backface-visibility: hidden;
-}
-
-.video-widget video {
-    will-change: opacity;
-    contain: layout;
-}
-/* src/styles/hero.css */
-/* =========================================================
-   📱 FINAL MOBILE HERO REFINEMENTS (≤767 px)
-/* =========================================================
-   📱 FINAL HERO MOBILE RULES (≤767px)
-   ========================================================= */
-@media (max-width: 767px) {
-    /* Stack and center the CTA buttons on mobile */
-    .hero .cta-group,
-    .hero > .absolute.bottom-10.left-10.flex {
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        flex-direction: column-reverse !important;
-        bottom: 1rem !important;
-        width: 90% !important;
-        gap: 0.75rem !important;
-        align-items: center !important;
-    }
-
-    /* Adjust CTA button sizing */
-    .hero .cta-button,
-    .hero .flex > div {
-        width: 140px !important;
-        height: 48px !important;
-        font-size: 0.75rem !important;
-    }
-
-    /* 🚫 Hide the video widget completely on mobile */
-    .hero .video-widget {
-        display: none !important;
-    }
-
-    /* ⬇️ Move scroll indicator flush to bottom */
-    .hero .scroll-indicator,
-    .hero .absolute.bottom-8.left-1\/2 {
-        position: absolute !important;
-        bottom: 0 !important; /* flush with section bottom */
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        z-index: 10 !important;
-    }
-
-    /* Slightly adjust the arrow so it sits naturally */
-    .hero .arrow {
-        margin-top: 6px !important;
-        width: 10px !important;
-        height: 10px !important;
-        opacity: 0.8 !important;
-    }
-}
-
-
