@@ -3,7 +3,7 @@ name: Deploy Vite + React to GitHub Pages
 on:
   push:
     branches:
-      - main  # Deploy whenever main is pushed
+      - main  # 👈 builds only when pushing to main
 
 permissions:
   contents: read
@@ -32,7 +32,7 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Upload production artifact
+      - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
