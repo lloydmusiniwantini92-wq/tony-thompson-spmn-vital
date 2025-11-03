@@ -5,13 +5,14 @@ import viteCompression from "vite-plugin-compression";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 // --- Set base dynamically for local dev vs GitHub Pages ---
-const repoName = "tony-thompson-spmn"; // 👈 Change to your exact repo name
+const repoName = "tony-thompson-spmn-vital"; // ✅ your actual repo name
 
 export default defineConfig(({ command, mode }) => {
     const isGitHub = process.env.GITHUB_PAGES === "true" || mode === "pages";
 
     return {
-        base: isGitHub ? `/${repoName}/` : "./", // ✅ auto-correct base path
+        // ✅ Fix base path so GitHub Pages resolves correctly
+        base: isGitHub ? `/${repoName}/` : "./",
         plugins: [
             react(),
 
