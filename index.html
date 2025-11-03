@@ -14,37 +14,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap"
           rel="stylesheet" />
 
-    <!-- ✅ Favicon (absolute path for public assets) -->
-    <link rel="icon" type="image/png" href="/assets/images/logoFull.png" />
+    <!-- ✅ Preload hero image for faster paint -->
+    <link rel="preload" as="image" href="./assets/images/hero.jpg" />
 
-    <!-- ✅ Video warm-up (works in both dev and production) -->
-    <script type="module">
-        const warmVideo = (url) => {
-            const v = document.createElement("video");
-            v.src = url;
-            v.preload = "auto";
-            v.muted = true;
-            v.style.display = "none";
-            document.body.appendChild(v);
-            v.oncanplaythrough = () => v.remove();
-        };
-        warmVideo("/videos/tonyWin.mp4");
-    </script>
+    <!-- ✅ Lazy load non-critical scripts -->
+    <script src="https://js.stripe.com/v3/" async></script>
 
-    <!-- ✅ Theme & OG tags -->
+    <!-- ✅ Theme & social -->
     <meta name="theme-color" content="#000000" />
     <meta property="og:title" content="Tony Thompson | Empower Your Growth Journey" />
     <meta property="og:description" content="Join Tony Thompson and take control of your personal and professional growth." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/assets/images/logoFull.png" />
-
-    <script src="https://js.stripe.com/v3/" async></script>
+    <meta property="og:image" content="./assets/images/logoFull.png" />
 </head>
 
 <body>
     <div id="root"></div>
 
-    <!-- ✅ Use root-relative path so Netlify knows where main.jsx is -->
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- ✅ Load main bundle from relative path -->
+    <script type="module" src="./src/main.jsx" defer></script>
 </body>
 </html>

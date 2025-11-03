@@ -1,17 +1,17 @@
-// ✅ vite.config.js — Clean GitHub Pages Build (no Netlify)
+// ✅ vite.config.js — Universal Portable Build (GitHub Pages + Other Hosts)
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteCompression from "vite-plugin-compression";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 export default defineConfig(({ command }) => ({
-    // ✅ GitHub Pages base path (matches repo name)
-    base: "/tony-thompson-spmn-vital/",
+    // ✅ Relative path for universal hosting
+    base: "./",
 
     plugins: [
         react(),
 
-        // ✅ Production-only compression
+        // ✅ Compression for production builds
         command === "build" &&
         viteCompression({
             algorithm: "brotliCompress",
@@ -20,7 +20,7 @@ export default defineConfig(({ command }) => ({
             deleteOriginFile: false,
         }),
 
-        // ✅ Image optimization for GH Pages
+        // ✅ Image optimization
         command === "build" &&
         ViteImageOptimizer({
             jpg: { quality: 78 },
@@ -34,13 +34,11 @@ export default defineConfig(({ command }) => ({
         target: "esnext",
         minify: "terser",
         terserOptions: {
-            compress: {
-                drop_console: true,
-                drop_debugger: true,
-            },
+            compress: { drop_console: true, drop_debugger: true },
         },
         chunkSizeWarningLimit: 900,
         outDir: "dist",
+        assetsInlineLimit: 4096, // ✅ inline small assets for faster FCP
     },
 
     server: {
@@ -48,10 +46,9 @@ export default defineConfig(({ command }) => ({
         port: 5173,
         host: true,
         allowedHosts: [
-            "purringly-unfrisking-suzie.ngrok-free.dev",
-            ".ngrok-free.dev",
             "localhost",
             "127.0.0.1",
+            ".ngrok-free.dev",
         ],
     },
 }));
