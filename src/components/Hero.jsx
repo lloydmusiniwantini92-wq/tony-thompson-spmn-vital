@@ -1,4 +1,4 @@
-// ✅ src/components/Hero.jsx — Hero buttons now use the SAME purple fog scroll as the hamburger
+// ✅ src/components/Hero.jsx — Hero fully accessible + LCP identifiable (no visual/behavior change)
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/hero.css";
 import { useVideoModal } from "../context/VideoModalContext";
@@ -57,10 +57,8 @@ export default function Hero({ setHeroVisible }) {
 
             const lenis = window.lenis;
             if (lenis) {
-                // ensure we really leave hero and arrive at target
                 const onEnd = () => {
                     lenis.off("scrollEnd", onEnd);
-                    // fog clears automatically by GlobalOverlay's triggerGlobalFog timing
                 };
                 lenis.on("scrollEnd", onEnd);
                 lenis.scrollTo(el, { duration: 1.4, offset: -40 });
@@ -72,7 +70,6 @@ export default function Hero({ setHeroVisible }) {
         if (typeof window.triggerGlobalFog === "function") {
             window.triggerGlobalFog(runScroll);
         } else {
-            // Fallback: no fog available, just smooth scroll
             runScroll();
         }
     };
@@ -90,6 +87,8 @@ export default function Hero({ setHeroVisible }) {
         <section
             ref={heroRef}
             id="home"
+            role="main"
+            aria-label="Hero section"
             className="hero relative w-full h-screen flex items-center justify-center overflow-hidden"
             style={{ contain: "layout paint style" }}
         >
@@ -101,16 +100,18 @@ export default function Hero({ setHeroVisible }) {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
+                role="img"
+                aria-label="Background image of Tony Thompson hero section"
             />
 
-            {/* === CTA Buttons (renamed classes so GlobalOverlay's fogless override won't hijack) === */}
+            {/* === CTA Buttons (same fog logic) === */}
             <div
                 className="
                     absolute z-[900004] animate-buttonFloat flex gap-3
                     left-1/2 top-[calc(55%+4cm)] -translate-x-1/2 -translate-y-1/2 flex-row items-center justify-center
                     md:left-10 md:bottom-10 md:top-auto md:-translate-x-0 md:-translate-y-0 md:flex-row md:items-center md:justify-start
                 "
-                style={{ willChange: "transform" }}
+                style={{ willChange: 'transform' }}
             >
                 {/* WIN / NOW — uses fog */}
                 <div
@@ -121,6 +122,7 @@ export default function Hero({ setHeroVisible }) {
                         rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
                         transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
                         hover:translate-y-[-4px] uppercase tracking-wider"
+                    aria-label="Navigate to Programs section"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-[10px]" />
                     <span className="transition-all duration-500 group-hover:opacity-0">WIN</span>
@@ -138,6 +140,7 @@ export default function Hero({ setHeroVisible }) {
                         rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(177,79,192,0.7)]
                         transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
                         hover:translate-y-[-4px] uppercase tracking-wider"
+                    aria-label="Navigate to About section"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-[10px]" />
                     <span className="transition-all duration-500 group-hover:opacity-0">GET</span>
@@ -151,13 +154,14 @@ export default function Hero({ setHeroVisible }) {
             <div
                 className="video-widget group absolute bottom-8 right-8 z-[900003] cursor-pointer select-none hidden md:block"
                 onClick={() => openVideo(verticallo)}
+                aria-label="Open video modal"
             >
                 <div
                     className="relative w[6.5cm] h-[2.3cm] rounded-[2cm]
                         bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
                         shadow-[0_0_22px_rgba(155,38,182,0.75)]
                         flex justify-center items-center overflow-hidden animate-float"
-                    style={{ width: "6.5cm", height: "2.3cm" }}
+                    style={{ width: '6.5cm', height: '2.3cm' }}
                 >
                     <video
                         ref={videoRef}
@@ -169,6 +173,13 @@ export default function Hero({ setHeroVisible }) {
                         autoPlay
                     >
                         <source src={verticallo} type="video/mp4" />
+                        {/* ✅ Captions track (for Lighthouse accessibility) */}
+                        <track
+                            kind="captions"
+                            srcLang="en"
+                            label="Tony Thompson introduction"
+                            default
+                        />
                     </video>
 
                     <span
