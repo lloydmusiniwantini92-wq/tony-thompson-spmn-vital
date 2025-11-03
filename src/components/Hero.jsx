@@ -4,8 +4,9 @@ import "../styles/hero.css";
 import { useVideoModal } from "../context/VideoModalContext";
 import ScrollArrow from "./ScrollArrow";
 
-const heroBG = `${import.meta.env.BASE_URL}assets/hero.jpg`; // ✅ FIXED PATH for GitHub Pages
-const verticallo = `${import.meta.env.BASE_URL}videos/verticallo.mp4`;
+const base = import.meta.env.BASE_URL || "/";
+const heroBG = `${base}assets/hero.jpg`; // ✅ Correct folder
+const verticallo = `${base}videos/verticallo.mp4`;
 
 export default function Hero({ setHeroVisible }) {
     const [inTestimonials, setInTestimonials] = useState(false);
@@ -57,30 +58,19 @@ export default function Hero({ setHeroVisible }) {
 
             const lenis = window.lenis;
             if (lenis) {
-                const onEnd = () => {
-                    lenis.off("scrollEnd", onEnd);
-                };
+                const onEnd = () => lenis.off("scrollEnd", onEnd);
                 lenis.on("scrollEnd", onEnd);
                 lenis.scrollTo(el, { duration: 1.4, offset: -40 });
             } else {
                 el.scrollIntoView({ behavior: "smooth", block: "start" });
             }
         };
-
-        if (typeof window.triggerGlobalFog === "function") {
-            window.triggerGlobalFog(runScroll);
-        } else {
-            runScroll();
-        }
+        if (typeof window.triggerGlobalFog === "function") window.triggerGlobalFog(runScroll);
+        else runScroll();
     };
 
     const handleWinNow = () => fogScrollTo("#programs");
     const handleGetStarted = () => fogScrollTo("#about");
-
-    const ui = {
-        scrollText: inTestimonials ? "text-black" : "text-white",
-        scrollArrow: inTestimonials ? "border-black" : "border-[#7d1f97]",
-    };
 
     return (
         <section
@@ -91,7 +81,7 @@ export default function Hero({ setHeroVisible }) {
             className="hero relative w-full h-screen flex items-center justify-center overflow-hidden"
             style={{ contain: "layout paint style" }}
         >
-            {/* ✅ Background (fixed path for GitHub Pages) */}
+            {/* ✅ Background (fixed for GitHub Pages) */}
             <div
                 className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-[1]"
                 style={{
@@ -105,12 +95,10 @@ export default function Hero({ setHeroVisible }) {
 
             {/* === CTA Buttons === */}
             <div
-                className="
-                    absolute z-[900004] animate-buttonFloat flex gap-3
+                className="absolute z-[900004] animate-buttonFloat flex gap-3
                     left-1/2 top-[calc(55%+4cm)] -translate-x-1/2 -translate-y-1/2 flex-row items-center justify-center
-                    md:left-10 md:bottom-10 md:top-auto md:-translate-x-0 md:-translate-y-0 md:flex-row md:items-center md:justify-start
-                "
-                style={{ willChange: 'transform' }}
+                    md:left-10 md:bottom-10 md:top-auto md:-translate-x-0 md:-translate-y-0 md:flex-row md:items-center md:justify-start"
+                style={{ willChange: "transform" }}
             >
                 {/* WIN / NOW — uses fog */}
                 <div
@@ -160,7 +148,7 @@ export default function Hero({ setHeroVisible }) {
                         bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
                         shadow-[0_0_22px_rgba(155,38,182,0.75)]
                         flex justify-center items-center overflow-hidden animate-float"
-                    style={{ width: '6.5cm', height: '2.3cm' }}
+                    style={{ width: "6.5cm", height: "2.3cm" }}
                 >
                     <video
                         ref={videoRef}
@@ -172,7 +160,6 @@ export default function Hero({ setHeroVisible }) {
                         autoPlay
                     >
                         <source src={verticallo} type="video/mp4" />
-                        {/* ✅ Captions track (for Lighthouse accessibility) */}
                         <track
                             kind="captions"
                             srcLang="en"
