@@ -1,8 +1,8 @@
-// ✅ src/components/Hero.jsx — Hero fully accessible + LCP identifiable (no visual/behavior change)
+// ✅ src/components/Hero.jsx — Hero fully accessible + GitHub Pages path-safe + LCP identifiable
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/hero.css";
 import { useVideoModal } from "../context/VideoModalContext";
-import heroBG from "/tony-thompson-spmn-vital/assets/images/hero.jpg";
+import heroBG from "../assets/images/hero.jpg";
 import ScrollArrow from "./ScrollArrow";
 
 const verticallo = `${import.meta.env.BASE_URL}videos/verticallo.mp4`;
@@ -49,7 +49,7 @@ export default function Hero({ setHeroVisible }) {
         }
     }, []);
 
-    /* === Unified fog-powered scroll (EXACT same “purple fog journey” as hamburger) === */
+    /* === Unified fog-powered scroll === */
     const fogScrollTo = (selector) => {
         const runScroll = () => {
             const el = document.querySelector(selector);
@@ -74,7 +74,6 @@ export default function Hero({ setHeroVisible }) {
         }
     };
 
-    /* === Click handlers for the two CTAs (with fog) === */
     const handleWinNow = () => fogScrollTo("#programs");
     const handleGetStarted = () => fogScrollTo("#about");
 
@@ -92,11 +91,11 @@ export default function Hero({ setHeroVisible }) {
             className="hero relative w-full h-screen flex items-center justify-center overflow-hidden"
             style={{ contain: "layout paint style" }}
         >
-            {/* === Background === */}
+            {/* === Background (fixed for GitHub Pages) === */}
             <div
                 className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-[1]"
                 style={{
-                    backgroundImage: `url(${heroBG})`,
+                    backgroundImage: `url(${import.meta.env.BASE_URL + heroBG})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
@@ -104,14 +103,14 @@ export default function Hero({ setHeroVisible }) {
                 aria-label="Background image of Tony Thompson hero section"
             />
 
-            {/* === CTA Buttons (same fog logic) === */}
+            {/* === CTA Buttons === */}
             <div
                 className="
                     absolute z-[900004] animate-buttonFloat flex gap-3
                     left-1/2 top-[calc(55%+4cm)] -translate-x-1/2 -translate-y-1/2 flex-row items-center justify-center
                     md:left-10 md:bottom-10 md:top-auto md:-translate-x-0 md:-translate-y-0 md:flex-row md:items-center md:justify-start
                 "
-                style={{ willChange: 'transform' }}
+                style={{ willChange: "transform" }}
             >
                 {/* WIN / NOW — uses fog */}
                 <div
@@ -161,7 +160,7 @@ export default function Hero({ setHeroVisible }) {
                         bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
                         shadow-[0_0_22px_rgba(155,38,182,0.75)]
                         flex justify-center items-center overflow-hidden animate-float"
-                    style={{ width: '6.5cm', height: '2.3cm' }}
+                    style={{ width: "6.5cm", height: "2.3cm" }}
                 >
                     <video
                         ref={videoRef}
@@ -173,7 +172,6 @@ export default function Hero({ setHeroVisible }) {
                         autoPlay
                     >
                         <source src={verticallo} type="video/mp4" />
-                        {/* ✅ Captions track (for Lighthouse accessibility) */}
                         <track
                             kind="captions"
                             srcLang="en"
