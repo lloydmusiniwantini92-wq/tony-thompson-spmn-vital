@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/hero.css";
 import { useVideoModal } from "../context/VideoModalContext";
-import heroBG from "../assets/images/hero.jpg?w=1920&format=webp&quality=80";
+import heroBG from "/tony-thompson-spmn-vital/assets/images/hero.jpg";
 import ScrollArrow from "./ScrollArrow";
 
 const verticallo = `${import.meta.env.BASE_URL}videos/verticallo.mp4`;
