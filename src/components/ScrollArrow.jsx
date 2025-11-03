@@ -38,7 +38,7 @@ export default function ScrollArrow({ target = "#meet-tony" }) {
             {/* === Single Animated Arrow (no block, no triangle) === */}
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-[22px] h-[22px] text-[#9b26b6] animate-bounce"
+                className="w-[22px] h-[22px] text-[#7d1f97] animate-bounce"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

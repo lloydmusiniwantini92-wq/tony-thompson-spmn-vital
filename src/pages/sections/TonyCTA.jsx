@@ -106,14 +106,14 @@ export default function TonyCTA() {
         <section
             id="cta"
             className="relative w-full min-h-screen flex flex-col justify-between items-center
-        bg-[#9b26b6] text-white overflow-hidden"
+        bg-[#7d1f97] text-white overflow-hidden"
         >
             {/* === Glow === */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0.25, 0.5, 0.25] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute w-[900px] h-[900px] bg-[#b14fc0]/30 blur-[150px] rounded-full -z-10"
+                className="absolute w-[900px] h-[900px] bg-[#952ca8]/30 blur-[150px] rounded-full -z-10"
             />
 
             {/* === Heading === */}
@@ -149,7 +149,7 @@ export default function TonyCTA() {
                 onMouseLeave={() => setHovered(false)}
                 whileHover={{
                     backgroundColor: "#fff",
-                    color: "#9b26b6",
+                    color: "#7d1f97",
                     scale: 1.08,
                     boxShadow: "0 0 35px rgba(155,38,182,0.9)",
                 }}
@@ -177,7 +177,7 @@ export default function TonyCTA() {
                         animate={{ opacity: 0.6, scale: 1.4 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="absolute inset-0 rounded-xl bg-[#9b26b6]/60 blur-[25px] -z-10"
+                        className="absolute inset-0 rounded-xl bg-[#7d1f97]/60 blur-[25px] -z-10"
                     />
                 )}
             </motion.div>

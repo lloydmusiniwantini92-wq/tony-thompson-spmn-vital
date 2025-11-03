@@ -62,7 +62,7 @@ export default function TonyImpact() {
                 </p>
                 <p>
                     Coaches top originators through his{" "}
-                    <span className="text-[#9b26b6] font-semibold">Growth Platform</span>,
+                    <span className="text-[#7d1f97] font-semibold">Growth Platform</span>,
                     transforming leadership and performance across the nation.
                 </p>
             </motion.div>
@@ -113,7 +113,7 @@ function AnimatedStat({ value, suffix, label, delay }) {
         >
             <motion.h3
                 animate={controls}
-                className="text-4xl md:text-5xl font-bold text-[#9b26b6] mb-2"
+                className="text-4xl md:text-5xl font-bold text-[#7d1f97] mb-2"
             >
                 {displayValue.toLocaleString()}
                 {suffix}

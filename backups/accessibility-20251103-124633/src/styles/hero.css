@@ -1,0 +1,111 @@
+/* =========================================================
+   🦋 HERO SECTION — Cinematic Entry
+   ========================================================= */
+
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.tetris-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.tetris-t {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+    .tetris-t .t-row.top,
+    .tetris-t .t-row.bottom {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .tetris-t .t-row div {
+        width: 40px;
+        height: 40px;
+        background: #555;
+        border-radius: 3px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.5);
+        animation: tetrisFall 24s ease-in-out infinite;
+    }
+
+@keyframes tetrisFall {
+    0%,25% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    50%,75% {
+        transform: translateY(100px) rotate(360deg);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-6px) rotate(-2deg);
+    }
+}
+
+/* CTA video widget */
+.video-widget {
+    width: 6.5cm;
+    height: 2.3cm;
+    border-radius: 50px;
+    background: linear-gradient(135deg,#b14fc0,#9b26b6);
+    box-shadow: 0 0 14px rgba(155,38,182,0.8);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .video-widget:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(177,79,192,0.9);
+    }
+
+.scroll-indicator span {
+    letter-spacing: 2px;
+}
+
+.arrow {
+    margin: 8px auto 0;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #9b26b6;
+    border-bottom: 2px solid #9b26b6;
+    transform: rotate(45deg);
+    animation: arrowBounce 2.5s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+    0%,100% {
+        transform: translateY(0) rotate(45deg);
+    }
+
+    50% {
+        transform: translateY(8px) rotate(45deg);
+    }
+}

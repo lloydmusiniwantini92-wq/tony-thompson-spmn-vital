@@ -1,4 +1,4 @@
-// ✅ src/pages/sections/TonyJourney.jsx — Cinematic Purple Shimmer (40% Softer)
+// ✅ src/pages/sections/TonyJourney.jsx — Accessibility Enhanced (no behavior change)
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useVideoModal } from "../../context/VideoModalContext";
@@ -20,7 +20,6 @@ export default function TonyJourney() {
     const videoRef = useRef(null);
     const { openVideo } = useVideoModal();
 
-    // === Slideshow rotation ===
     useEffect(() => {
         const timer = setInterval(() => {
             setPrev(active);
@@ -29,7 +28,6 @@ export default function TonyJourney() {
         return () => clearInterval(timer);
     }, [active, slides.length]);
 
-    // === Video autoplay ===
     useEffect(() => {
         const v = videoRef.current;
         if (!v) return;
@@ -46,8 +44,12 @@ export default function TonyJourney() {
 
     return (
         <>
-            {/* === TOP SECTION (White Background + Purple Cinematic Header) === */}
-            <section className="relative w-full flex flex-col items-center justify-center bg-white text-black overflow-hidden">
+            {/* === TOP SECTION === */}
+            <section
+                className="relative w-full flex flex-col items-center justify-center bg-white text-black overflow-hidden"
+                role="region"
+                aria-label="Leadership introduction section"
+            >
                 <motion.div
                     initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
                     animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -57,8 +59,8 @@ export default function TonyJourney() {
                     <h1
                         className="font-[Montserrat] font-extrabold leading-[1.05]
                         text-[clamp(2.8rem,6vw,6rem)] tracking-tight 
-                        bg-gradient-to-r from-[#9b26b6] to-[#b14fc0]
-                        text-transparent bg-clip-text drop-shadow-[0_0_20px_rgba(155,38,182,0.35)]"
+                        bg-gradient-to-r from-[#7d1f97] to-[#952ca8]
+                        text-transparent bg-clip-text drop-shadow-[0_0_20px_rgba(125,31,151,0.35)]"
                     >
                         REDEFINING THE FUTURE OF LEADERSHIP
                     </h1>
@@ -67,14 +69,17 @@ export default function TonyJourney() {
                 <div className="absolute bottom-0 w-full h-[20vh] bg-gradient-to-b from-transparent to-white/90 pointer-events-none" />
             </section>
 
-            {/* === SLIDESHOW (with Ken Burns zoom + soft blend) === */}
-            <div className="relative w-full flex justify-center bg-white mb-0 pb-0">
+            {/* === SLIDESHOW === */}
+            <div
+                className="relative w-full flex justify-center bg-white mb-0 pb-0"
+                role="region"
+                aria-label="Tony's visual journey slideshow"
+            >
                 <div className="relative z-10 w-[80%] aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl bg-black">
-                    {/* Ken Burns effect layers */}
                     <motion.img
                         key={`prev-${prev}`}
                         src={slides[prev]}
-                        alt="Previous"
+                        alt="Previous scene"
                         initial={{ scale: 1.05 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 9, ease: "easeInOut" }}
@@ -83,29 +88,25 @@ export default function TonyJourney() {
                     <motion.img
                         key={`active-${active}`}
                         src={slides[active]}
-                        alt={`Tony Journey ${active + 1}`}
+                        alt={`Tony Journey slide ${active + 1}`}
                         initial={{ scale: 1 }}
                         animate={{ scale: 1.05 }}
                         transition={{ duration: 9, ease: "easeInOut" }}
                         className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-[4000ms] ease-in-out opacity-100 animate-fadeIn"
                     />
 
-                    {/* Edge fade + gradient blending */}
                     <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_65%,rgba(255,255,255,0.6)_100%)] mix-blend-soft-light" />
-
-                    {/* 🟣 Purple shimmer softened by ~40% */}
-                    <div className="absolute bottom-0 w-full h-[40%] bg-gradient-to-b from-transparent via-[#9b26b6]/50 to-black/90 pointer-events-none" />
-                    <div className="absolute bottom-0 w-full h-[40%] bg-gradient-to-r from-transparent via-[#b14fc0]/18 to-transparent animate-pulseGlow pointer-events-none" />
+                    <div className="absolute bottom-0 w-full h-[40%] bg-gradient-to-t from-[#7d1f97]/60 via-[#7d1f97]/30 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-0 w-full h-[40%] bg-gradient-to-r from-transparent via-[#952ca8]/30 to-transparent animate-pulseGlow pointer-events-none" />
                 </div>
-
-                <div className="absolute inset-y-0 left-0 w-[12vw] bg-gradient-to-r from-white via-white/50 to-transparent pointer-events-none" />
-                <div className="absolute inset-y-0 right-0 w-[12vw] bg-gradient-to-l from-white via-white/50 to-transparent pointer-events-none" />
             </div>
 
             {/* === LOOPING BACKGROUND VIDEO === */}
             <section
                 id="tony-journey"
                 className="relative w-full h-[120vh] overflow-hidden m-0 p-0 flex flex-col items-center justify-center text-center text-white -mt-[25vh]"
+                role="region"
+                aria-label="Journey background section"
             >
                 <video
                     ref={videoRef}
@@ -114,8 +115,19 @@ export default function TonyJourney() {
                     loop
                     playsInline
                     preload="metadata"
+                    aria-label="Journey background video"
                     className="absolute inset-0 w-full h-full object-cover"
-                />
+                >
+                    {/* ✅ Accessibility: Add captions for screen readers */}
+                    <track
+                        kind="captions"
+                        srcLang="en"
+                        label="English captions"
+                        src={`${import.meta.env.BASE_URL}videos/JourneyCaptions.vtt`}
+                        default
+                    />
+                </video>
+
                 <div className="absolute top-0 left-0 w-full h-[40vh] bg-gradient-to-b from-white via-white/70 to-transparent z-[1]" />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80 z-[1]" />
 
@@ -140,12 +152,13 @@ export default function TonyJourney() {
                 <button
                     onClick={() => openVideo(journeyVideo)}
                     className="relative z-[3] mt-16 flex items-center justify-center"
+                    aria-label="Play Tony's journey video"
                 >
                     <div
                         className="relative flex justify-center items-center w-[160px] h-[60px]
                         text-white font-['Press_Start_2P'] text-[0.9rem] uppercase tracking-wider
-                        bg-gradient-to-br from-[#9b26b6]/85 to-[#b14fc0]/70
-                        rounded-[12px] border border-white/20 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
+                        bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
+                        rounded-[12px] border border-white/20 shadow-[0_10px_25px_rgba(125,31,151,0.7)]
                         transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
                         hover:translate-y-[-4px] cursor-pointer"
                     >

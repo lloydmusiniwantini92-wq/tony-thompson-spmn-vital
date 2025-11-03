@@ -58,13 +58,13 @@
 }
 
 .highlight {
-    color: #b14fc0;
+    color: #952ca8;
     font-weight: 700;
 }
 
 .btn-oval {
     background: transparent;
-    border: 2px solid #b14fc0;
+    border: 2px solid #952ca8;
     color: #fff;
     padding: 12px 34px;
     border-radius: 999px;
@@ -75,7 +75,7 @@
 }
 
     .btn-oval:hover {
-        background: #b14fc0;
+        background: #952ca8;
         transform: translateY(-2px) scaleX(1.2);
         box-shadow: 0 0 20px rgba(177,79,192,0.6);
     }

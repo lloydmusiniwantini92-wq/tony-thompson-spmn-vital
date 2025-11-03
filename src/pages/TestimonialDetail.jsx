@@ -58,7 +58,7 @@ export default function TestimonialDetail() {
         return (
             <div className="text-center mt-20 text-white">
                 Testimonial not found.{" "}
-                <Link to="/#testimonials" className="text-[#9b26b6] underline">
+                <Link to="/#testimonials" className="text-[#7d1f97] underline">
                     Go back
                 </Link>
             </div>
@@ -103,7 +103,7 @@ export default function TestimonialDetail() {
                     {current.details}
                 </p>
                 <div className="text-sm md:text-base text-gray-300">
-                    <span className="text-[#9b26b6] font-semibold">{current.name}</span> —{" "}
+                    <span className="text-[#7d1f97] font-semibold">{current.name}</span> —{" "}
                     {current.role}
                 </div>
             </motion.div>
@@ -117,7 +117,7 @@ export default function TestimonialDetail() {
             >
                 <Link
                     to="/#testimonials"
-                    className="inline-block px-8 py-3 rounded-full bg-[#9b26b6] hover:bg-[#b14fc0] text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
+                    className="inline-block px-8 py-3 rounded-full bg-[#7d1f97] hover:bg-[#952ca8] text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
                 >
                     ← Back to Testimonials
                 </Link>

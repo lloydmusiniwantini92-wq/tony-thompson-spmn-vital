@@ -110,7 +110,7 @@ export default function Testimonials() {
             {/* Split Layout */}
             <div className="relative flex flex-col md:flex-row w-full min-h-[100vh] mt-[7rem]">
                 {/* LEFT SIDE */}
-                <div className="flex-1 flex flex-col justify-start bg-gradient-to-br from-[#9b26b6] via-[#b14fc0] to-[#9b26b6] px-[6vw] pt-[8rem] pb-[5rem] text-left relative overflow-hidden">
+                <div className="flex-1 flex flex-col justify-start bg-gradient-to-br from-[#7d1f97] via-[#952ca8] to-[#7d1f97] px-[6vw] pt-[8rem] pb-[5rem] text-left relative overflow-hidden">
                     {/* Quote */}
                     <div className="relative z-10 max-w-[700px] min-h-[14rem] md:min-h-[16rem]">
                         <AnimatePresence mode="wait">
@@ -191,7 +191,7 @@ export default function Testimonials() {
                     </AnimatePresence>
 
                     <motion.div
-                        className="absolute inset-0 bg-[#9b26b6]/0 group-hover:bg-[#9b26b6]/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-700 cursor-pointer"
+                        className="absolute inset-0 bg-[#7d1f97]/0 group-hover:bg-[#7d1f97]/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-700 cursor-pointer"
                         onClick={() => openVideoFromTestimonials(testimonials[active].video)}
                     >
                         <motion.span
@@ -211,7 +211,7 @@ export default function Testimonials() {
                 <h3 className="text-xl md:text-2xl font-bold text-[#111] tracking-wider mb-3">
                     Trusted by Industry Leaders
                 </h3>
-                <h4 className="text-[#9b26b6] text-lg md:text-xl font-semibold mb-8">
+                <h4 className="text-[#7d1f97] text-lg md:text-xl font-semibold mb-8">
                     As Featured In
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 px-8 max-w-7xl mx-auto items-center justify-items-center">

@@ -12,7 +12,7 @@ export default function TonyVoices() {
             <div className="max-w-6xl text-center mb-20 flex flex-col items-center justify-center">
                 <h1
                     className="text-[clamp(3rem,8vw,8rem)] font-extrabold uppercase tracking-tight
-                    bg-gradient-to-r from-[#7a1a8f] via-[#9b26b6] to-[#b14fc0]
+                    bg-gradient-to-r from-[#7a1a8f] via-[#7d1f97] to-[#952ca8]
                     text-transparent bg-clip-text drop-shadow-[0_2px_15px_rgba(155,38,182,0.35)]
                     leading-[1.05] md:font-sans text-center mx-auto"
                 >
@@ -26,7 +26,7 @@ export default function TonyVoices() {
                     <p>
                         “Tony Thompson connects with his audience — every word drives action.”
                         <br />
-                        <span className="block mt-2 text-[#9b26b6] font-semibold">
+                        <span className="block mt-2 text-[#7d1f97] font-semibold">
                             — Le Tran, AVP Mortgage Underwriting
                         </span>
                     </p>
@@ -34,7 +34,7 @@ export default function TonyVoices() {
                     <p>
                         “When Tony speaks, he doesn’t just deliver a message — he changes the game.”
                         <br />
-                        <span className="block mt-2 text-[#9b26b6] font-semibold">
+                        <span className="block mt-2 text-[#7d1f97] font-semibold">
                             — Industry Leader
                         </span>
                     </p>
@@ -42,7 +42,7 @@ export default function TonyVoices() {
                     <p>
                         “One of the most powerful and engaging speakers in the industry.”
                         <br />
-                        <span className="block mt-2 text-[#9b26b6] font-semibold">
+                        <span className="block mt-2 text-[#7d1f97] font-semibold">
                             — Lindsi Flynn, CMO
                         </span>
                     </p>
@@ -53,7 +53,7 @@ export default function TonyVoices() {
             <PartnersShowcase />
 
             {/* === AMBIENT GRADIENT DIVIDER === */}
-            <div className="w-full mt-24 h-[1px] bg-gradient-to-r from-transparent via-[#9b26b6]/60 to-transparent" />
+            <div className="w-full mt-24 h-[1px] bg-gradient-to-r from-transparent via-[#7d1f97]/60 to-transparent" />
         </section>
     );
 }

@@ -40,7 +40,7 @@ export default function AboutTonyHero() {
             }}
         >
             {/* LEFT SIDE */}
-            <div className="relative w-full md:w-1/3 flex flex-col justify-center items-center bg-gradient-to-b from-[#9b26b6]/85 via-[#9b26b6]/70 to-[#b14fc0]/85 px-10 md:px-14 py-20 text-center z-10">
+            <div className="relative w-full md:w-1/3 flex flex-col justify-center items-center bg-gradient-to-b from-[#7d1f97]/85 via-[#7d1f97]/70 to-[#952ca8]/85 px-10 md:px-14 py-20 text-center z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -106,7 +106,7 @@ export default function AboutTonyHero() {
                         onClick={handleExploreJourney}
                         className="relative flex justify-center items-center w-[190px] h-[62px]
                             text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
-                            bg-gradient-to-br from-[#b14fc0]/85 to-[#9b26b6]/70
+                            bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
                             rounded-[12px]
                             border border-white/20
                             shadow-[0_10px_25px_rgba(177,79,192,0.7),inset_0_2px_6px_rgba(255,255,255,0.3)]

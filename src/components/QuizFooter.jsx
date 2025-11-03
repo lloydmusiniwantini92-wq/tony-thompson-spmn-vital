@@ -9,7 +9,7 @@ export default function QuizFooter() {
     return (
         <>
             {/* ====== Purple Gradient Header ====== */}
-            <section className="relative text-center py-16 bg-gradient-to-br from-[#9b26b6] to-[#b14fc0] text-white overflow-hidden">
+            <section className="relative text-center py-16 bg-gradient-to-br from-[#7d1f97] to-[#952ca8] text-white overflow-hidden">
                 {/* Floating Tetris Watermarks */}
                 <div className="absolute top-1/2 left-[4rem] -translate-y-1/2 opacity-10 animate-[floatUpDown_6s_ease-in-out_infinite_alternate]">
                     <div className="flex space-x-1">
@@ -35,7 +35,7 @@ export default function QuizFooter() {
 
                 <button
                     onClick={scrollToAbout}
-                    className="mt-6 px-6 py-3 rounded-full font-semibold text-white bg-black border border-white hover:bg-[#9b26b6] hover:border-[#9b26b6] transition-all duration-300 shadow-[0_0_12px_rgba(155,38,182,0.6)]"
+                    className="mt-6 px-6 py-3 rounded-full font-semibold text-white bg-black border border-white hover:bg-[#7d1f97] hover:border-[#7d1f97] transition-all duration-300 shadow-[0_0_12px_rgba(155,38,182,0.6)]"
                 >
                     ↑ Back to About
                 </button>
@@ -45,7 +45,7 @@ export default function QuizFooter() {
             <section className="bg-[#0a0a0a] text-white py-20 px-8 md:px-24 flex flex-col md:flex-row items-center justify-between gap-12">
                 {/* LEFT: Text */}
                 <div className="md:w-1/2 space-y-4">
-                    <h3 className="text-3xl font-bold mb-2 text-[#9b26b6]">
+                    <h3 className="text-3xl font-bold mb-2 text-[#7d1f97]">
                         About Tony Thompson
                     </h3>
                     <p className="text-gray-300 leading-relaxed">
@@ -63,7 +63,7 @@ export default function QuizFooter() {
                         onClick={() =>
                             window.scrollTo({ top: 0, behavior: "smooth" })
                         }
-                        className="mt-6 inline-flex items-center justify-center rounded-full bg-[#9b26b6] hover:bg-[#b14fc0] text-white px-8 py-3 font-semibold shadow-[0_0_12px_rgba(155,38,182,0.6)] transition"
+                        className="mt-6 inline-flex items-center justify-center rounded-full bg-[#7d1f97] hover:bg-[#952ca8] text-white px-8 py-3 font-semibold shadow-[0_0_12px_rgba(155,38,182,0.6)] transition"
                     >
                         Back to Top ↑
                     </button>
@@ -72,7 +72,7 @@ export default function QuizFooter() {
                 {/* RIGHT: Image Placeholder */}
                 <div className="md:w-1/2 flex justify-center">
                     <div className="relative group">
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-[#9b26b6]/40 to-[#b14fc0]/30 blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-[#7d1f97]/40 to-[#952ca8]/30 blur-xl group-hover:blur-2xl transition-all duration-500"></div>
                         <img
                             src="/tony-profile.png" // replace with Tony’s real image later
                             alt="Tony Thompson"
@@ -83,7 +83,7 @@ export default function QuizFooter() {
             </section>
 
             {/* ====== Social Grid ====== */}
-            <section className="grid grid-cols-6 bg-black border-t border-[#9b26b6]/25">
+            <section className="grid grid-cols-6 bg-black border-t border-[#7d1f97]/25">
                 {[
                     {
                         icon: (
@@ -122,9 +122,9 @@ export default function QuizFooter() {
                 ].map((item, i) => (
                     <div
                         key={i}
-                        className="relative overflow-hidden h-[3cm] flex justify-center items-center group border-r border-[#9b26b6]/25"
+                        className="relative overflow-hidden h-[3cm] flex justify-center items-center group border-r border-[#7d1f97]/25"
                     >
-                        <div className="absolute top-0 left-[-100%] w-full h-full bg-[#9b26b6]/80 transition-all duration-500 group-hover:left-0" />
+                        <div className="absolute top-0 left-[-100%] w-full h-full bg-[#7d1f97]/80 transition-all duration-500 group-hover:left-0" />
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -138,21 +138,21 @@ export default function QuizFooter() {
             </section>
 
             {/* ===== Bottom Footer Line ===== */}
-            <div className="w-full border-t border-[#9b26b6]/25" />
+            <div className="w-full border-t border-[#7d1f97]/25" />
             <div className="bg-black text-white flex justify-between items-center p-4 px-6 md:px-12 text-sm flex-wrap">
                 <span>© Tony Thompson 2025</span>
                 <nav className="flex-1 flex justify-evenly items-center mx-4 text-gray-300">
-                    <a href="#" className="hover:text-[#9b26b6] transition-colors duration-300">
+                    <a href="#" className="hover:text-[#7d1f97] transition-colors duration-300">
                         Terms & Conditions
                     </a>
-                    <a href="#" className="hover:text-[#9b26b6] transition-colors duration-300">
+                    <a href="#" className="hover:text-[#7d1f97] transition-colors duration-300">
                         Privacy Policy
                     </a>
-                    <a href="#" className="hover:text-[#9b26b6] transition-colors duration-300">
+                    <a href="#" className="hover:text-[#7d1f97] transition-colors duration-300">
                         Cookie Policy
                     </a>
                 </nav>
-                <span className="text-gray-400 hover:text-[#9b26b6] transition-colors duration-300">
+                <span className="text-gray-400 hover:text-[#7d1f97] transition-colors duration-300">
                     Website by Arson Pixelz®
                 </span>
             </div>

@@ -1,4 +1,4 @@
-// ✅ src/pages/Shop.jsx — SHOP heading visibly moved 2 cm down
+// ✅ src/pages/Shop.jsx — SHOP heading moved 1 cm up
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -26,9 +26,9 @@ export default function Shop() {
         setTimeout(() => setIsFading(false), 1800);
     };
 
-    // 1 cm ≈ 37.8 px → 1.5 cm ≈ 56.7 px → 2 cm ≈ 75.6 px
-    const imgOffset = 37.8 * 1.5; // still move the picture 1.5 cm up/left
-    const headingOffset = 37.8 * 2; // move heading 2 cm down
+    // 1 cm ≈ 37.8 px → 1.5 cm ≈ 56.7 px
+    const imgOffset = 37.8 * 1.5;   // picture stays 1.5 cm up/left
+    const headingOffset = -37.8 * -1.5; // 🟣 move heading 1 cm up
 
     return (
         <main className="relative w-full h-screen overflow-hidden bg-black text-white">
@@ -75,11 +75,11 @@ export default function Shop() {
                 }}
                 className="relative z-10 flex flex-col items-center justify-center h-full text-center space-y-8"
             >
-                {/* 🟣 SHOP Heading — now actually moved 2 cm down */}
+                {/* 🟣 SHOP Heading — now moved 1 cm up */}
                 <motion.h1
                     animate={{ y: headingOffset }}
                     transition={{ duration: 1.2, ease: [0.25, 1, 0.3, 1] }}
-                    className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold text-[#9b26b6]
+                    className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold text-[#7d1f97]
                      tracking-tight drop-shadow-[0_0_18px_rgba(155,38,182,0.7)]"
                 >
                     SHOP
@@ -87,7 +87,7 @@ export default function Shop() {
 
                 <button
                     onClick={handleGoToTestimonials}
-                    className="px-6 py-3 bg-[#9b26b6] text-white font-semibold rounded-xl
+                    className="px-6 py-3 bg-[#7d1f97] text-white font-semibold rounded-xl
                      hover:scale-105 transition-transform duration-300
                      shadow-[0_0_20px_rgba(155,38,182,0.5)]"
                 >

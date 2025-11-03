@@ -135,7 +135,7 @@ export default function Quiz() {
                                         {Array.from({ length: stepCount }).map((_, i) => (
                                             <div key={i} className="h-[6px] w-24 rounded-full bg-gray-700 overflow-hidden">
                                                 <div
-                                                    className={`h-full rounded-full transition-all duration-500 ${i <= stepIndex ? "bg-[#9b26b6]" : "bg-transparent"
+                                                    className={`h-full rounded-full transition-all duration-500 ${i <= stepIndex ? "bg-[#7d1f97]" : "bg-transparent"
                                                         }`}
                                                     style={{
                                                         width:
@@ -164,8 +164,8 @@ export default function Quiz() {
                                                             key={opt}
                                                             onClick={() => setSelected(i)}
                                                             className={`group relative flex items-center justify-between rounded-xl border p-4 md:p-5 transition-all ${active
-                                                                    ? "border-[#9b26b6] bg-[#9b26b6] text-white"
-                                                                    : "border-gray-600 hover:border-[#9b26b6] hover:bg-[#1a001d]"
+                                                                    ? "border-[#7d1f97] bg-[#7d1f97] text-white"
+                                                                    : "border-gray-600 hover:border-[#7d1f97] hover:bg-[#1a001d]"
                                                                 }`}
                                                             style={{ fontSize: "clamp(0.9rem, 1vw, 1.05rem)" }}
                                                         >
@@ -173,7 +173,7 @@ export default function Quiz() {
                                                             <span
                                                                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${active
                                                                         ? "border-white"
-                                                                        : "border-gray-400 group-hover:border-[#9b26b6]"
+                                                                        : "border-gray-400 group-hover:border-[#7d1f97]"
                                                                     }`}
                                                             >
                                                                 <span
@@ -195,7 +195,7 @@ export default function Quiz() {
                                         onClick={handleBack}
                                         disabled={stepIndex === 0}
                                         className="rounded-full w-[160px] md:w-[180px] h-[54px] font-bold 
-                                        bg-gradient-to-br from-[#b14fc0]/90 to-[#9b26b6]/80 
+                                        bg-gradient-to-br from-[#952ca8]/90 to-[#7d1f97]/80 
                                         text-white uppercase shadow-[0_0_25px_rgba(155,38,182,0.7)] 
                                         border border-white/20 hover:opacity-90 transition-all duration-500 
                                         disabled:opacity-40"
@@ -209,7 +209,7 @@ export default function Quiz() {
                                         border border-white/20 shadow-[0_0_25px_rgba(155,38,182,0.7)] 
                                         ${selected === null
                                                 ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                                                : "bg-gradient-to-br from-[#b14fc0]/90 to-[#9b26b6]/80 text-white hover:opacity-90"
+                                                : "bg-gradient-to-br from-[#952ca8]/90 to-[#7d1f97]/80 text-white hover:opacity-90"
                                             }`}
                                     >
                                         Next
@@ -254,7 +254,7 @@ export default function Quiz() {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.7, ease: "easeOut" }}
-                                        className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] drop-shadow-[0_0_25px_rgba(155,38,182,0.5)] mb-8 text-center uppercase leading-tight"
+                                        className="text-3xl md:text-4xl font-extrabold text-[#7d1f97] drop-shadow-[0_0_25px_rgba(155,38,182,0.5)] mb-8 text-center uppercase leading-tight"
                                     >
                                         Your Tailored Level-Up Plan
                                     </motion.h3>
@@ -275,8 +275,8 @@ export default function Quiz() {
                                                 className={`w-full bg-transparent border-b text-white placeholder-gray-500 py-3 text-lg focus:outline-none caret-white transition-all duration-300 ${errors[field.key]
                                                         ? "border-red-500 focus:border-red-500"
                                                         : form[field.key]
-                                                            ? "border-[#9b26b6]"
-                                                            : "border-[#9b26b6]/40"
+                                                            ? "border-[#7d1f97]"
+                                                            : "border-[#7d1f97]/40"
                                                     }`}
                                             />
                                             {errors[field.key] && (
@@ -289,8 +289,8 @@ export default function Quiz() {
                                             type="submit"
                                             disabled={loading}
                                             className={`mt-4 inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold 
-        text-black bg-gradient-to-br from-[#b14fc0] to-[#9b26b6]
-        border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.9)] 
+        text-black bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
+        border border-[#7d1f97]/80 shadow-[0_0_35px_rgba(155,38,182,0.9)] 
         hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500 
         uppercase ${loading ? "opacity-60 cursor-wait" : "hover:opacity-90"}`}
                                         >
@@ -324,7 +324,7 @@ export default function Quiz() {
                                 {!success ? (
                                     !loading ? (
                                         <>
-                                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] mb-6">
+                                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#7d1f97] mb-6">
                                                 Wow! You’re a Rare Fit for Our Elevate Program
                                             </h2>
                                             <p className="text-lg text-gray-700 leading-relaxed mb-8">
@@ -333,7 +333,7 @@ export default function Quiz() {
                                             <button
                                                 onClick={handleClaim}
                                                 disabled={Object.keys(errors).length > 0}
-                                                className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-[#9b26b6] hover:bg-[#b14fc0] border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
+                                                className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-[#7d1f97] hover:bg-[#952ca8] border border-[#7d1f97]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
                                             >
                                                 Claim My Tailored Playbook
                                             </button>
@@ -347,14 +347,14 @@ export default function Quiz() {
                                             <motion.div
                                                 animate={{ rotate: 360 }}
                                                 transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-                                                className="w-12 h-12 border-4 border-[#9b26b6] border-t-transparent rounded-full mb-6"
+                                                className="w-12 h-12 border-4 border-[#7d1f97] border-t-transparent rounded-full mb-6"
                                             />
                                             <p className="text-lg text-gray-600">Building your personalized playbook...</p>
                                         </motion.div>
                                     )
                                 ) : (
                                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-                                        <h2 className="text-3xl md:text-4xl font-extrabold text-[#9b26b6] mb-6">
+                                        <h2 className="text-3xl md:text-4xl font-extrabold text-[#7d1f97] mb-6">
                                             Your Playbook Is On Its Way!
                                         </h2>
                                         <p className="text-lg text-gray-700 leading-relaxed mb-8">
@@ -362,7 +362,7 @@ export default function Quiz() {
                                         </p>
                                         <button
                                             onClick={handleClose}
-                                            className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-[#9b26b6] hover:bg-[#b14fc0] border border-[#9b26b6]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
+                                            className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-[#7d1f97] hover:bg-[#952ca8] border border-[#7d1f97]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500"
                                         >
                                             Close
                                         </button>

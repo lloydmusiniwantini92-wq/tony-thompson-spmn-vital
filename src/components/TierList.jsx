@@ -127,7 +127,7 @@ export default function TierList() {
                             transition={{ duration: 0.4, ease: [0.25, 1, 0.3, 1] }}
                             className="relative rounded-[2.5rem]
                 bg-gradient-to-b from-[#1a001e]/90 via-black/80 to-[#120014]/95
-                border border-[#9b26b6]/40 shadow-[0_0_40px_rgba(155,38,182,0.25)]
+                border border-[#7d1f97]/40 shadow-[0_0_40px_rgba(155,38,182,0.25)]
                 backdrop-blur-[14px] flex flex-col cursor-pointer"
                         >
                             <motion.div
@@ -142,7 +142,7 @@ export default function TierList() {
                                 className="absolute inset-0 bg-[radial-gradient(circle_at_30%_10%,rgba(155,38,182,0.08),transparent_70%)] pointer-events-none"
                             />
 
-                            <div className="relative border-b border-[#9b26b6]/30 py-4">
+                            <div className="relative border-b border-[#7d1f97]/30 py-4">
                                 <h4 className="text-2xl font-extrabold text-white uppercase tracking-wider drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
                                     {tier.name}
                                 </h4>
@@ -166,7 +166,7 @@ export default function TierList() {
                                 transition={{ duration: 0.35 }}
                                 className="relative mt-auto mb-0 w-full select-none cursor-pointer
                   text-white font-['Press_Start_2P'] text-[0.85rem] uppercase tracking-wider
-                  bg-gradient-to-br from-[#9b26b6]/85 to-[#b14fc0]/70
+                  bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
                   rounded-b-[2.5rem] border-t border-white/20
                   shadow-[0_-10px_40px_rgba(155,38,182,0.4),inset_0_2px_6px_rgba(255,255,255,0.3)]
                   transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
@@ -188,8 +188,8 @@ export default function TierList() {
                 transition={{ duration: 1.2, ease: [0.25, 1, 0.3, 1] }}
                 viewport={{ once: true }}
                 className="relative z-[5] overflow-hidden
-          bg-gradient-to-b from-[#9b26b6]/90 via-[#7f1aa1]/90 to-[#1a001e]/95
-          border-t border-[#9b26b6]/50 pt-14 pb-24 px-4 md:px-12"
+          bg-gradient-to-b from-[#7d1f97]/90 via-[#7f1aa1]/90 to-[#1a001e]/95
+          border-t border-[#7d1f97]/50 pt-14 pb-24 px-4 md:px-12"
             >
                 <h3 className="relative text-4xl md:text-5xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-white via-[#f2e0ff] to-white tracking-tight mb-12 drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
                     Compare Programs
@@ -203,7 +203,7 @@ export default function TierList() {
                             {["ASPIRE", "IGNITE", "ELEVATE"].map((tier, i) => (
                                 <div
                                     key={i}
-                                    className="py-6 text-[1.35rem] font-extrabold uppercase text-center tracking-widest bg-[#9b26b6]/25 text-white border-b border-white/10"
+                                    className="py-6 text-[1.35rem] font-extrabold uppercase text-center tracking-widest bg-[#7d1f97]/25 text-white border-b border-white/10"
                                 >
                                     {tier}
                                 </div>
@@ -216,7 +216,7 @@ export default function TierList() {
                                     {["aspire", "ignite", "elevate"].map((key) => (
                                         <div
                                             key={key}
-                                            className="text-center py-5 border-t border-white/10 bg-[#9b26b6]/20"
+                                            className="text-center py-5 border-t border-white/10 bg-[#7d1f97]/20"
                                         >
                                             {row[key] ? (
                                                 <span className="text-white text-xl font-bold">✓</span>
@@ -236,20 +236,20 @@ export default function TierList() {
                     {comparisonData.map((row, i) => (
                         <div
                             key={i}
-                            className="rounded-2xl bg-[#9b26b6]/20 border border-white/10 p-4 shadow-[0_0_20px_rgba(155,38,182,0.3)]"
+                            className="rounded-2xl bg-[#7d1f97]/20 border border-white/10 p-4 shadow-[0_0_20px_rgba(155,38,182,0.3)]"
                         >
                             <h4 className="text-lg font-bold mb-2 text-white/90">{row.feature}</h4>
                             <div className="flex justify-around text-center text-sm font-semibold">
                                 <div>
-                                    <span className="block text-[#b14fc0] mb-1">Aspire</span>
+                                    <span className="block text-[#952ca8] mb-1">Aspire</span>
                                     <span>{row.aspire ? "✓" : "—"}</span>
                                 </div>
                                 <div>
-                                    <span className="block text-[#b14fc0] mb-1">Ignite</span>
+                                    <span className="block text-[#952ca8] mb-1">Ignite</span>
                                     <span>{row.ignite ? "✓" : "—"}</span>
                                 </div>
                                 <div>
-                                    <span className="block text-[#b14fc0] mb-1">Elevate</span>
+                                    <span className="block text-[#952ca8] mb-1">Elevate</span>
                                     <span>{row.elevate ? "✓" : "—"}</span>
                                 </div>
                             </div>

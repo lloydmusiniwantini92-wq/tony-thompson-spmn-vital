@@ -21,8 +21,8 @@ export default function SectionFade({ children, index }) {
             <div
                 className={`absolute inset-0 pointer-events-none transition-all duration-[1500ms]
           ${isEven
-                        ? "bg-gradient-to-b from-[#000]/80 via-[#100010]/60 to-[#9b26b6]/15"
-                        : "bg-gradient-to-b from-[#9b26b6]/20 via-[#100010]/60 to-black/90"}
+                        ? "bg-gradient-to-b from-[#000]/80 via-[#100010]/60 to-[#7d1f97]/15"
+                        : "bg-gradient-to-b from-[#7d1f97]/20 via-[#100010]/60 to-black/90"}
         `}
             />
             <div className="relative z-10 w-full">{children}</div>

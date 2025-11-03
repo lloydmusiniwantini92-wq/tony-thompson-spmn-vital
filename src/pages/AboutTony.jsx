@@ -86,7 +86,7 @@ export default function AboutTony() {
                         >
                             <TonyImpact />
                             <motion.div
-                                className="absolute inset-0 bg-gradient-to-b from-transparent via-[#9b26b620] to-transparent pointer-events-none"
+                                className="absolute inset-0 bg-gradient-to-b from-transparent via-[#7d1f9720] to-transparent pointer-events-none"
                                 animate={{
                                     opacity: [0.2, 0.4, 0.2],
                                     backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
@@ -127,7 +127,7 @@ export default function AboutTony() {
 
                     {/* === Ambient Scroll Glow === */}
                     <motion.div
-                        className="pointer-events-none fixed inset-0 bg-gradient-to-t from-[#9b26b6]/10 via-transparent to-[#9b26b6]/5 mix-blend-soft-light"
+                        className="pointer-events-none fixed inset-0 bg-gradient-to-t from-[#7d1f97]/10 via-transparent to-[#7d1f97]/5 mix-blend-soft-light"
                         animate={{
                             opacity: inView ? [0.1, 0.25, 0.1] : 0.1,
                         }}

@@ -60,7 +60,7 @@ export default function TestimonialPage() {
                 <p>Story not found.</p>
                 <button
                     onClick={handleBack}
-                    className="mt-4 underline text-[#9b26b6]"
+                    className="mt-4 underline text-[#7d1f97]"
                 >
                     Back to Home
                 </button>
@@ -74,7 +74,7 @@ export default function TestimonialPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
-            className="min-h-screen bg-gradient-to-b from-[#9b26b6] via-[#4b125e] to-[#111] text-white flex flex-col"
+            className="min-h-screen bg-gradient-to-b from-[#7d1f97] via-[#4b125e] to-[#111] text-white flex flex-col"
         >
             {/* === Hero Image === */}
             <div
@@ -135,7 +135,7 @@ export default function TestimonialPage() {
                 <div className="text-center">
                     <button
                         onClick={handleBack}
-                        className="inline-block border-2 border-white/70 text-white px-8 py-3 rounded-full hover:bg-white hover:text-[#9b26b6] transition-all duration-300 font-semibold"
+                        className="inline-block border-2 border-white/70 text-white px-8 py-3 rounded-full hover:bg-white hover:text-[#7d1f97] transition-all duration-300 font-semibold"
                     >
                         ← Back to All Testimonials
                     </button>

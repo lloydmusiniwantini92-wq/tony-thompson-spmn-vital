@@ -23,7 +23,7 @@ export default function PartnersShowcase() {
             <h2 className="text-xl md:text-2xl font-bold text-[#111] tracking-wider mb-1">
                 Trusted by Industry Leaders
             </h2>
-            <h3 className="text-[clamp(1.4rem,3.5vw,2rem)] font-extrabold text-[#9b26b6] mb-4 uppercase tracking-tight">
+            <h3 className="text-[clamp(1.4rem,3.5vw,2rem)] font-extrabold text-[#7d1f97] mb-4 uppercase tracking-tight">
                 As Featured In
             </h3>
 

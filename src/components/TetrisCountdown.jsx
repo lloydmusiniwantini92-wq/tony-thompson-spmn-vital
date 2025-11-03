@@ -39,24 +39,24 @@ export default function TetrisCountdown({ targetDate }) {
                     : "none",
             }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="flex flex-col items-center justify-center bg-[#111]/70 border border-[#9b26b6]/40
+            className="flex flex-col items-center justify-center bg-[#111]/70 border border-[#7d1f97]/40
                        rounded-md px-[0.4rem] py-[0.3rem] min-w-[2ch]"
         >
             <span className="text-[1rem] sm:text-[1.2rem] font-semibold leading-none text-white">
                 {String(value).padStart(2, "0")}
             </span>
-            <span className="text-[0.5rem] uppercase tracking-widest text-[#9b26b6]/80 mt-[2px]">{label}</span>
+            <span className="text-[0.5rem] uppercase tracking-widest text-[#7d1f97]/80 mt-[2px]">{label}</span>
         </motion.div>
     );
 
     return (
         <div className="flex items-end justify-center gap-[0.4rem] text-white font-mono">
             <Block label="D" value={timeLeft.days} />
-            <span className="text-[#9b26b6] text-[1rem]">:</span>
+            <span className="text-[#7d1f97] text-[1rem]">:</span>
             <Block label="H" value={timeLeft.hours} />
-            <span className="text-[#9b26b6] text-[1rem]">:</span>
+            <span className="text-[#7d1f97] text-[1rem]">:</span>
             <Block label="M" value={timeLeft.minutes} />
-            <span className="text-[#9b26b6] text-[1rem]">:</span>
+            <span className="text-[#7d1f97] text-[1rem]">:</span>
 
             {/* === Seconds (animated pulse) === */}
             <AnimatePresence mode="popLayout">

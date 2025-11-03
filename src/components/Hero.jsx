@@ -83,7 +83,7 @@ export default function Hero({ setHeroVisible }) {
 
     const ui = {
         scrollText: inTestimonials ? "text-black" : "text-white",
-        scrollArrow: inTestimonials ? "border-black" : "border-[#9b26b6]",
+        scrollArrow: inTestimonials ? "border-black" : "border-[#7d1f97]",
     };
 
     return (
@@ -117,7 +117,7 @@ export default function Hero({ setHeroVisible }) {
                     onClick={handleWinNow}
                     className="win-now-fog relative flex justify-center items-center w-[150px] h-[56px]
                         text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
-                        bg-gradient-to-br from-[#9b26b6]/85 to-[#b14fc0]/70
+                        bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
                         rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
                         transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
                         hover:translate-y-[-4px] uppercase tracking-wider"
@@ -134,7 +134,7 @@ export default function Hero({ setHeroVisible }) {
                     onClick={handleGetStarted}
                     className="get-started-fog relative flex justify-center items-center w-[150px] h-[56px]
                         text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
-                        bg-gradient-to-br from-[#b14fc0]/85 to-[#9b26b6]/70
+                        bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
                         rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(177,79,192,0.7)]
                         transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
                         hover:translate-y-[-4px] uppercase tracking-wider"
@@ -154,7 +154,7 @@ export default function Hero({ setHeroVisible }) {
             >
                 <div
                     className="relative w[6.5cm] h-[2.3cm] rounded-[2cm]
-                        bg-gradient-to-br from-[#b14fc0] to-[#9b26b6]
+                        bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
                         shadow-[0_0_22px_rgba(155,38,182,0.75)]
                         flex justify-center items-center overflow-hidden animate-float"
                     style={{ width: "6.5cm", height: "2.3cm" }}
@@ -178,7 +178,7 @@ export default function Hero({ setHeroVisible }) {
                     >
                         PRESS PLAY
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#9b26b6]/40 to-[#b14fc0]/25 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#7d1f97]/40 to-[#952ca8]/25 pointer-events-none" />
                 </div>
             </div>
 

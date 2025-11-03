@@ -247,7 +247,7 @@ export function VideoModalProvider({ children }) {
                                             <div
                                                 className="absolute z-[9999] flex justify-center items-center 
                                                 w-[210px] h-[60px] text-white font-['Press_Start_2P'] text-[0.8rem]
-                                                cursor-pointer bg-gradient-to-br from-[#9b26b6]/85 to-[#b14fc0]/70
+                                                cursor-pointer bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
                                                 rounded-[1rem] border border-white/20
                                                 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
                                                 uppercase tracking-wider transition-all duration-[600ms]"
@@ -321,7 +321,7 @@ export function VideoModalProvider({ children }) {
                                         key="close-btn"
                                         onClick={closeVideo}
                                         className="absolute top-[3vh] right-[3vw] text-[3.5rem] text-white 
-                                            hover:text-[#9b26b6] font-light transition-all duration-300 
+                                            hover:text-[#7d1f97] font-light transition-all duration-300 
                                             z-[2147483650]"
                                         whileHover={{ rotate: 90, scale: 1.1 }}
                                         initial={{ opacity: 0 }}

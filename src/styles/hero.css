@@ -76,7 +76,7 @@
     width: 6.5cm;
     height: 2.3cm;
     border-radius: 50px;
-    background: linear-gradient(135deg,#b14fc0,#9b26b6);
+    background: linear-gradient(135deg,#952ca8,#7d1f97);
     box-shadow: 0 0 14px rgba(155,38,182,0.8);
     transition: transform 0.3s, box-shadow 0.3s;
 }
@@ -94,8 +94,8 @@
     margin: 8px auto 0;
     width: 10px;
     height: 10px;
-    border-right: 2px solid #9b26b6;
-    border-bottom: 2px solid #9b26b6;
+    border-right: 2px solid #7d1f97;
+    border-bottom: 2px solid #7d1f97;
     transform: rotate(45deg);
     animation: arrowBounce 2.5s ease-in-out infinite;
 }

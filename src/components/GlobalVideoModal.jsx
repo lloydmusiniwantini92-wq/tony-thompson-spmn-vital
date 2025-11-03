@@ -44,7 +44,7 @@ export default function GlobalVideoModal() {
                     {/* === Purple haze overlay === */}
                     <motion.div
                         className="absolute inset-0 pointer-events-none bg-gradient-to-br 
-                                   from-[#9b26b6]/25 via-transparent to-[#b14fc0]/25 z-[1]"
+                                   from-[#7d1f97]/25 via-transparent to-[#952ca8]/25 z-[1]"
                         animate={{ opacity: [0.3, 0.6, 0.3] }}
                         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                     />
@@ -53,7 +53,7 @@ export default function GlobalVideoModal() {
                     <motion.button
                         onClick={closeVideo}
                         className="fixed top-6 right-8 text-[4rem] leading-none text-white 
-                                   hover:text-[#9b26b6] transition-all duration-300
+                                   hover:text-[#7d1f97] transition-all duration-300
                                    drop-shadow-[0_0_10px_rgba(0,0,0,0.6)] z-[3]"
                         whileHover={{ rotate: 90 }}
                     >

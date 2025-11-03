@@ -42,10 +42,10 @@ export default function About() {
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-[1]" />
             <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-transparent z-[1]" />
-            <div className="absolute inset-0 bg-[#9b26b6]/10 mix-blend-overlay z-[2]" />
+            <div className="absolute inset-0 bg-[#7d1f97]/10 mix-blend-overlay z-[2]" />
 
             <motion.div
-                className="absolute left-1/2 top-0 w-[1px] h-full bg-gradient-to-b from-transparent via-[#9b26b6]/50 to-transparent blur-[1px] z-[2]"
+                className="absolute left-1/2 top-0 w-[1px] h-full bg-gradient-to-b from-transparent via-[#7d1f97]/50 to-transparent blur-[1px] z-[2]"
                 animate={{ opacity: [0.1, 0.3, 0.1], x: ["-30%", "50%", "130%"] }}
                 transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             />
@@ -87,7 +87,7 @@ export default function About() {
                     className="relative w-[210px] h-[60px] select-none cursor-pointer group
                         flex items-center justify-center overflow-hidden
                         rounded-[1rem] border border-white/20
-                        bg-gradient-to-br from-[#9b26b6]/85 to-[#b14fc0]/70
+                        bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
                         font-['Press_Start_2P'] text-[0.8rem] uppercase tracking-wider text-white
                         shadow-[0_10px_25px_rgba(155,38,182,0.7),inset_0_2px_6px_rgba(255,255,255,0.3)]
                         hover:shadow-[0_14px_35px_rgba(155,38,182,0.85),inset_0_2px_10px_rgba(255,255,255,0.4)]
@@ -118,7 +118,7 @@ export default function About() {
             </motion.div>
 
             <motion.div
-                className="absolute bottom-0 left-0 right-0 h-[20vh] bg-gradient-to-t from-[#9b26b6]/25 via-transparent to-transparent blur-3xl z-[1]"
+                className="absolute bottom-0 left-0 right-0 h-[20vh] bg-gradient-to-t from-[#7d1f97]/25 via-transparent to-transparent blur-3xl z-[1]"
                 animate={{ opacity: [0.1, 0.25, 0.1] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />

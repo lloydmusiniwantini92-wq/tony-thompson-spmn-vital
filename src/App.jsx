@@ -55,7 +55,7 @@ if (import.meta.env.MODE === "development" && !window.__FAST_DEBUG) {
     const log = (...a) =>
         console.log(
             `%c[DEBUG ${new Date().toISOString().split("T")[1].split(".")[0]}]`,
-            "color:#9b26b6;font-weight:bold",
+            "color:#7d1f97;font-weight:bold",
             ...a
         );
     log("🚀 Fast Debug Mode Ready");

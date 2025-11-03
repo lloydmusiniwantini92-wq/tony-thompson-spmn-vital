@@ -12,7 +12,7 @@
         text-center flex flex-col items-center z-[8]
         rounded-b-[2.4rem] overflow-hidden
         bg-gradient-to-b from-[#0a0a0a]/95 to-[#000]/85
-        border border-[#9b26b6]/50
+        border border-[#7d1f97]/50
         shadow-[0_0_25px_rgba(155,38,182,0.35)]
         backdrop-blur-[3.5px]
         sm:w-[11%] md:w-[10.8%] lg:w-[10.5%]
@@ -23,7 +23,7 @@
             }}
         >
             {/* LABEL */}
-            <p className="text-[#9b26b6] text-[0.48rem] md:text-[0.52rem] tracking-[0.15em] font-semibold mb-[0.25rem] uppercase w-full mt-[0.3rem]">
+            <p className="text-[#7d1f97] text-[0.48rem] md:text-[0.52rem] tracking-[0.15em] font-semibold mb-[0.25rem] uppercase w-full mt-[0.3rem]">
                 Limited Aspire Offer Ends In
             </p>
 
@@ -33,7 +33,7 @@
             </div>
 
             {/* Glowing overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#9b26b6]/15 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#7d1f97]/15 via-transparent to-transparent pointer-events-none" />
         </motion.div>
     )}
 </AnimatePresence>

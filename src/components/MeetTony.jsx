@@ -44,7 +44,7 @@ export default function MeetTony() {
                     className="absolute inset-0 w-full h-full object-cover object-center"
                 />
                 {/* soft purple overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#9b26b6]/60 via-[#000]/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#7d1f97]/60 via-[#000]/50 to-transparent" />
 
                 {/* Foreground content */}
                 <div className="relative z-[2] px-[6vw] max-w-[1000px] mt-[3cm]">
@@ -55,7 +55,7 @@ export default function MeetTony() {
                         className="text-[clamp(3rem,10vw,5rem)] font-extrabold uppercase leading-[0.9] flex flex-wrap justify-center gap-4"
                     >
                         <span className="text-white">MEET</span>
-                        <span className="text-[#b14fc0]">TONY</span>
+                        <span className="text-[#952ca8]">TONY</span>
                     </motion.h1>
 
                     <motion.p
@@ -67,7 +67,7 @@ export default function MeetTony() {
                     >
                         Tony Thompson, <span className="font-semibold">CMB</span>, began in HR with Fortune 100
                         companies before becoming a top mortgage originator and founding{" "}
-                        <span className="font-semibold text-[#b14fc0]">NAMMBA</span>, a national movement of
+                        <span className="font-semibold text-[#952ca8]">NAMMBA</span>, a national movement of
                         10 000 + members in a $2.9 T market.
                     </motion.p>
 
@@ -84,7 +84,7 @@ export default function MeetTony() {
                         <div
                             className="relative flex justify-center items-center w-[260px] h-[56px]
                                 text-white font-['Press_Start_2P'] text-[0.75rem] uppercase tracking-wider
-                                bg-gradient-to-br from-[#b14fc0]/85 to-[#9b26b6]/70
+                                bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
                                 rounded-[1rem] border border-white/20
                                 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
                                 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
@@ -102,7 +102,7 @@ export default function MeetTony() {
                ========================================================= */}
             <div className="hidden md:flex relative z-10 flex-1">
                 {/* LEFT COLUMN */}
-                <div className="w-1/3 bg-gradient-to-b from-[#9b26b6]/85 via-[#9b26b6]/70 to-[#b14fc0]/85 flex flex-col justify-between md:justify-center min-h-[60vh]">
+                <div className="w-1/3 bg-gradient-to-b from-[#7d1f97]/85 via-[#7d1f97]/70 to-[#952ca8]/85 flex flex-col justify-between md:justify-center min-h-[60vh]">
                     <div className="px-[6vw] py-[6vh] flex flex-col flex-1 text-white">
                         <motion.h1
                             variants={fadeUp}
@@ -155,7 +155,7 @@ export default function MeetTony() {
                             <div
                                 className="relative flex justify-center items-center w-[280px] h-[60px]
                                     text-white font-['Press_Start_2P'] text-[0.8rem] uppercase tracking-wider
-                                    bg-gradient-to-br from-[#b14fc0]/85 to-[#9b26b6]/70
+                                    bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
                                     rounded-[1rem] border border-white/20
                                     shadow-[0_10px_25px_rgba(155,38,182,0.7),inset_0_2px_6px_rgba(255,255,255,0.3)]
                                     transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
