@@ -2,9 +2,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/hero.css";
 import { useVideoModal } from "../context/VideoModalContext";
-import heroBG from "../assets/images/hero.jpg";
 import ScrollArrow from "./ScrollArrow";
 
+const heroBG = `${import.meta.env.BASE_URL}assets/hero.jpg`;
 const verticallo = `${import.meta.env.BASE_URL}videos/verticallo.mp4`;
 
 export default function Hero({ setHeroVisible }) {
@@ -95,7 +95,7 @@ export default function Hero({ setHeroVisible }) {
             <div
                 className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-[1]"
                 style={{
-                    backgroundImage: `url(${import.meta.env.BASE_URL + heroBG})`,
+                    backgroundImage: `url(${heroBG})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
