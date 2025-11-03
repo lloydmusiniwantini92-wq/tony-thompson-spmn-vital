@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Redirecting...</title>
-    <script type="text/javascript">
-        // GitHub Pages redirect for SPA (Vite + React)
-        const redirect = sessionStorage.redirect || "/";
-        delete sessionStorage.redirect;
-        const newUrl = window.location.origin + "/tony-thompson-spmn-vital" + redirect;
-        window.location.replace(newUrl);
+    <title>Redirecting…</title>
+    <script>
+        /* ✅  Universal GitHub Pages redirect for Vite / React */
+        (function () {
+            const repo = "/tony-thompson-spmn-vital"; // your repo name
+            const redirect = sessionStorage.redirect || location.pathname;
+            delete sessionStorage.redirect;
+
+            // Always send the visitor back to index.html under your repo folder
+            location.replace(repo + "/index.html?redirect=" + encodeURIComponent(redirect));
+        })();
     </script>
 </head>
 <body>
-    Redirecting...
+    Redirecting…
 </body>
 </html>

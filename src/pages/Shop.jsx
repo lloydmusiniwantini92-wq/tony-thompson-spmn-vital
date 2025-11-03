@@ -1,3 +1,4 @@
+// ✅ src/pages/Shop.jsx — SHOP heading visibly moved 2 cm down
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -16,26 +17,22 @@ export default function Shop() {
         },
     };
 
-    // === SMOOTH FADE NAVIGATION TO HOME TESTIMONIALS ===
     const handleGoToTestimonials = () => {
         if (isFading) return;
         setIsFading(true);
-
-        // Step 1: Fade out
         setTimeout(() => {
-            // Step 2: Navigate to home with target param
             navigate("/?target=#testimonials", { replace: true });
         }, 600);
-
-        // Step 3: Fade back in (after route & scroll are done)
-        setTimeout(() => {
-            setIsFading(false);
-        }, 1800);
+        setTimeout(() => setIsFading(false), 1800);
     };
+
+    // 1 cm ≈ 37.8 px → 1.5 cm ≈ 56.7 px → 2 cm ≈ 75.6 px
+    const imgOffset = 37.8 * 1.5; // still move the picture 1.5 cm up/left
+    const headingOffset = 37.8 * 2; // move heading 2 cm down
 
     return (
         <main className="relative w-full h-screen overflow-hidden bg-black text-white">
-            {/* === Background Image === */}
+            {/* === Background Image (moved 1.5 cm left & up) === */}
             <motion.img
                 src={tonyCap}
                 alt="Tony Cap Background"
@@ -43,13 +40,17 @@ export default function Shop() {
                 initial="hidden"
                 animate="visible"
                 className="absolute inset-0 w-full h-full object-cover object-center opacity-90"
-                style={{ filter: "brightness(1.05) contrast(1.05)" }}
+                style={{
+                    filter: "brightness(1.05) contrast(1.05)",
+                    transform: `scale(1.1) translate(${-imgOffset}px, ${-imgOffset}px)`,
+                    transition: "transform 1s ease-in-out",
+                }}
             />
 
             {/* === Overlay Gradient === */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-            {/* === Black Fade Overlay for Transition === */}
+            {/* === Fade Overlay for Transition === */}
             <AnimatePresence>
                 {isFading && (
                     <motion.div
@@ -67,18 +68,30 @@ export default function Shop() {
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.4, ease: [0.25, 1, 0.3, 1], delay: 0.8 }}
+                transition={{
+                    duration: 1.4,
+                    ease: [0.25, 1, 0.3, 1],
+                    delay: 0.8,
+                }}
                 className="relative z-10 flex flex-col items-center justify-center h-full text-center space-y-8"
             >
-                <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold text-[#9b26b6] tracking-tight drop-shadow-[0_0_18px_rgba(155,38,182,0.7)]">
+                {/* 🟣 SHOP Heading — now actually moved 2 cm down */}
+                <motion.h1
+                    animate={{ y: headingOffset }}
+                    transition={{ duration: 1.2, ease: [0.25, 1, 0.3, 1] }}
+                    className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold text-[#9b26b6]
+                     tracking-tight drop-shadow-[0_0_18px_rgba(155,38,182,0.7)]"
+                >
                     SHOP
-                </h1>
+                </motion.h1>
 
                 <button
                     onClick={handleGoToTestimonials}
-                    className="px-6 py-3 bg-[#9b26b6] text-white font-semibold rounded-xl hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(155,38,182,0.5)]"
+                    className="px-6 py-3 bg-[#9b26b6] text-white font-semibold rounded-xl
+                     hover:scale-105 transition-transform duration-300
+                     shadow-[0_0_20px_rgba(155,38,182,0.5)]"
                 >
-                    YOU WIN! 
+                    YOU WIN!
                 </button>
             </motion.div>
         </main>

@@ -1,4 +1,4 @@
-// ✅ src/pages/sections/TonyJourney.jsx — Cinematic Purple Edition (Matching “A JOURNEY BEYOND MASTERY”)
+// ✅ src/pages/sections/TonyJourney.jsx — Cinematic Purple Shimmer (40% Softer)
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useVideoModal } from "../../context/VideoModalContext";
@@ -92,7 +92,10 @@ export default function TonyJourney() {
 
                     {/* Edge fade + gradient blending */}
                     <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_65%,rgba(255,255,255,0.6)_100%)] mix-blend-soft-light" />
-                    <div className="absolute bottom-0 w-full h-[40%] bg-gradient-to-b from-transparent via-white/80 to-black/90" />
+
+                    {/* 🟣 Purple shimmer softened by ~40% */}
+                    <div className="absolute bottom-0 w-full h-[40%] bg-gradient-to-b from-transparent via-[#9b26b6]/50 to-black/90 pointer-events-none" />
+                    <div className="absolute bottom-0 w-full h-[40%] bg-gradient-to-r from-transparent via-[#b14fc0]/18 to-transparent animate-pulseGlow pointer-events-none" />
                 </div>
 
                 <div className="absolute inset-y-0 left-0 w-[12vw] bg-gradient-to-r from-white via-white/50 to-transparent pointer-events-none" />
