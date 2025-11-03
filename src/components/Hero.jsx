@@ -4,7 +4,7 @@ import "../styles/hero.css";
 import { useVideoModal } from "../context/VideoModalContext";
 import ScrollArrow from "./ScrollArrow";
 
-const heroBG = `${import.meta.env.BASE_URL}assets/hero.jpg`;
+const heroBG = `${import.meta.env.BASE_URL}assets/hero.jpg`; // ✅ FIXED PATH for GitHub Pages
 const verticallo = `${import.meta.env.BASE_URL}videos/verticallo.mp4`;
 
 export default function Hero({ setHeroVisible }) {
@@ -91,7 +91,7 @@ export default function Hero({ setHeroVisible }) {
             className="hero relative w-full h-screen flex items-center justify-center overflow-hidden"
             style={{ contain: "layout paint style" }}
         >
-            {/* === Background (fixed for GitHub Pages) === */}
+            {/* ✅ Background (fixed path for GitHub Pages) */}
             <div
                 className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-[1]"
                 style={{
@@ -110,7 +110,7 @@ export default function Hero({ setHeroVisible }) {
                     left-1/2 top-[calc(55%+4cm)] -translate-x-1/2 -translate-y-1/2 flex-row items-center justify-center
                     md:left-10 md:bottom-10 md:top-auto md:-translate-x-0 md:-translate-y-0 md:flex-row md:items-center md:justify-start
                 "
-                style={{ willChange: "transform" }}
+                style={{ willChange: 'transform' }}
             >
                 {/* WIN / NOW — uses fog */}
                 <div
@@ -160,7 +160,7 @@ export default function Hero({ setHeroVisible }) {
                         bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
                         shadow-[0_0_22px_rgba(155,38,182,0.75)]
                         flex justify-center items-center overflow-hidden animate-float"
-                    style={{ width: "6.5cm", height: "2.3cm" }}
+                    style={{ width: '6.5cm', height: '2.3cm' }}
                 >
                     <video
                         ref={videoRef}
@@ -172,6 +172,7 @@ export default function Hero({ setHeroVisible }) {
                         autoPlay
                     >
                         <source src={verticallo} type="video/mp4" />
+                        {/* ✅ Captions track (for Lighthouse accessibility) */}
                         <track
                             kind="captions"
                             srcLang="en"
