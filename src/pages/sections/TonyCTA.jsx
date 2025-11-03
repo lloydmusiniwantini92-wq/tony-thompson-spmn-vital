@@ -34,26 +34,29 @@ export default function TonyCTA() {
     }, [hovered]);
 
     /* =========================================================
-       🧭 Scroll or Navigate to PROGRAMS Section (Fog + cross-page fix)
+       🧭 Scroll or Navigate to PROGRAMS Section (Fixed)
        ========================================================= */
     const handleGoToPrograms = () => {
-        const target = "#programs";
+        console.log("🧭 YOU WIN clicked");
 
-        // === If already on homepage ===
-        if (window.location.pathname === "/") {
-            const el = document.querySelector(target);
+        const targetId = "programs";
+        const isHome = window.location.pathname === "/" || window.location.pathname.endsWith("/tony-thompson-spmn-vital/");
+
+        if (isHome) {
+            const el = document.getElementById(targetId);
             if (el) {
                 const lenis = window.lenis;
                 if (lenis) lenis.scrollTo(el, { duration: 1.3, offset: -40 });
                 else el.scrollIntoView({ behavior: "smooth" });
-                return;
+            } else {
+                console.warn("⚠️ Could not find #programs on page.");
             }
+        } else {
+            // Redirect to home and let App.jsx fade-scroll handle it
+            const params = new URLSearchParams();
+            params.set("target", targetId);
+            window.location.href = `${import.meta.env.BASE_URL}?${params.toString()}`;
         }
-
-        // === If on another page: use fade pre-mount scroll ===
-        const params = new URLSearchParams();
-        params.set("target", target);
-        window.location.href = `/?${params.toString()}`;
     };
 
     const TShape = ({ tiles, delay = 0 }) => (
@@ -65,7 +68,7 @@ export default function TonyCTA() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: delay + i * 0.1, duration: 0.6 }}
                     className="w-[100px] h-[100px] sm:w-[110px] sm:h-[110px] md:w-[120px] md:h-[120px]
-                        rounded-xl overflow-hidden shadow-[0_0_14px_rgba(0,0,0,0.3)]"
+            rounded-xl overflow-hidden shadow-[0_0_14px_rgba(0,0,0,0.3)]"
                 >
                     <motion.img
                         src={src}
@@ -84,7 +87,7 @@ export default function TonyCTA() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: delay + 0.3, duration: 0.6 }}
                     className="w-[100px] h-[100px] sm:w-[110px] sm:h-[110px] md:w-[120px] md:h-[120px]
-                        rounded-xl overflow-hidden shadow-[0_0_14px_rgba(0,0,0,0.3)]"
+            rounded-xl overflow-hidden shadow-[0_0_14px_rgba(0,0,0,0.3)]"
                 >
                     <motion.img
                         src={tiles[3]}
@@ -103,7 +106,7 @@ export default function TonyCTA() {
         <section
             id="cta"
             className="relative w-full min-h-screen flex flex-col justify-between items-center
-                bg-[#9b26b6] text-white overflow-hidden"
+        bg-[#9b26b6] text-white overflow-hidden"
         >
             {/* === Glow === */}
             <motion.div
@@ -119,8 +122,8 @@ export default function TonyCTA() {
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 1.6, ease: "easeOut" }}
                 className="absolute text-left font-['Press_Start_2P'] md:font-sans font-extrabold uppercase
-                    text-[clamp(2.2rem,6vw,6rem)] leading-[1] tracking-tight text-white
-                    drop-shadow-[0_0_20px_rgba(0,0,0,0.2)] z-[2]"
+          text-[clamp(2.2rem,6vw,6rem)] leading-[1] tracking-tight text-white
+          drop-shadow-[0_0_20px_rgba(0,0,0,0.2)] z-[2]"
                 style={{
                     top: "2.9cm",
                     left: "1.8cm",
@@ -132,14 +135,14 @@ export default function TonyCTA() {
             </motion.h2>
 
             {/* === Dual Ts === */}
-            <div style={{ position: "absolute", transform: "translate(12cm, 2cm)" }}>
+            <div style={{ position: "absolute", transform: "translate(13cm, 3.5cm)" }}>
                 <TShape tiles={topTiles} delay={0.1} />
             </div>
-            <div style={{ position: "absolute", transform: "translate(2cm, 10cm)" }}>
+            <div style={{ position: "absolute", transform: "translate(4cm, 12.5cm)" }}>
                 <TShape tiles={bottomTiles} delay={0.4} />
             </div>
 
-            {/* === YOU / WIN Button (now goes to Programs) === */}
+            {/* === YOU / WIN Button === */}
             <motion.div
                 onClick={handleGoToPrograms}
                 onMouseEnter={() => setHovered(true)}
@@ -151,11 +154,11 @@ export default function TonyCTA() {
                     boxShadow: "0 0 35px rgba(155,38,182,0.9)",
                 }}
                 transition={{ type: "spring", stiffness: 260, damping: 16 }}
-                className="absolute right-[16vw] bottom-[35.5vh]
-                    w-[100px] h-[100px] sm:w-[110px] sm:h-[110px] md:w-[120px] md:h-[120px]
-                    flex flex-col items-center justify-center
-                    rounded-xl border-2 border-white/40 text-white
-                    font-p2 text-[1rem] uppercase tracking-wider cursor-pointer select-none"
+                className="absolute right-[13.5vw] bottom-[23.9vh]
+          w-[100px] h-[100px] sm:w-[110px] sm:h-[110px] md:w-[120px] md:h-[120px]
+          flex flex-col items-center justify-center
+          rounded-xl border-2 border-white/40 text-white
+          font-p2 text-[1rem] uppercase tracking-wider cursor-pointer select-none"
             >
                 <motion.span
                     key={hovered ? "win" : "you"}
@@ -192,7 +195,7 @@ export default function TonyCTA() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-[30px] h-[30px] bg-black rounded-full flex items-center justify-center
-                                opacity-85 hover:opacity-100 transition"
+                opacity-85 hover:opacity-100 transition"
                         >
                             <Icon size={16} />
                         </a>
@@ -205,12 +208,12 @@ export default function TonyCTA() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="absolute bottom-[1.5cm] right-[1.5cm]"
+                className="absolute bottom-[1cm] right-[1cm]"
             >
                 <img
                     src={logoTT}
                     alt="Tony Thompson Logo"
-                    className="w-[180px] sm:w-[200px] md:w-[220px] object-contain opacity-95"
+                    className="w-[180px] sm:w-[80px] md:w-[80px] object-contain opacity-95"
                 />
             </motion.div>
         </section>

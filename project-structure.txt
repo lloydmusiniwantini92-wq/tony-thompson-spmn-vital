@@ -1,0 +1,213 @@
+        - applicationhost.config
+          - CodeChunks.db
+          - SemanticSymbols.db
+          - CodeChunks.db
+          - CodeChunks.db-shm
+          - CodeChunks.db-wal
+          - SemanticSymbols.db
+          - SemanticSymbols.db-shm
+          - SemanticSymbols.db-wal
+        - 1bd6af0c-fe38-4339-aa2c-8bbedd1da0b7.vsidx
+        - 46ba2899-546d-4c49-8703-53df9f0656c3.vsidx
+        - 61287aa3-8e91-4ba8-a985-9b03b4175724.vsidx
+        - 8c3a4fb6-59ad-47e8-81e4-ac20e314c5ab.vsidx
+        - f3d14d7c-96fd-4f64-914e-75d15865d975.vsidx
+        - DocumentLayout.backup.json
+        - DocumentLayout.json
+    - slnx.sqlite
+    - VSWorkspaceState.json
+      - footerForm.pdf
+      - t1.jpg
+      - t2.jpg
+      - t3.jpg
+      - untitled-00581.jpg
+      - untitled-00864.jpg
+      - untitled-00879.jpg
+      - Journey.mp4
+      - tonyWin.mp4
+      - tonywin_optimized.mp4
+      - tonywin_optimized.webm
+      - verticallo.mp4
+      - verticallo.mp445
+      - verticallo_optimized.mp4
+      - verticallo_optimized.webm
+    - hero-bg.png
+    - logo.svg
+    - manifest.json
+    - Tony_Thompson_Website_Copy Extract.docx
+        - .png
+        - 2k_plus.svg
+        - 4V3A5112- Silo.png
+        - AboutHero.png
+        - adhd-ally.zip
+        - aspire-button.png
+        - Asset 50@1x (1).png
+        - Asset 50@1x (2).png
+        - Asset 50@1x.png
+        - Asset 51@1x.png
+        - HERO PIC.jpg
+        - hero.jpg
+        - j1.jpg
+        - j2.jpg
+        - j3.jpg
+        - j4.jpg
+        - komba1.jpg
+        - komba2.jpg
+        - komba3.jpg
+        - komba4.jpg
+        - komba5.jpg
+        - logoFull.png
+        - logoFull4.png
+        - logoTT.png
+        - meet tony.png
+        - meetTony.jpg
+        - Mine Acres.docx
+        - mine-acres-operations-dashboard (1).zip
+        - mine-acres-operations-dashboard (2).zip
+        - mine-acres-operations-dashboard.zip
+        - mission.jpg
+        - mzhandu1.jpg
+        - mzhandu2.jpg
+        - Screenshot 2025-09-25 194256.png
+        - texture@1x.png
+        - Tony Thompson - Bio Pic 2022 2.png
+        - tony-cta.jpg
+        - tony-cta2.jpg
+        - tony-cta3.jpg
+        - tonyCap.jpg
+        - tony_full.png
+        - TT - C25 - Puple Blazer Silo.psd
+        - TT - C25-silo - Purple Jacket.png
+        - untitled-00129.jpg
+        - untitled-00217.jpg
+        - untitled-00220.jpg
+        - untitled-00227.jpg
+        - untitled-00385.jpg
+        - untitled-00488.jpg
+        - untitled-00825.jpg
+        - untitled-00879.jpg
+        - upscaled ntozi.png
+        - inman.png
+        - mba.png
+        - mpa.jpg
+        - namb.png
+        - nmn.png
+        - scotsman.png
+        - logoFull.png
+        - logoTT.png
+        - step1.jpg
+        - step1.png
+        - step14.png
+        - step2.jpg
+        - step2.png
+        - step3.jpg
+        - step3.png
+        - step4.jpg
+        - step5.jpg
+        - testimonial1.png
+        - testimonial2.png
+        - testimonial3.png
+        - testimonial4.png
+        - testimonialBG.jpg
+        - testimonialVideo1.mp4
+        - testimonialVideo2.mp4
+        - testimonialVideo3.mp4
+        - testimonialVideo4.mp4
+        - tonywin_optimized.mp4
+        - tonywin_optimized.webm
+        - tony_about.mp4
+      - 4kTony.png
+      - About.jsx
+      - AspireCountdown.jsx
+      - Benefits.jsx
+      - EmailRewardForm.jsx
+      - FixedLayer.jsx
+      - Footer.jsx
+      - GlobalOverlay.jsx
+      - GlobalVideoModal.jsx
+      - Hero.jsx
+      - MeetTony.jsx
+      - Navbar.jsx
+      - NotFound.jsx
+      - Offer.jsx
+      - QuizFooter.jsx
+      - QuizIntro.jsx
+      - Reveal.jsx
+      - RevealFadeSection.jsx
+      - ScrollArrow.jsx
+      - ScrollFog.jsx
+      - ScrollToTop.jsx
+      - SectionFade.jsx
+      - TestimonialPage.jsx
+      - Testimonials.jsx
+      - TetrisCountdown.jsx
+      - TierList.jsx
+      - useEmailReward.js
+      - VideoModal.jsx
+      - VideoSection.jsx
+      - QuizOverlayContext.jsx
+      - VideoModalContext.jsx
+      - useAboutHandlers.js
+      - useHeroHandlers.js
+      - useSmoothNavigate.js
+        - AboutTonyHero.jsx
+        - PartnersShowcase.jsx
+        - TonyCTA.jsx
+        - TonyImpact.jsx
+        - TonyJourney.jsx
+        - TonyMission.jsx
+        - TonyVoices.jsx
+      - AboutTony.jsx
+      - Go.jsx
+      - Home.jsx
+      - LetsWin.jsx
+      - PrivacyPolicy.jsx
+      - Quiz.jsx
+      - Shop.jsx
+      - Terms.jsx
+      - TestimonialDetail.jsx
+      - ThankYou.jsx
+      - about.css
+      - footer.css
+      - globals.css
+      - hero.css
+      - revealFade.css
+      - testimonials.css
+      - tonyVoices.css
+      - _zmap.css
+      - constants.js
+      - countdown.js
+      - fadeStyles.js
+      - forceTop.js
+      - helpers.js
+      - safeScroll.js
+      - smoothFadeScroll.js
+      - useScrollSpy.js
+    - App.jsx
+    - Bank account confirmation letter.pdf
+    - index.css
+    - main.jsx
+    - NAMMBA CONNECT 2023 -2-257.jpg
+    - NAMMBA CONNECT 2023 -3-365.jpg
+    - NAMMBA CONNECT 2023 -3-367.jpg
+    - NAMMBA CONNECT 2023 -4-395.jpg
+    - NAMMBA CONNECT 2023 -5-558.jpg
+    - NAMMBA CONNECT 2023 -5-588.jpg
+    - TT - C25-silo - Purple Jacket.png
+  - backup.js
+  - favicon.ico
+  - folder-structure.txt
+  - index.html
+  - netlify.toml
+  - package-lock.json
+  - package.json
+  - postcss.config.js
+  - README.md
+  - restore.js
+  - server.js
+  - structure.txt
+  - tailwind.config.js
+  - vite-banner.js
+  - vite.config.js
+  - vite.config.js.timestamp-1761684490076-3dd905a07fea7.mjs
+

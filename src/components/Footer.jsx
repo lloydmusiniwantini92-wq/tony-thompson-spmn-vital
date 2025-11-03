@@ -80,7 +80,7 @@ export default function Footer() {
     // === Reward download ===
     const handleDownload = () => {
         const link = document.createElement("a");
-        link.href = "/assets/footerFormPDF.pdf";
+        link.href = "/tony-thompson-spmn-vital/assets/footerForm.pdf"; // <-- add base path
         link.download = "TonyThompson_NetworkGuide.pdf";
         document.body.appendChild(link);
         link.click();
@@ -88,6 +88,7 @@ export default function Footer() {
         localStorage.setItem("tonyRewardDownloaded", "true");
         setHasReward(true);
     };
+
 
     return (
         <footer id="contact" className="text-white font-sans bg-[#111] flex flex-col relative">

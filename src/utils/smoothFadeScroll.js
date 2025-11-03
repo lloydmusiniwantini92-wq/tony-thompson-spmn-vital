@@ -1,88 +1,92 @@
-import { dreamyOverlayStyle, animateDreamyPulse } from "./fadeStyles.js";
-
+// ✅ src/utils/smoothFadeScroll.js — Same hamburger fog, now fades out faster
 export async function smoothFadeScroll(targetSelector, duration = 1000) {
     return new Promise((resolve) => {
-        console.log("🌫️ smoothFadeScroll start for", targetSelector);
+        console.log("🌫️ smoothFadeScroll triggered for", targetSelector);
 
-        // === 1. Create overlay ===
-        const overlay = document.createElement("div");
-        overlay.id = "fade-scroll-overlay";
-        Object.assign(overlay.style, {
+        // Clean up any leftover fog overlays
+        document.querySelectorAll("#fade-preoverlay, #scroll-fog-overlay").forEach((el) => el.remove());
+
+        // Create fog identical to hamburger overlay
+        const fog = document.createElement("div");
+        fog.id = "scroll-fog-overlay";
+        Object.assign(fog.style, {
             position: "fixed",
             inset: "0",
-            zIndex: "999999",
-            opacity: "0",
+            zIndex: "2147483645",
             pointerEvents: "auto",
-            transition: `opacity ${duration / 2}ms ease`,
-            ...dreamyOverlayStyle,
+            opacity: "0",
+            transition: "opacity 0.9s ease-out",
+            background:
+                "radial-gradient(circle at center, rgba(155,38,182,0.3) 0%, rgba(40,0,60,0.95) 70%, rgba(0,0,0,0.98) 100%)",
         });
-        document.body.appendChild(overlay);
-        animateDreamyPulse(overlay);
+        document.body.appendChild(fog);
 
-        // === 2. Fade IN ===
-        requestAnimationFrame(() => (overlay.style.opacity = "1"));
+        // Fade in immediately
+        requestAnimationFrame(() => (fog.style.opacity = "1"));
 
-        // === Helper: Wait for element + Lenis + DOM settled ===
+        // Helper: wait until Lenis + target ready
         const waitForReady = async (selector, timeout = 20000) => {
             const start = performance.now();
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 const tick = () => {
                     const el =
                         document.getElementById(selector.replace(/^#/, "")) ||
                         document.querySelector(selector);
                     const lenisReady = !!window.lenis;
-                    const hero = document.querySelector("#home");
-                    const heroDone =
-                        hero && hero.getBoundingClientRect().bottom > 200;
-                    if (el && lenisReady && heroDone) return resolve(el);
+                    const domReady = document.readyState === "complete";
+                    if (el && lenisReady && domReady) return resolve(el);
                     if (performance.now() - start < timeout)
                         return requestAnimationFrame(tick);
-                    reject(new Error("Timeout waiting for ready state"));
+                    console.warn("⚠️ Timeout waiting for target:", selector);
+                    resolve(null);
                 };
                 tick();
             });
         };
 
-        // === 3. After fade-in, start checking for readiness ===
+        // Fog clear helper
+        const clearFog = () => {
+            fog.style.opacity = "0";
+            setTimeout(() => {
+                fog.remove();
+                console.log("🌫️ Fog cleared ✅");
+                resolve();
+            }, 600); // faster fade-out (was 900)
+        };
+
+        // Start after slight delay
         setTimeout(async () => {
-            try {
-                const el = await waitForReady(targetSelector);
-                console.log("✅ Ready — scrolling to", el?.id);
-                const lenis = window.lenis;
+            const el = await waitForReady(targetSelector);
+            if (!el) return clearFog();
 
-                if (lenis) {
-                    // Perform scroll smoothly
-                    lenis.scrollTo(el, { duration: 1.5, offset: -20 });
+            const lenis = window.lenis;
+            let cleared = false;
 
-                    // Wait for scrollEnd before fade-out
-                    const onScrollEnd = () => {
-                        lenis.off("scrollEnd", onScrollEnd);
-                        overlay.style.opacity = "0";
-                        setTimeout(() => {
-                            overlay.remove();
-                            console.log("🌫️ Fog removed (after scrollEnd)");
-                            resolve();
-                        }, duration);
-                    };
-                    lenis.on("scrollEnd", onScrollEnd);
-                } else {
-                    console.warn("⚠️ Lenis missing, fallback scroll");
-                    el.scrollIntoView({ behavior: "smooth" });
-                    setTimeout(() => {
-                        overlay.style.opacity = "0";
-                        setTimeout(() => {
-                            overlay.remove();
-                            resolve();
-                        }, duration / 2);
-                    }, 1500);
-                }
-            } catch (err) {
-                console.warn("⚠️ smoothFadeScroll fallback:", err);
-                overlay.style.opacity = "0";
+            if (lenis) {
+                console.log("🌀 Lenis scrollTo", targetSelector);
+
+                const handleScrollEnd = () => {
+                    if (cleared) return;
+                    cleared = true;
+                    clearFog();
+                    lenis.off("scrollEnd", handleScrollEnd);
+                };
+
+                lenis.on("scrollEnd", handleScrollEnd);
+
+                // Start scroll after hero stable
                 setTimeout(() => {
-                    overlay.remove();
-                    resolve();
-                }, duration / 2);
+                    lenis.scrollTo(el, { duration: 2.2, offset: -40 });
+                }, 800);
+
+                // 🕓 Shorter safety timeout (was 7000 → now 3000)
+                setTimeout(() => {
+                    if (!cleared) clearFog();
+                }, 3000);
+            } else {
+                // fallback smooth scroll
+                el.scrollIntoView({ behavior: "smooth" });
+                setTimeout(clearFog, 1800);
             }
         }, duration / 2);
     });

@@ -1,4 +1,3 @@
-// ✅ src/context/VideoModalContext.jsx — with TT logo top-left and Spacebar Play/Pause
 import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -59,7 +58,7 @@ export function VideoModalProvider({ children }) {
         const handleKeyDown = (e) => {
             if (!videoSrc || !videoRef.current) return;
             if (e.code === "Space" || e.key === " ") {
-                e.preventDefault(); // prevent page scroll
+                e.preventDefault();
                 togglePlay();
             }
         };
@@ -136,20 +135,44 @@ export function VideoModalProvider({ children }) {
     const handleMouseMove = () => resetUITimer();
     const handleTouchStart = () => resetUITimer();
 
+    /* === START NOW (with fog scroll) === */
     const handleStartNow = () => {
         closeVideo();
+
         setTimeout(() => {
-            if (window.location.pathname === "/") {
+            const fog = window.triggerGlobalFog;
+            const lenis = window.lenis;
+            const performScroll = () => {
                 const el = document.querySelector("#programs");
-                if (el)
-                    window.lenis
-                        ? window.lenis.scrollTo(el, { duration: 1.4, offset: -60 })
-                        : el.scrollIntoView({ behavior: "smooth", block: "start" });
+                if (!el) return;
+                if (lenis) lenis.scrollTo(el, { duration: 1.4, offset: -60 });
+                else el.scrollIntoView({ behavior: "smooth", block: "start" });
+            };
+
+            // ✅ Check if already on home page with #programs available
+            const onHome =
+                window.location.pathname === "/" ||
+                window.location.pathname.endsWith("/tony-thompson-spmn-vital/");
+
+            const targetExists = document.querySelector("#programs");
+
+            if (typeof fog === "function") {
+                fog(() => {
+                    if (onHome && targetExists) {
+                        // Direct smooth fog scroll from anywhere on homepage
+                        performScroll();
+                    } else {
+                        // Navigate to home with ?target fallback
+                        window.location.href = `${import.meta.env.BASE_URL}?target=programs`;
+                    }
+                });
             } else {
-                window.location.href = "/#programs";
+                if (onHome && targetExists) performScroll();
+                else window.location.href = `${import.meta.env.BASE_URL}?target=programs`;
             }
         }, 300);
     };
+
 
     return (
         <VideoModalContext.Provider value={{ openVideo, closeVideo, videoSrc }}>
@@ -176,7 +199,7 @@ export function VideoModalProvider({ children }) {
                                 backdropFilter: "blur(80px)",
                             }}
                         >
-                            {/* === VIDEO CONTAINER === */}
+                            {/* === VIDEO === */}
                             <motion.div
                                 className="relative w-[95vw] h-[90vh] rounded-[20px] overflow-hidden bg-black flex items-center justify-center"
                                 initial={{ scale: 0.95, opacity: 0 }}
@@ -185,7 +208,6 @@ export function VideoModalProvider({ children }) {
                                 transition={{ duration: 0.5 }}
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                {/* ✅ TT ICON top-left inside modal */}
                                 <div
                                     className="absolute top-[1.5vh] left-[0.5vw] z-[2147483650]"
                                     onClick={(e) => e.stopPropagation()}
@@ -224,11 +246,11 @@ export function VideoModalProvider({ children }) {
                                         >
                                             <div
                                                 className="absolute z-[9999] flex justify-center items-center 
-                          w-[210px] h-[60px] text-white font-['Press_Start_2P'] text-[0.8rem]
-                          cursor-pointer bg-gradient-to-br from-[#9b26b6]/85 to-[#b14fc0]/70
-                          rounded-[1rem] border border-white/20
-                          shadow-[0_10px_25px_rgba(155,38,182,0.7)]
-                          uppercase tracking-wider transition-all duration-[600ms]"
+                                                w-[210px] h-[60px] text-white font-['Press_Start_2P'] text-[0.8rem]
+                                                cursor-pointer bg-gradient-to-br from-[#9b26b6]/85 to-[#b14fc0]/70
+                                                rounded-[1rem] border border-white/20
+                                                shadow-[0_10px_25px_rgba(155,38,182,0.7)]
+                                                uppercase tracking-wider transition-all duration-[600ms]"
                                                 style={{
                                                     top: "80%",
                                                     left: "50%",
@@ -299,8 +321,8 @@ export function VideoModalProvider({ children }) {
                                         key="close-btn"
                                         onClick={closeVideo}
                                         className="absolute top-[3vh] right-[3vw] text-[3.5rem] text-white 
-                      hover:text-[#9b26b6] font-light transition-all duration-300 
-                      z-[2147483650]"
+                                            hover:text-[#9b26b6] font-light transition-all duration-300 
+                                            z-[2147483650]"
                                         whileHover={{ rotate: 90, scale: 1.1 }}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}

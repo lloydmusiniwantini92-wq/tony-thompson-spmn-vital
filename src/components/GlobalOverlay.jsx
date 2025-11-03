@@ -1,11 +1,11 @@
-// ✅ src/components/GlobalOverlay.jsx — Foolproof Active Section Highlight (Stable ScrollSpy Integration, Faster Cascade)
+// ✅ src/components/GlobalOverlay.jsx — merged: cinematic fog + funnel map + background interactivity + click-outside close
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 import logoFull from "../assets/images/logoFull.png";
 import logoTT from "../assets/images/logoTT.png";
-import useScrollSpy from "../utils/useScrollSpy"; // ✅ added
+import useScrollSpy from "../utils/useScrollSpy";
 
 export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
     const navigate = useNavigate();
@@ -36,20 +36,36 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         const saved = sessionStorage.getItem("activeSection");
         if (saved && !lastClicked.current) setActiveSection(saved);
     }, []);
-
     useEffect(() => {
         if (activeSection) sessionStorage.setItem("activeSection", activeSection);
     }, [activeSection]);
 
-    /* === Reliable Active Section Tracker (ScrollSpy) === */
+    /* === ScrollSpy + funnel mapping === */
     const selectors = [
-        "#home", "#meet-tony", "#about",
-        "#testimonials", "#programs", "#contact", "#enquiries"
+        "#home",
+        "#meet-tony",
+        "#about",
+        "#testimonials",
+        "#programs",
+        "#contact",
+        "#enquiries",
     ];
     const { active, lock } = useScrollSpy(selectors, { sample: 0.45, lockMs: 1000 });
 
     useEffect(() => {
         const path = location.pathname;
+
+        // 🟣 Keep WIN NOW active through all quiz/funnel pages
+        if (
+            path.startsWith("/lets-win") ||
+            path.startsWith("/quiz-intro") ||
+            path.startsWith("/go") ||
+            path.startsWith("/thank-you")
+        ) {
+            setActiveSection("#about");
+            return;
+        }
+
         if (path.startsWith("/about-tony")) {
             setActiveSection("#meet-tony");
             return;
@@ -61,20 +77,20 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         if (path === "/" && active) {
             setActiveSection(active);
             sessionStorage.setItem("activeSection", active);
-        } else if (path !== "/") {
-            setActiveSection("#home");
+            return;
         }
+        setActiveSection("#home");
     }, [active, location.pathname]);
 
-    /* === Menu Cascade Animation (FASTER) === */
+    /* === Cascade animation === */
     useEffect(() => {
         const menu = menuRef.current;
         const items = menu?.querySelectorAll(".menu-item");
         const hamburger = hamburgerRef.current;
         if (!menu || !items) return;
 
-        const duration = 1100; // ⚡ faster
-        const stagger = 140;   // ⚡ tighter cascade
+        const duration = 1100;
+        const stagger = 140;
         const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
         if (menuOpen) {
@@ -114,12 +130,12 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         }
     }, [menuOpen]);
 
-    /* === Click outside to close === */
+    /* === Click-outside to close === */
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (
                 menuOpen &&
-                overlayRef.current &&
+                menuRef.current &&
                 !menuRef.current.contains(e.target) &&
                 !hamburgerRef.current.contains(e.target)
             ) {
@@ -130,43 +146,59 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         return () => document.removeEventListener("mousedown", handleClickOutside, true);
     }, [menuOpen]);
 
-    /* === Reliable Fog Initialization === */
+    /* === Global cinematic fog === */
     useEffect(() => {
         const fade = fadeRef.current;
         if (!fade) return;
 
         window.triggerGlobalFog = (scrollAction) => {
-            fade.style.transition = "opacity 0.9s ease-out";
+            // Quick fade-in, scroll starts immediately
+            fade.style.transition = "opacity 0.6s ease-out";
             fade.style.opacity = 1;
             fade.style.pointerEvents = "auto";
-            setTimeout(() => scrollAction?.(), 600);
+
+            // scroll fires right away
+            scrollAction?.();
+
+            // linger slightly longer (~2.8s total visible fog)
             setTimeout(() => {
+                fade.style.transition = "opacity 1s ease-in-out";
                 fade.style.opacity = 0;
-                setTimeout(() => (fade.style.pointerEvents = "none"), 900);
-            }, 2500);
+                setTimeout(() => (fade.style.pointerEvents = "none"), 1000);
+            }, 1800); // hold for 1 second longer before fade-out
         };
     }, []);
 
-    /* === Handle Nav Clicks === */
+
+
+
+
+
+    const triggerFogScrollTo = (target) => {
+        if (typeof window.triggerGlobalFog !== "function") return;
+        window.triggerGlobalFog(() => {
+            const lenis = window.lenis;
+            const el = document.querySelector(target);
+            if (el && lenis) lenis.scrollTo(el, { duration: 1.4 });
+            else el?.scrollIntoView({ behavior: "smooth" });
+        });
+    };
+
+    /* === Handle nav click with full fog wrap === */
     const handleNavClick = (hashOrPath) => {
         lock();
         lastClicked.current = hashOrPath;
-        if (typeof window.triggerGlobalFog !== "function") return navigate(hashOrPath);
         window.triggerGlobalFog(() => {
             const lenis = window.lenis;
-            const performScroll = () => {
-                const el = document.querySelector(hashOrPath);
-                if (!el) return;
-                if (lenis) lenis.scrollTo(el, { duration: 1.4 });
-                else el.scrollIntoView({ behavior: "smooth" });
-            };
             if (hashOrPath.startsWith("/")) {
                 navigate(hashOrPath);
                 setMenuOpen(false);
                 return;
             }
             if (window.location.pathname === "/") {
-                performScroll();
+                const el = document.querySelector(hashOrPath);
+                if (el && lenis) lenis.scrollTo(el, { duration: 1.4 });
+                else el?.scrollIntoView({ behavior: "smooth" });
                 setMenuOpen(false);
                 return;
             }
@@ -178,73 +210,73 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                 const lenisReady = !!window.lenis;
                 if (heroReady && targetReady && lenisReady) {
                     clearInterval(waitForHero);
-                    setTimeout(() => performScroll(), 400);
+                    setTimeout(() => triggerFogScrollTo(hashOrPath), 300);
                 }
             }, 150);
             setTimeout(() => clearInterval(waitForHero), 8000);
         });
     };
 
-    /* === GET/STARTED + WIN/NOW Fogless Scroll === */
+    /* === WIN / GET buttons reuse fog === */
     useEffect(() => {
-        const buttons = document.querySelectorAll(".get-started, .win-now");
         const fade = fadeRef.current;
+        const buttons = document.querySelectorAll(".get-started, .win-now, .cta-win, .cta-get");
         const handleClick = (e) => {
-            e.stopPropagation();
-            if (fade) {
-                fade.style.opacity = "0";
-                fade.style.pointerEvents = "none";
-            }
+            e.preventDefault();
             const lenis = window.lenis;
-            const target = e.currentTarget.classList.contains("win-now")
-                ? document.querySelector("#programs")
-                : document.querySelector("#about");
-            if (target) {
-                if (lenis) lenis.scrollTo(target, { duration: 1.3 });
-                else target.scrollIntoView({ behavior: "smooth" });
-            }
+            const target =
+                e.currentTarget.classList.contains("win-now") ||
+                    e.currentTarget.classList.contains("cta-win")
+                    ? "#programs"
+                    : "#about";
+            if (!fade || !window.triggerGlobalFog) return;
+            window.triggerGlobalFog(() => {
+                const el = document.querySelector(target);
+                if (el && lenis) lenis.scrollTo(el, { duration: 1.4 });
+                else el?.scrollIntoView({ behavior: "smooth" });
+            });
         };
-        buttons.forEach((btn) => btn.addEventListener("click", handleClick));
-        return () => buttons.forEach((btn) => btn.removeEventListener("click", handleClick));
+        buttons.forEach((b) => b.addEventListener("click", handleClick));
+        return () => buttons.forEach((b) => b.removeEventListener("click", handleClick));
     }, []);
 
-    /* === Hamburger Button === */
+    /* === Hamburger button === */
     const HamburgerButton = (
         <button
             ref={hamburgerRef}
             onClick={() => setMenuOpen(!menuOpen)}
             id="hamburger"
             className="pointer-events-auto fixed top-[25px] right-[25px]
-                flex flex-col justify-between w-[52px] h-[34px]
-                transition-transform duration-300 z-[2147483648]"
+                 flex flex-col justify-between w-[52px] h-[34px]
+                 transition-transform duration-300 z-[2147483648]"
         >
             <span className="bar top" />
             <span className="bar middle" />
             <span className="bar bottom" />
             <style>{`
-                #hamburger .bar {
-                    display: block;
-                    width: 52px;
-                    background-color: ${menuOpen ? "#000" : "#fff"};
-                    border-radius: 2.5px;
-                    margin: 5px 0;
-                    transition:
-                        transform 0.45s cubic-bezier(0.25,1.15,0.35,1),
-                        opacity 0.3s ease,
-                        background-color 0.3s ease;
-                    transform-origin: center;
-                }
-                #hamburger .bar.top, #hamburger .bar.bottom { height: 5.5px; }
-                #hamburger .bar.middle { height: 2px; opacity: 0.95; }
-                #hamburger.active .bar.top { transform: rotate(43deg) translate(9px, 9px); }
-                #hamburger.active .bar.middle { opacity: 0; transform: scaleX(0.6); }
-                #hamburger.active .bar.bottom { transform: rotate(-43deg) translate(9px, -9px); }
-                #hamburger:hover { transform: scale(1.08); }
-            `}</style>
+        #hamburger .bar {
+          display: block;
+          width: 52px;
+          background-color: ${menuOpen ? "#000" : "#fff"};
+          border-radius: 2.5px;
+          margin: 5px 0;
+          transition:
+            transform 0.45s cubic-bezier(0.25,1.15,0.35,1),
+            opacity 0.3s ease,
+            background-color 0.3s ease;
+          transform-origin: center;
+        }
+        #hamburger .bar.top, #hamburger .bar.bottom { height: 5.5px; }
+        #hamburger .bar.middle { height: 2px; opacity: 0.95; }
+        #hamburger.active .bar.top { transform: rotate(43deg) translate(9px, 9px); }
+        #hamburger.active .bar.middle { opacity: 0; transform: scaleX(0.6); }
+        #hamburger.active .bar.bottom { transform: rotate(-43deg) translate(9px, -9px); }
+        #hamburger:hover { transform: scale(1.08); }
+      `}</style>
         </button>
     );
 
-    /* === Render Nav Items === */
+    /* === Render menu items === */
     const renderItems = (items) =>
         items.map(({ label, link }) => {
             const isActive = activeSection === link;
@@ -253,7 +285,11 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                 <button
                     key={label}
                     onClick={() => handleNavClick(link)}
-                    className="menu-item relative text-left font-[900] uppercase leading-[1.05] text-[clamp(2rem,3.5vw,2.8rem)] tracking-tight"
+                    className="menu-item relative text-left font-[900] uppercase leading-[1.05]
+                     text-[clamp(2rem,3.5vw,2.8rem)] tracking-tight
+                     transition-all duration-400 ease-[cubic-bezier(0.25,1,0.3,1)]
+                     hover:translate-x-[10px] hover:text-white
+                     hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]"
                     style={{
                         opacity: 0,
                         transform: "translateY(60px)",
@@ -306,7 +342,7 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                         transition:
                             "opacity 0.9s ease-in-out 0.15s, transform 0.9s ease-in-out 0.15s",
                     }}
-                ></div>
+                />
                 <img
                     src={logoFull}
                     alt="Tony Thompson Full"
@@ -320,13 +356,12 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                 />
             </div>
 
-            {/* === Menu === */}
+            {/* === Menu Overlay === */}
             <div
                 ref={overlayRef}
                 id="global-overlay"
-                className="fixed inset-0 z-[2147483646]"
+                className="fixed inset-0 z-[2147483646] pointer-events-none"
                 style={{
-                    pointerEvents: menuOpen ? "auto" : "none",
                     opacity: menuOpen ? 1 : 0,
                     transition: "opacity 1.2s ease-in-out",
                 }}
@@ -334,12 +369,13 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                 <div
                     ref={menuRef}
                     className={`menu-overlay fixed top-0 right-0 h-screen w-full md:w-[40%]
-                        bg-gradient-to-br from-[#9b26b6] to-[#b14fc0]
-                        flex flex-col items-start justify-start
-                        pl-[4.5cm] pr-[1cm] pt-[1cm]
-                        transition-transform duration-[1500ms]
-                        ease-[cubic-bezier(0.25,1,0.3,1)]
-                        ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+                      bg-gradient-to-br from-[#9b26b6] to-[#b14fc0]
+                      flex flex-col items-start justify-start
+                      pl-[4.5cm] pr-[1cm] pt-[1cm]
+                      transition-transform duration-[1500ms]
+                      ease-[cubic-bezier(0.25,1,0.3,1)]
+                      ${menuOpen ? "translate-x-0" : "translate-x-full"}
+                      pointer-events-auto`}
                     style={{
                         overflow: "hidden",
                         backdropFilter: "blur(36px) saturate(1.3)",
@@ -353,14 +389,12 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                             opacity: 0.8,
                             mixBlendMode: "soft-light",
                         }}
-                    ></div>
-
+                    />
                     <div className="flex flex-col w-full mt-[0.5cm] relative z-10">
                         {renderItems(navItems.slice(0, 6))}
                         <div className="w-[80%] h-[1px] bg-white/30 my-6"></div>
                         {renderItems(navItems.slice(6))}
                     </div>
-
                     <div
                         className={`absolute bottom-[1.6rem] left-1/2 -translate-x-1/2 flex flex-col items-center ${cascadeDone ? "opacity-100" : "opacity-0"
                             } transition-all duration-[1300ms]`}
@@ -374,8 +408,8 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                                     key={i}
                                     href="#"
                                     className="w-[26px] h-[26px] rounded-full flex items-center justify-center
-                                        bg-white hover:bg-[#9b26b6] transition-all duration-500
-                                        shadow-[0_2px_6px_rgba(255,255,255,0.25)] hover:scale-110 active:scale-90"
+                             bg-white hover:bg-[#9b26b6] transition-all duration-500
+                             shadow-[0_2px_6px_rgba(255,255,255,0.25)] hover:scale-110 active:scale-90"
                                 >
                                     <Icon
                                         size={13}
@@ -389,7 +423,7 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                 </div>
             </div>
 
-            {/* === Purple Fog Layer === */}
+            {/* === Purple cinematic fog === */}
             <div
                 ref={fadeRef}
                 className="fixed inset-0 z-[2147483645] pointer-events-none"
@@ -399,7 +433,7 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                     opacity: 0,
                     transition: "opacity 1s ease-out",
                 }}
-            ></div>
+            />
 
             {createPortal(HamburgerButton, document.body)}
         </>

@@ -10,6 +10,25 @@ export default function AboutTonyHero() {
         img.src = aboutHero;
     }, []);
 
+    /* === Scroll with Fog === */
+    const handleExploreJourney = () => {
+        const fog = window.triggerGlobalFog;
+        const lenis = window.lenis;
+        const target = document.querySelector("#tony-journey");
+
+        if (typeof fog === "function") {
+            fog(() => {
+                if (target) {
+                    if (lenis) lenis.scrollTo(target, { duration: 1.4, offset: -40 });
+                    else target.scrollIntoView({ behavior: "smooth" });
+                }
+            });
+        } else if (target) {
+            if (lenis) lenis.scrollTo(target, { duration: 1.4, offset: -40 });
+            else target.scrollIntoView({ behavior: "smooth" });
+        }
+    };
+
     return (
         <section
             id="about-tony-hero"
@@ -84,20 +103,17 @@ export default function AboutTonyHero() {
                     className="relative z-10 mb-14"
                 >
                     <button
-                        onClick={() => {
-                            const next = document.querySelector("#tony-journey");
-                            if (next) next.scrollIntoView({ behavior: "smooth" });
-                        }}
+                        onClick={handleExploreJourney}
                         className="relative flex justify-center items-center w-[190px] h-[62px]
-              text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
-              bg-gradient-to-br from-[#b14fc0]/85 to-[#9b26b6]/70
-              rounded-[12px]
-              border border-white/20
-              shadow-[0_10px_25px_rgba(177,79,192,0.7),inset_0_2px_6px_rgba(255,255,255,0.3)]
-              transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
-              hover:translate-y-[-4px]
-              hover:shadow-[0_14px_35px_rgba(177,79,192,0.85),inset_0_2px_10px_rgba(255,255,255,0.4)]
-              uppercase tracking-widest overflow-hidden"
+                            text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
+                            bg-gradient-to-br from-[#b14fc0]/85 to-[#9b26b6]/70
+                            rounded-[12px]
+                            border border-white/20
+                            shadow-[0_10px_25px_rgba(177,79,192,0.7),inset_0_2px_6px_rgba(255,255,255,0.3)]
+                            transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
+                            hover:translate-y-[-4px]
+                            hover:shadow-[0_14px_35px_rgba(177,79,192,0.85),inset_0_2px_10px_rgba(255,255,255,0.4)]
+                            uppercase tracking-widest overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-[12px]" />
                         <span className="relative z-10 transition-all duration-500 group-hover:opacity-0">

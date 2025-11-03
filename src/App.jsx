@@ -1,4 +1,3 @@
-// ✅ src/App.jsx — Clean Final + Fast Debug Mode (Logs Fog, Scroll, Nav, Hamburger)
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -29,7 +28,7 @@ import { QuizOverlayProvider } from "./context/QuizOverlayContext";
 import { dreamyOverlayStyle, animateDreamyPulse } from "./utils/fadeStyles.js";
 
 /* =========================================================
-   🩵 DREAMY PRE-MOUNT OVERLAY (used in ?target fades)
+   🩵 DREAMY PRE-MOUNT OVERLAY
    ========================================================= */
 function preMountFade() {
     if (document.getElementById("fade-preoverlay")) return;
@@ -49,55 +48,16 @@ function preMountFade() {
 }
 
 /* =========================================================
-   🧩 FAST DEBUG MODE — Minimal Smart Logger
+   🧩 FAST DEBUG MODE
    ========================================================= */
 if (import.meta.env.MODE === "development" && !window.__FAST_DEBUG) {
     window.__FAST_DEBUG = true;
-    window.__DEBUG = true; // toggle false to silence logs
-
-    const log = (...args) => {
-        if (!window.__DEBUG) return;
-        const time = new Date().toISOString().split("T")[1].split(".")[0];
-        console.log(`%c[DEBUG ${time}]`, "color:#9b26b6;font-weight:bold", ...args);
-    };
-
-    // 🌀 Watch Lenis
-    const watchLenis = () => {
-        if (window.lenis) {
-            window.lenis.on("scroll", (e) => log("🌀 Scrolling:", e.targetScroll));
-            window.lenis.on("scrollEnd", () => log("✅ Scroll Ended"));
-            log("Lenis initialized ✅");
-        } else setTimeout(watchLenis, 400);
-    };
-    watchLenis();
-
-    // 🌫️ Hook global fog
-    const origFog = window.triggerGlobalFog;
-    window.triggerGlobalFog = (fn) => {
-        log("🌫️ Fog START");
-        if (typeof origFog === "function") origFog(fn);
-        else fn?.();
-        setTimeout(() => log("🌫️ Fog END (timeout)"), 1800);
-    };
-
-    // 🧭 Route change detection
-    const pushState = history.pushState;
-    history.pushState = function () {
-        log("🧭 Route change:", arguments[2]);
-        return pushState.apply(this, arguments);
-    };
-
-    // 🍔 Hamburger observer
-    const observer = new MutationObserver(() => {
-        const btn = document.getElementById("hamburger");
-        if (btn && !btn.dataset.debugHooked) {
-            btn.dataset.debugHooked = "1";
-            btn.addEventListener("click", () => log("🍔 Hamburger toggled"));
-            log("🍔 Hamburger hooked");
-        }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
+    const log = (...a) =>
+        console.log(
+            `%c[DEBUG ${new Date().toISOString().split("T")[1].split(".")[0]}]`,
+            "color:#9b26b6;font-weight:bold",
+            ...a
+        );
     log("🚀 Fast Debug Mode Ready");
 }
 
@@ -105,33 +65,9 @@ export default function App() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [heroVisible, setHeroVisible] = useState(true);
     const location = useLocation();
-    const isHome = location.pathname === "/";
-
-    /* =========================================================
-       🧩 FORCE SCROLL RESET (prevents landing at footer)
-       ========================================================= */
-    useEffect(() => {
-        const unlockScroll = () => {
-            document.documentElement.style.overflow = "visible";
-            document.body.style.overflow = "visible";
-            document.documentElement.style.height = "auto";
-            document.body.style.height = "auto";
-        };
-
-        unlockScroll();
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-
-        setTimeout(() => {
-            unlockScroll();
-            window.scrollTo(0, 0);
-        }, 600);
-
-        if (window.location.hash || window.location.search) {
-            window.history.replaceState({}, "", "/");
-        }
-    }, []);
+    const isHome =
+        location.pathname === "/" ||
+        location.pathname.endsWith("/tony-thompson-spmn-vital/");
 
     /* =========================================================
        🌀 LENIS INITIALIZATION
@@ -149,7 +85,6 @@ export default function App() {
 
         const initLenis = () => {
             enableScroll();
-
             lenis = new Lenis({
                 duration: 1.05,
                 easing: (t) => 1 - Math.pow(1 - t, 3),
@@ -157,7 +92,6 @@ export default function App() {
                 syncTouch: false,
                 gestureOrientation: "vertical",
             });
-
             window.lenis = lenis;
 
             const raf = (time) => {
@@ -165,35 +99,14 @@ export default function App() {
                 rafId = requestAnimationFrame(raf);
             };
             rafId = requestAnimationFrame(raf);
-
-            // Guarantee top start
-            setTimeout(() => {
-                enableScroll();
-                lenis.scrollTo(0, { immediate: true });
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-            }, 350);
         };
 
-        if (document.readyState === "complete") {
-            initLenis();
-        } else {
-            window.addEventListener("load", initLenis, { once: true });
-        }
-
-        const watchdog = setInterval(() => {
-            if (document.body.scrollHeight < window.innerHeight) enableScroll();
-        }, 1200);
-
-        return () => {
-            cancelAnimationFrame(rafId);
-            clearInterval(watchdog);
-            if (lenis) lenis.destroy();
-        };
+        window.addEventListener("load", initLenis, { once: true });
+        return () => cancelAnimationFrame(rafId);
     }, []);
 
     /* =========================================================
-       ✨ ?target= Scroll Param (Fade Transition)
+       ✨ Handle ?target Scroll Parameter (Full-Fog Edition)
        ========================================================= */
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -203,36 +116,31 @@ export default function App() {
         const cleanTarget = targetParam.replace(/^#/, "").trim();
 
         const doFadeScroll = async () => {
-            preMountFade();
             const { smoothFadeScroll } = await import("./utils/smoothFadeScroll.js");
+            preMountFade();
 
-            const removePreOverlay = () => {
-                const pre = document.getElementById("fade-preoverlay");
-                if (pre) {
-                    pre.style.opacity = "0";
-                    setTimeout(() => pre.remove(), 700);
+            // Wait until Lenis + target ready
+            const waitForLenis = async () => {
+                let tries = 0;
+                while (
+                    (!window.lenis || !document.getElementById(cleanTarget)) &&
+                    tries < 40
+                ) {
+                    await new Promise((r) => setTimeout(r, 200));
+                    tries++;
                 }
             };
 
-            const go = () => {
-                smoothFadeScroll(`#${cleanTarget}`).then(removePreOverlay);
-                window.history.replaceState({}, "", "/");
-            };
+            await waitForLenis();
 
-            let el = document.getElementById(cleanTarget);
-            if (!el) {
-                let tries = 0;
-                const interval = setInterval(() => {
-                    el = document.getElementById(cleanTarget);
-                    if (el || tries > 40) {
-                        clearInterval(interval);
-                        go();
-                    }
-                    tries++;
-                }, 200);
-            } else go();
+            // Execute the full-fog scroll
+            await smoothFadeScroll(`#${cleanTarget}`);
+
+            // Clean URL
+            window.history.replaceState({}, "", "/");
         };
 
+        // Give DOM a moment after React hydration
         setTimeout(doFadeScroll, 900);
     }, [location.pathname]);
 
@@ -255,8 +163,6 @@ export default function App() {
                         style={{ minHeight: "100vh" }}
                     >
                         <ScrollToTop />
-
-                        {/* === Global Overlay (Hamburger, Logo, etc.) === */}
                         <div className="fixed top-0 left-0 w-full z-[2147483646] pointer-events-auto">
                             <GlobalOverlay
                                 menuOpen={menuOpen}
@@ -267,7 +173,6 @@ export default function App() {
 
                         <ScrollFog />
 
-                        {/* === ROUTES === */}
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={location.pathname}
@@ -283,7 +188,11 @@ export default function App() {
                                             element={
                                                 <div className="flex flex-col w-full">
                                                     <Hero setHeroVisible={setHeroVisible} />
-                                                    <Suspense fallback={<div className="h-screen bg-black" />}>
+                                                    <Suspense
+                                                        fallback={
+                                                            <div className="h-screen bg-black" />
+                                                        }
+                                                    >
                                                         <MeetTony />
                                                     </Suspense>
                                                     <About />
@@ -293,19 +202,30 @@ export default function App() {
                                             }
                                         />
                                         <Route path="/lets-win" element={<LetsWin />} />
-                                        <Route path="/about-tony" element={<AboutTony />} />
+                                        <Route
+                                            path="/about-tony"
+                                            element={<AboutTony />}
+                                        />
                                         <Route path="/shop" element={<Shop />} />
-                                        <Route path="/thank-you" element={<ThankYou />} />
+                                        <Route
+                                            path="/thank-you"
+                                            element={<ThankYou />}
+                                        />
                                         <Route path="/go" element={<Go />} />
-                                        <Route path="/quiz-intro" element={<QuizIntro />} />
-                                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                                        <Route
+                                            path="/quiz-intro"
+                                            element={<QuizIntro />}
+                                        />
+                                        <Route
+                                            path="/privacy-policy"
+                                            element={<PrivacyPolicy />}
+                                        />
                                         <Route path="/terms" element={<Terms />} />
                                     </Routes>
                                 </Suspense>
                             </motion.div>
                         </AnimatePresence>
 
-                        {/* === Footer (Global) === */}
                         <Footer />
                     </motion.main>
                 </AnimatePresence>

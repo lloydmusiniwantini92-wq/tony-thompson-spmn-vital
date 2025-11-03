@@ -1,4 +1,4 @@
-// ✅ src/components/Hero.jsx — Fixed: GET/STARTED & WIN/NOW Skip Fog
+// ✅ src/components/Hero.jsx — Hero buttons now use the SAME purple fog scroll as the hamburger
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/hero.css";
 import { useVideoModal } from "../context/VideoModalContext";
@@ -49,30 +49,37 @@ export default function Hero({ setHeroVisible }) {
         }
     }, []);
 
-    /* === Smooth scroll helper (no fog) === */
-    const scrollToSelector = (selector) => {
-        const el = document.querySelector(selector);
-        const lenis = window.lenis;
-        if (!el) return;
-        if (lenis) lenis.scrollTo(el, { duration: 1.3 });
-        else el.scrollIntoView({ behavior: "smooth" });
-    };
+    /* === Unified fog-powered scroll (EXACT same “purple fog journey” as hamburger) === */
+    const fogScrollTo = (selector) => {
+        const runScroll = () => {
+            const el = document.querySelector(selector);
+            if (!el) return;
 
-    /* === Smooth scroll with fog (used only elsewhere if needed) === */
-    const handleScrollToWithFog = (selector) => {
-        const lenis = window.lenis;
-        const fade = window.triggerGlobalFog;
-        if (typeof fade === "function") {
-            fade(() => {
-                const el = document.querySelector(selector);
-                if (!el) return;
-                if (lenis) lenis.scrollTo(el, { duration: 1.3 });
-                else el.scrollIntoView({ behavior: "smooth" });
-            });
+            const lenis = window.lenis;
+            if (lenis) {
+                // ensure we really leave hero and arrive at target
+                const onEnd = () => {
+                    lenis.off("scrollEnd", onEnd);
+                    // fog clears automatically by GlobalOverlay's triggerGlobalFog timing
+                };
+                lenis.on("scrollEnd", onEnd);
+                lenis.scrollTo(el, { duration: 1.4, offset: -40 });
+            } else {
+                el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        };
+
+        if (typeof window.triggerGlobalFog === "function") {
+            window.triggerGlobalFog(runScroll);
         } else {
-            scrollToSelector(selector);
+            // Fallback: no fog available, just smooth scroll
+            runScroll();
         }
     };
+
+    /* === Click handlers for the two CTAs (with fog) === */
+    const handleWinNow = () => fogScrollTo("#programs");
+    const handleGetStarted = () => fogScrollTo("#about");
 
     const ui = {
         scrollText: inTestimonials ? "text-black" : "text-white",
@@ -96,7 +103,7 @@ export default function Hero({ setHeroVisible }) {
                 }}
             />
 
-            {/* === CTA Buttons === */}
+            {/* === CTA Buttons (renamed classes so GlobalOverlay's fogless override won't hijack) === */}
             <div
                 className="
                     absolute z-[900004] animate-buttonFloat flex gap-3
@@ -105,10 +112,10 @@ export default function Hero({ setHeroVisible }) {
                 "
                 style={{ willChange: "transform" }}
             >
-                {/* WIN / NOW (NO FOG) */}
+                {/* WIN / NOW — uses fog */}
                 <div
-                    onClick={() => scrollToSelector("#programs")}
-                    className="win-now relative flex justify-center items-center w-[150px] h-[56px]
+                    onClick={handleWinNow}
+                    className="win-now-fog relative flex justify-center items-center w-[150px] h-[56px]
                         text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
                         bg-gradient-to-br from-[#9b26b6]/85 to-[#b14fc0]/70
                         rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
@@ -122,10 +129,10 @@ export default function Hero({ setHeroVisible }) {
                     </span>
                 </div>
 
-                {/* GET / STARTED (NO FOG) */}
+                {/* GET / STARTED — uses fog */}
                 <div
-                    onClick={() => scrollToSelector("#about")}
-                    className="get-started relative flex justify-center items-center w-[150px] h-[56px]
+                    onClick={handleGetStarted}
+                    className="get-started-fog relative flex justify-center items-center w-[150px] h-[56px]
                         text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
                         bg-gradient-to-br from-[#b14fc0]/85 to-[#9b26b6]/70
                         rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(177,79,192,0.7)]
@@ -146,10 +153,11 @@ export default function Hero({ setHeroVisible }) {
                 onClick={() => openVideo(verticallo)}
             >
                 <div
-                    className="relative w-[6.5cm] h-[2.3cm] rounded-[2cm]
+                    className="relative w[6.5cm] h-[2.3cm] rounded-[2cm]
                         bg-gradient-to-br from-[#b14fc0] to-[#9b26b6]
                         shadow-[0_0_22px_rgba(155,38,182,0.75)]
                         flex justify-center items-center overflow-hidden animate-float"
+                    style={{ width: "6.5cm", height: "2.3cm" }}
                 >
                     <video
                         ref={videoRef}
