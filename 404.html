@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
+    <script type="text/javascript">
+        // GitHub Pages redirect for SPA (Vite + React)
+        const redirect = sessionStorage.redirect || "/";
+        delete sessionStorage.redirect;
+        const newUrl = window.location.origin + "/tony-thompson-spmn-vital" + redirect;
+        window.location.replace(newUrl);
+    </script>
+</head>
+<body>
+    Redirecting...
+</body>
+</html>
