@@ -1,17 +1,15 @@
 import React from "react";
-import mba from "../../assets/partners/mba.png";
-import nmn from "../../assets/partners/nmn.png";
-import scotsman from "../../assets/partners/scotsman.png";
-import inman from "../../assets/partners/inman.png";
-import mpa from "../../assets/partners/mpa.jpg";
+
+const base = import.meta.env.BASE_URL;
 
 export default function PartnersShowcase() {
     const partners = [
-        { name: "MBA", logo: mba },
-        { name: "National Mortgage News", logo: nmn },
-        { name: "Scotsman Guide", logo: scotsman },
-        { name: "Inman", logo: inman },
-        { name: "MPA", logo: mpa },
+        { name: "MBA", logo: `${base}assets/partners/mba.png` },
+        { name: "National Mortgage News", logo: `${base}assets/partners/nmn.png` },
+        { name: "Scotsman Guide", logo: `${base}assets/partners/scotsman.png` },
+        { name: "Inman", logo: `${base}assets/partners/inman.png` },
+        { name: "MPA", logo: `${base}assets/partners/mpa.jpg` },
+        { name: "NAMB", logo: `${base}assets/partners/namb_logo.png` }, // ✅ added back
     ];
 
     return (

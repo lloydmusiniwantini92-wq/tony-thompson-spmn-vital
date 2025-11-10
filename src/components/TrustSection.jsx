@@ -1,25 +1,18 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-import house from "../assets/partners/House.png";
-import inman from "../assets/partners/inman.png";
-import mba from "../assets/partners/mba.png";
-import mpa from "../assets/partners/mpa.jpg";
-import namb from "../assets/partners/namb.png";
-import nmn from "../assets/partners/nmn.png";
-import realtor from "../assets/partners/Real.jpg";
-import scotsman from "../assets/partners/scotsman.png";
+const base = import.meta.env.BASE_URL;
 
 export default function TrustSection() {
     const partners = [
-        { name: "Mortgage Bankers Association (MBA)", logo: mba, link: "https://www.mba.org/" },
-        { name: "National Association of REALTORS®", logo: realtor, link: "https://www.nar.realtor/" },
-        { name: "Scotsman Guide", logo: scotsman, link: "https://www.scotsmanguide.com/" },
-        { name: "National Mortgage News", logo: nmn, link: "https://www.nationalmortgagenews.com/" },
-        { name: "Mortgage Professional America (MPA)", logo: mpa, link: "https://www.mpamag.com/" },
-        { name: "National Association of Mortgage Brokers (NAMB)", logo: namb, link: "https://namb.org/" },
-        { name: "Inman", logo: inman, link: "https://www.inman.com/" },
-        { name: "HousingWire", logo: house, link: "https://www.housingwire.com/" },
+        { name: "Mortgage Bankers Association (MBA)", logo: `${base}assets/partners/mba.png`, link: "https://www.mba.org/" },
+        { name: "National Association of REALTORS®", logo: `${base}assets/partners/Real.jpg`, link: "https://www.nar.realtor/" },
+        { name: "Scotsman Guide", logo: `${base}assets/partners/scotsman.png`, link: "https://www.scotsmanguide.com/" },
+        { name: "National Mortgage News", logo: `${base}assets/partners/nmn.png`, link: "https://www.nationalmortgagenews.com/" },
+        { name: "Mortgage Professional America (MPA)", logo: `${base}assets/partners/mpa.jpg`, link: "https://www.mpamag.com/" },
+        { name: "National Association of Mortgage Brokers (NAMB)", logo: `${base}assets/partners/namb_logo.png`, link: "https://namb.org/" },
+        { name: "Inman", logo: `${base}assets/partners/inman.png`, link: "https://www.inman.com/" },
+        { name: "HousingWire", logo: `${base}assets/partners/House.png`, link: "https://www.housingwire.com/" },
     ];
 
     return (
@@ -29,16 +22,14 @@ export default function TrustSection() {
             style={{
                 position: "relative",
                 zIndex: 15,
-                marginTop: "-64px", // ✅ overlap fix
+                marginTop: "-64px",
             }}
         >
-            {/* Smooth upward white gradient to mask overlap */}
             <div className="absolute top-0 left-0 w-full h-[200px] bg-gradient-to-b from-[#fff] via-[#fff]/95 to-[#fff]/90 pointer-events-none z-[0]" />
 
-            {/* Heading */}
             <motion.h2
                 className="text-[clamp(2rem,4vw,4rem)] font-extrabold tracking-tight text-center mb-6 uppercase relative z-[1]"
-                style={{ color: "#9b26b6" }} // 💜 purple brand color
+                style={{ color: "#9b26b6" }}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.9, ease: [0.25, 1, 0.3, 1] }}
@@ -58,7 +49,6 @@ export default function TrustSection() {
                 mortgage organizations.
             </motion.p>
 
-            {/* Logo Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-12 md:gap-16 place-items-center w-full max-w-7xl relative z-[1]">
                 {partners.map((partner, i) => (
                     <motion.a
