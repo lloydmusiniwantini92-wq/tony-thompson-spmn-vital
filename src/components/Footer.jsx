@@ -1,42 +1,45 @@
-// ✅ src/components/Footer.jsx — Updated CTA: “Join Tony’s Newsletter Today”
+// ✅ src/components/Footer.jsx — authentic TikTok/X logos with unified hover behavior
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Facebook,
-    Twitter,
     Linkedin,
     Instagram,
     Youtube,
-    X as CloseIcon,
+    XCircle as CloseIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import "../styles/footer.css";
 
 export default function Footer() {
-    const [formData, setFormData] = useState({ first: "", last: "", email: "" });
-    const [status, setStatus] = useState("idle"); // idle | loading | success | closed
+    const [formData, setFormData] = useState({
+        first: "",
+        last: "",
+        email: "",
+        phone: "",
+        city: "",
+        job: "",
+    });
+    const [status, setStatus] = useState("idle");
     const [hasReward, setHasReward] = useState(false);
     const [error, setError] = useState("");
     const successRef = useRef(null);
 
-    // === Load reward flag on mount ===
     useEffect(() => {
         if (localStorage.getItem("tonyRewardDownloaded") === "true") {
             setHasReward(true);
         }
     }, []);
 
-    // === Change handler ===
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setError("");
     };
 
-    // === Form submit handler ===
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        if (!formData.first.trim() || !formData.last.trim() || !formData.email.trim()) {
+        const { first, last, email, phone, city, job } = formData;
+        if (!first.trim() || !last.trim() || !email.trim() || !phone.trim() || !city.trim() || !job.trim()) {
             setError("Please complete all fields.");
             return;
         }
@@ -44,24 +47,33 @@ export default function Footer() {
         setStatus("loading");
 
         const ccUrl = `https://lp.constantcontactpages.com/sl/ocTpycU?email=${encodeURIComponent(
-            formData.email
-        )}&first=${encodeURIComponent(formData.first)}&last=${encodeURIComponent(
-            formData.last
-        )}`;
+            email
+        )}&first=${encodeURIComponent(first)}&last=${encodeURIComponent(
+            last
+        )}&phone=${encodeURIComponent(phone)}&city=${encodeURIComponent(
+            city
+        )}&job=${encodeURIComponent(job)}`;
         window.open(ccUrl, "_blank");
 
         setTimeout(() => {
             setStatus("success");
-            setFormData({ first: "", last: "", email: "" });
+            setFormData({
+                first: "",
+                last: "",
+                email: "",
+                phone: "",
+                city: "",
+                job: "",
+            });
         }, 1800);
     };
 
-    // === Close modal ===
     const closeModal = useCallback(() => setStatus("closed"), []);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
-            if (successRef.current && !successRef.current.contains(e.target)) closeModal();
+            if (successRef.current && !successRef.current.contains(e.target))
+                closeModal();
         };
         const handleEsc = (e) => {
             if (e.key === "Escape") closeModal();
@@ -77,10 +89,9 @@ export default function Footer() {
         };
     }, [status, closeModal]);
 
-    // === Reward download ===
     const handleDownload = () => {
         const link = document.createElement("a");
-        link.href = "/tony-thompson-spmn-vital/assets/footerForm.pdf"; // <-- add base path
+        link.href = "/tony-thompson-spmn-vital/assets/footerForm.pdf";
         link.download = "TonyThompson_NetworkGuide.pdf";
         document.body.appendChild(link);
         link.click();
@@ -89,10 +100,9 @@ export default function Footer() {
         setHasReward(true);
     };
 
-
     return (
         <footer id="contact" className="text-white font-sans bg-[#111] flex flex-col relative">
-            {/* === NEWSLETTER FORM AREA === */}
+            {/* === NEWSLETTER FORM === */}
             <section className="relative text-center py-16 bg-gradient-to-r from-brandPurple to-brandAccent flex flex-col justify-center overflow-hidden">
                 <h2 className="text-3xl md:text-4xl font-bold mb-3 z-20 tracking-tight text-white">
                     JOIN TONY’S NEWSLETTER TODAY
@@ -101,7 +111,7 @@ export default function Footer() {
                     Get the latest insights, strategies, and opportunities directly from Tony.
                 </p>
 
-                <div className="relative max-w-xl mx-auto w-full px-4 z-20">
+                <div className="relative max-w-2xl mx-auto w-full px-4 z-20">
                     <AnimatePresence mode="wait">
                         {status !== "success" && (
                             <motion.form
@@ -131,14 +141,45 @@ export default function Footer() {
                                         className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
                                     />
                                 </div>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="Email Address"
-                                    className="p-3 rounded border-none w-full bg-white text-black placeholder:text-gray-600"
-                                />
+
+                                <div className="flex flex-col md:flex-row gap-4 w-full">
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        placeholder="Email Address"
+                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                    />
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        placeholder="Phone Number"
+                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                    />
+                                </div>
+
+                                <div className="flex flex-col md:flex-row gap-4 w-full">
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        value={formData.city}
+                                        onChange={handleChange}
+                                        placeholder="City / State"
+                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                    />
+                                    <input
+                                        type="text"
+                                        name="job"
+                                        value={formData.job}
+                                        onChange={handleChange}
+                                        placeholder="Job Title"
+                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                    />
+                                </div>
+
                                 {error && <p className="text-red-200 text-sm mt-1">{error}</p>}
 
                                 <motion.button
@@ -222,42 +263,46 @@ export default function Footer() {
                         className="relative overflow-hidden h-[3cm] flex justify-center items-center group border-r border-brandPurple/20"
                     >
                         <div className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-brandPurple to-brandAccent opacity-90 transition-all duration-500 group-hover:left-0"></div>
-                        <item.icon
-                            className="relative z-20 h-[1.25cm] w-[1.25cm] text-white group-hover:text-black group-hover:scale-110 transition-all duration-300"
-                            strokeWidth={1.5}
-                        />
+                        <div className="relative z-20 w-[1.25cm] h-[1.25cm] flex justify-center items-center group-hover:scale-110 transition-all duration-300">
+                            {item.icon === "tiktok" ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" className="w-full h-full transition-all duration-300 group-hover:fill-black" fill="white">
+                                    <path d="M161.06 0h-34.1v166.63a30.75 30.75 0 1 1-30.75-30.75 31.2 31.2 0 0 1 6.89.75V99.1a64.74 64.74 0 1 0 57.6 64.64V79.06a79.47 79.47 0 0 0 49.77 17.07V61.46a49.63 49.63 0 0 1-49.4-49.4V0Z" />
+                                </svg>
+                            ) : item.icon === "x" ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" className="w-full h-full transition-all duration-300 group-hover:fill-black" fill="white">
+                                    <path d="M182.1 130.4 289.2 0h-25.3l-93.3 112L101.6 0H0l112.2 162.7L0 300h25.3l99.1-118.9L198.4 300H300l-117.9-169.6ZM139.7 166l-11.5-16.4L34.4 19.5h55.7l74.1 105.4 11.5 16.4 99.7 141.1h-55.7l-79.9-116.4Z" />
+                                </svg>
+                            ) : (
+                                <item.icon
+                                    strokeWidth={1.5}
+                                    className="h-full w-full text-white group-hover:text-black transition-all duration-300"
+                                />
+                            )}
+                        </div>
                     </a>
                 ))}
             </section>
 
-            {/* === LEGAL FOOTER (WITH ROUTER LINKS) === */}
+            {/* === LEGAL FOOTER === */}
             <div className="w-full border-t border-brandPurple/20" />
             <div className="bg-[#111] text-white flex flex-wrap justify-between items-center p-4 px-6 md:px-12 text-sm">
                 <span>© {new Date().getFullYear()} Tony Thompson</span>
-
                 <nav className="flex-1 flex justify-evenly items-center mx-4">
-                    <Link to="/terms" className="hover:text-brandPurple transition-colors duration-300">
-                        Terms & Conditions
-                    </Link>
-                    <Link to="/privacy-policy" className="hover:text-brandPurple transition-colors duration-300">
-                        Privacy Policy
-                    </Link>
-                    <a href="#" className="hover:text-brandPurple transition-colors duration-300">
-                        Cookie Policy
-                    </a>
+                    <Link to="/terms" className="hover:text-brandPurple transition-colors duration-300">Terms & Conditions</Link>
+                    <Link to="/privacy-policy" className="hover:text-brandPurple transition-colors duration-300">Privacy Policy</Link>
+                    <a href="#" className="hover:text-brandPurple transition-colors duration-300">Cookie Policy</a>
                 </nav>
-
                 <span>Website by Arson Pixelz®</span>
             </div>
         </footer>
     );
 }
 
-// === Social Icons ===
+// ✅ Authentic social links (final)
 const socials = [
-    { link: "#", icon: Facebook },
-    { link: "#", icon: Twitter },
-    { link: "#", icon: Linkedin },
-    { link: "#", icon: Instagram },
-    { link: "#", icon: Youtube },
+    { link: "https://www.instagram.com/tt5481562/", icon: Instagram },
+    { link: "https://www.tiktok.com/@tonythompson08?is_from_webapp=1&sender_device=pc", icon: "tiktok" },
+    { link: "https://www.youtube.com/@TonyThompson-b5u", icon: Youtube },
+    { link: "https://x.com/TonyThomps7989", icon: "x" },
+    { link: "https://linktr.ee/TonyT9", icon: Linkedin },
 ];

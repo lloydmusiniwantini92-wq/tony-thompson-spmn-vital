@@ -4,6 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 
+/* 🧩 Add DeviceProvider for low-end detection */
+import { DeviceProvider } from "./context/DeviceContext.jsx";
+
 /* ✅ Universal GitHub Pages SPA Redirect Fix */
 if (window.location.search.startsWith("?redirect=")) {
     const redirect = decodeURIComponent(
@@ -23,7 +26,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <React.StrictMode>
         <BrowserRouter basename={import.meta.env.BASE_URL}>
-            <App />
+            <DeviceProvider>
+                <App />
+            </DeviceProvider>
         </BrowserRouter>
     </React.StrictMode>
 );

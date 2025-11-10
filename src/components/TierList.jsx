@@ -5,12 +5,10 @@ import step5 from "../assets/quiz/step5.jpg";
 import TetrisCountdown from "./TetrisCountdown";
 import { loadStripe } from "@stripe/stripe-js";
 
-// ✅ Stripe setup (sandbox)
 const stripePromise = loadStripe(
     "pk_test_51SLRY52NRAQRhNmZ0wCRTrCoRHb3uiX2lWLh7M3zk9M5QsaPnqEK4aHwJlvIwcSeiIeRhVjshFHQPqbRAB6Cv5Gz00HvVfoNXq"
 );
 
-// === Create a checkout session for ASPIRE only ===
 async function startCheckout(priceId) {
     try {
         const stripe = await stripePromise;
@@ -37,8 +35,8 @@ export default function TierList() {
     const { openQuiz } = useQuizOverlay();
     const [showCountdown, setShowCountdown] = useState(false);
     const [endDate, setEndDate] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
 
-    // === Countdown logic ===
     useEffect(() => {
         const stored = localStorage.getItem("countdownEndDate");
         let date;
@@ -56,6 +54,31 @@ export default function TierList() {
         return () => clearTimeout(delayTimer);
     }, []);
 
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) setShowPopup(true);
+                });
+            },
+            { threshold: 0.35 }
+        );
+        const section = document.querySelector("#programs");
+        if (section) observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        const handleClick = (e) => {
+            const box = document.getElementById("waitlist-popup-box");
+            if (showPopup && box && !box.contains(e.target)) {
+                setShowPopup(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClick, true);
+        return () => document.removeEventListener("mousedown", handleClick, true);
+    }, [showPopup]);
+
     return (
         <section
             id="programs"
@@ -67,7 +90,7 @@ export default function TierList() {
                 backgroundAttachment: "fixed",
             }}
         >
-            {/* === SECTION TITLE === */}
+            {/* === TITLE === */}
             <div className="absolute top-10 left-1/2 -translate-x-1/2 z-[5]">
                 <h2 className="text-5xl font-extrabold tracking-tight drop-shadow-[0_0_25px_rgba(255,255,255,0.25)]">
                     Membership Programs
@@ -82,13 +105,10 @@ export default function TierList() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 1.1, ease: [0.25, 1, 0.3, 1] }}
-                        className="
-              absolute top-[calc(12vh+0.6cm)] left-[calc(14.5%+0.1cm)]
+                        className="absolute top-[calc(12vh+0.6cm)] left-[calc(14.5%+0.1cm)]
               w-[18.5%] text-center flex flex-col items-center z-[8]
               scale-[0.88] sm:scale-[0.93] md:scale-[0.97] lg:scale-100
-              md:left-[calc(14.5%+0.1cm)]
-              mobile-center
-            "
+              md:left-[calc(14.5%+0.1cm)] mobile-center"
                     >
                         <motion.p
                             initial={{ opacity: 0, y: 5 }}
@@ -130,18 +150,6 @@ export default function TierList() {
                 border border-[#7d1f97]/40 shadow-[0_0_40px_rgba(155,38,182,0.25)]
                 backdrop-blur-[14px] flex flex-col cursor-pointer"
                         >
-                            <motion.div
-                                animate={{
-                                    backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
-                                }}
-                                transition={{
-                                    duration: 8,
-                                    ease: "linear",
-                                    repeat: Infinity,
-                                }}
-                                className="absolute inset-0 bg-[radial-gradient(circle_at_30%_10%,rgba(155,38,182,0.08),transparent_70%)] pointer-events-none"
-                            />
-
                             <div className="relative border-b border-[#7d1f97]/30 py-4">
                                 <h4 className="text-2xl font-extrabold text-white uppercase tracking-wider drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
                                     {tier.name}
@@ -152,9 +160,13 @@ export default function TierList() {
                                 <p className="text-2xl font-semibold mb-4 text-gray-200 text-center">
                                     {tier.price}
                                 </p>
-                                <ul className="flex-1 space-y-2 text-sm text-gray-300 mb-8">
+
+                                <ul className="flex-1 space-y-2 text-sm text-gray-300 mb-8 leading-relaxed tracking-normal text-left">
                                     {tier.features.map((f, idx) => (
-                                        <li key={idx}>✓ {f}</li>
+                                        <li key={idx} className="flex items-start gap-2 leading-snug">
+                                            <span className="text-[#9b26b6] mt-[0.1rem]">✓</span>
+                                            <span className="text-white font-medium">{f}</span>
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
@@ -181,7 +193,56 @@ export default function TierList() {
                 </div>
             </div>
 
-            {/* === COMPARISON CHART === */}
+            {/* === FLOATING MODAL === */}
+            <AnimatePresence>
+                {showPopup && (
+                    <motion.div
+                        className="fixed inset-0 z-[99999] pointer-events-none flex items-center justify-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <motion.div
+                            id="waitlist-popup-box"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.6, ease: [0.25, 1, 0.3, 1] }}
+                            className="pointer-events-auto bg-white/95 text-center px-10 py-12 rounded-[1.5rem] border border-[#7d1f97]/40 w-[90%] max-w-[480px]"
+                        >
+                            <h3 className="text-2xl md:text-3xl font-extrabold text-[#7d1f97] mb-6">
+                                Your Transformation Starts Here
+                            </h3>
+                            <p className="text-[#333] text-lg mb-8">
+                                Join the Pre-Launch Waitlist now and be the first to access our new program.
+                            </p>
+                            <button
+                                onClick={() =>
+                                    window.open("https://lp.constantcontactpages.com/sl/ocTpycU", "_blank")
+                                }
+                                className="relative flex justify-center items-center w-full h-[60px]
+                  text-white font-['Press_Start_2P'] text-[0.8rem] uppercase tracking-wider
+                  bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
+                  rounded-[1rem] border border-white/20
+                  shadow-[inset_0_2px_6px_rgba(255,255,255,0.3)]
+                  transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
+                  hover:translate-y-[-3px]"
+                            >
+                                Join Waitlist
+                            </button>
+                            <button
+                                onClick={() => setShowPopup(false)}
+                                className="mt-6 text-sm text-[#7d1f97] font-semibold underline hover:opacity-70"
+                            >
+                                Close
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* === COMPARISON TABLE === */}
             <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -195,7 +256,6 @@ export default function TierList() {
                     Compare Programs
                 </h3>
 
-                {/* DESKTOP TABLE */}
                 <div className="hidden md:block">
                     <div className="relative max-w-7xl mx-auto overflow-x-auto border border-white/10 backdrop-blur-[2px]">
                         <div className="grid grid-cols-4 min-w-[900px] divide-x divide-white/20 border-t border-b border-white/15">
@@ -208,6 +268,7 @@ export default function TierList() {
                                     {tier}
                                 </div>
                             ))}
+
                             {comparisonData.map((row, i) => (
                                 <React.Fragment key={i}>
                                     <div className="text-left text-sm md:text-base py-5 px-4 text-white/90 border-t border-white/10 bg-[#7f1aa1]/20">
@@ -230,36 +291,14 @@ export default function TierList() {
                         </div>
                     </div>
                 </div>
-
-                {/* MOBILE VERSION */}
-                <div className="block md:hidden space-y-6 px-4">
-                    {comparisonData.map((row, i) => (
-                        <div
-                            key={i}
-                            className="rounded-2xl bg-[#7d1f97]/20 border border-white/10 p-4 shadow-[0_0_20px_rgba(155,38,182,0.3)]"
-                        >
-                            <h4 className="text-lg font-bold mb-2 text-white/90">{row.feature}</h4>
-                            <div className="flex justify-around text-center text-sm font-semibold">
-                                <div>
-                                    <span className="block text-[#952ca8] mb-1">Aspire</span>
-                                    <span>{row.aspire ? "✓" : "—"}</span>
-                                </div>
-                                <div>
-                                    <span className="block text-[#952ca8] mb-1">Ignite</span>
-                                    <span>{row.ignite ? "✓" : "—"}</span>
-                                </div>
-                                <div>
-                                    <span className="block text-[#952ca8] mb-1">Elevate</span>
-                                    <span>{row.elevate ? "✓" : "—"}</span>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
             </motion.div>
 
-            {/* === Mobile Countdown Override Styles === */}
             <style>{`
+        @keyframes pulseGlow {
+          0%,100% { opacity:0.4; transform:translateX(-25%); }
+          50% { opacity:0.9; transform:translateX(25%); }
+        }
+        .animate-pulseGlow { animation:pulseGlow 6s ease-in-out infinite; }
         @media (max-width: 768px) {
           .mobile-center {
             left: 50% !important;
@@ -272,7 +311,7 @@ export default function TierList() {
     );
 }
 
-// === Stripe Checkout Handlers ===
+// === Stripe Handlers ===
 const handleAspire = () => startCheckout("price_1SLRkP2NRAQRhNmZtrOA49gW");
 const handleIgnite = () =>
     window.open("https://lp.constantcontactpages.com/sl/ocTpycU", "_blank");
@@ -316,7 +355,7 @@ const tiers = [
     },
     {
         name: "ELEVATE",
-        price: "TBD",
+        price: "By Invite Only",
         button: "BOOK A CALL →",
         onClick: handleElevate,
         features: [
@@ -334,9 +373,9 @@ const tiers = [
 // === Comparison Data ===
 const comparisonData = [
     { feature: "Personalized Playbooks", aspire: true, ignite: true, elevate: true },
-    { feature: "Social Media Automation", aspire: false, ignite: true, elevate: true },
-    { feature: "NAMMBA Membership", aspire: true, ignite: true, elevate: true },
-    { feature: "Ticket to NAMMBA Connect", aspire: false, ignite: true, elevate: true },
+    { feature: "NAMMBA CONNECT Membership", aspire: true, ignite: true, elevate: true },
+    { feature: "Ticket to NAMMBA CONNECT", aspire: false, ignite: true, elevate: true },
+    { feature: "Social Media Marketing", aspire: false, ignite: true, elevate: true },
     { feature: "Dedicated Project Manager", aspire: false, ignite: false, elevate: true },
     { feature: "Monthly Coaching", aspire: false, ignite: false, elevate: true },
     { feature: "Leadership Mastermind", aspire: false, ignite: false, elevate: true },

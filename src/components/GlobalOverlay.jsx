@@ -1,10 +1,10 @@
-// ✅ src/components/GlobalOverlay.jsx — Accessibility Enhanced (no behavior changes)
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
+import gsap from "gsap";
 import logoFull from "../assets/images/logoFull.png";
-import logoTT from "../assets/images/logoTT.png";
+import ttLogo from "/assets/TT Logo.svg";
 import useScrollSpy from "../utils/useScrollSpy";
 
 export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
@@ -26,9 +26,10 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         { label: "PROGRAMS", link: "#programs" },
         { label: "CONTACT", link: "#contact" },
         { label: "SHOP", link: "/shop" },
-        { label: "ENQUIRIES", link: "#enquiries" },
+        { label: "INQUIRIES", link: "#enquiries" },
         { label: "PODCASTS", link: "/podcasts" },
         { label: "NEWSLETTER", link: "/newsletter" },
+        { label: "BOOK TONY", link: "/book-tony" },
     ];
 
     /* === Persist active section === */
@@ -40,7 +41,6 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         if (activeSection) sessionStorage.setItem("activeSection", activeSection);
     }, [activeSection]);
 
-    /* === ScrollSpy + funnel mapping === */
     const selectors = [
         "#home",
         "#meet-tony",
@@ -54,7 +54,6 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
 
     useEffect(() => {
         const path = location.pathname;
-
         if (
             path.startsWith("/lets-win") ||
             path.startsWith("/quiz-intro") ||
@@ -64,7 +63,6 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
             setActiveSection("#about");
             return;
         }
-
         if (path.startsWith("/about-tony")) {
             setActiveSection("#meet-tony");
             return;
@@ -81,55 +79,46 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         setActiveSection("#home");
     }, [active, location.pathname]);
 
-    /* === Cascade animation === */
-    useEffect(() => {
-        const menu = menuRef.current;
-        const items = menu?.querySelectorAll(".menu-item");
-        const hamburger = hamburgerRef.current;
-        if (!menu || !items) return;
+    /* === Purple veil + cascade animation === */
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            const items = gsap.utils.toArray(".menu-item");
+            const wiper = "#menu-wiper";
 
-        const duration = 1100;
-        const stagger = 140;
-        const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+            if (menuOpen) {
+                gsap.set(items, { y: 40, opacity: 0, filter: "blur(6px)" });
+                gsap.set(wiper, { backgroundPositionY: "100%", opacity: 1 });
 
-        if (menuOpen) {
-            hamburger.classList.add("active");
-            menu.classList.add("active");
-            setCascadeDone(false);
-            const start = performance.now();
-            const loop = (now) => {
-                const elapsed = now - start;
-                items.forEach((item, i) => {
-                    const local = Math.min(Math.max(elapsed - i * stagger, 0), duration);
-                    const p = easeOut(local / duration);
-                    item.style.transform = `translateY(${60 * (1 - p)}px) scale(${0.96 + 0.04 * p})`;
-                    item.style.opacity = 0.2 + 0.8 * p;
-                    item.style.filter = `blur(${6 * (1 - p)}px)`;
+                const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+                tl.to(wiper, {
+                    backgroundPositionY: "0%",
+                    opacity: 0,
+                    duration: 7.2,
                 });
-                if (elapsed < duration + items.length * stagger) requestAnimationFrame(loop);
-                else {
-                    items.forEach((item) => {
-                        item.style.transform = "translateY(0) scale(1)";
-                        item.style.opacity = 1;
-                        item.style.filter = "blur(0)";
-                    });
-                    setCascadeDone(true);
-                }
-            };
-            requestAnimationFrame(loop);
-        } else {
-            hamburger.classList.remove("active");
-            menu.classList.remove("active");
-            setCascadeDone(false);
-            items.forEach((item) => {
-                item.style.opacity = 0;
-                item.style.transform = "translateY(60px)";
-                item.style.filter = "blur(8px)";
-            });
-        }
+
+                tl.to(
+                    items,
+                    {
+                        y: 0,
+                        opacity: 1,
+                        filter: "blur(0px)",
+                        duration: 1.2,
+                        stagger: 0.12,
+                        onComplete: () => setCascadeDone(true),
+                    },
+                    0.15
+                );
+            } else {
+                setCascadeDone(false);
+                gsap.set(items, { opacity: 0, y: 40, filter: "blur(6px)" });
+                gsap.set("#menu-wiper", { opacity: 0, backgroundPositionY: "100%" });
+            }
+        }, overlayRef);
+        return () => ctx.revert();
     }, [menuOpen]);
 
-    /* === Click-outside to close === */
+    /* === Click outside === */
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (
@@ -145,20 +134,19 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         return () => document.removeEventListener("mousedown", handleClickOutside, true);
     }, [menuOpen]);
 
-    /* === Global cinematic fog === */
+    /* === Fog effect === */
     useEffect(() => {
         const fade = fadeRef.current;
         if (!fade) return;
-
         window.triggerGlobalFog = (scrollAction) => {
-            fade.style.transition = "opacity 0.9s ease-out";
+            fade.style.transition = "opacity 0.5s ease-out";
             fade.style.opacity = 1;
             fade.style.pointerEvents = "auto";
-            setTimeout(() => scrollAction?.(), 400);
+            setTimeout(() => scrollAction?.(), 150);
             setTimeout(() => {
                 fade.style.opacity = 0;
-                setTimeout(() => (fade.style.pointerEvents = "none"), 900);
-            }, 2500);
+                setTimeout(() => (fade.style.pointerEvents = "none"), 400);
+            }, 2200);
         };
     }, []);
 
@@ -204,29 +192,13 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         });
     };
 
+    /* === Hamburger animation === */
     useEffect(() => {
-        const fade = fadeRef.current;
-        const buttons = document.querySelectorAll(".get-started, .win-now, .cta-win, .cta-get");
-        const handleClick = (e) => {
-            e.preventDefault();
-            const lenis = window.lenis;
-            const target =
-                e.currentTarget.classList.contains("win-now") ||
-                    e.currentTarget.classList.contains("cta-win")
-                    ? "#programs"
-                    : "#about";
-            if (!fade || !window.triggerGlobalFog) return;
-            window.triggerGlobalFog(() => {
-                const el = document.querySelector(target);
-                if (el && lenis) lenis.scrollTo(el, { duration: 1.4 });
-                else el?.scrollIntoView({ behavior: "smooth" });
-            });
-        };
-        buttons.forEach((b) => b.addEventListener("click", handleClick));
-        return () => buttons.forEach((b) => b.removeEventListener("click", handleClick));
-    }, []);
+        if (!hamburgerRef.current) return;
+        if (menuOpen) hamburgerRef.current.classList.add("active");
+        else hamburgerRef.current.classList.remove("active");
+    }, [menuOpen]);
 
-    /* === Hamburger button (accessible) === */
     const HamburgerButton = (
         <button
             ref={hamburgerRef}
@@ -234,8 +206,8 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
             id="hamburger"
             aria-label="Toggle navigation menu"
             className="pointer-events-auto fixed top-[25px] right-[25px]
-                 flex flex-col justify-between w-[52px] h-[34px]
-                 transition-transform duration-300 z-[2147483648]"
+      flex flex-col justify-between w-[52px] h-[34px]
+      transition-transform duration-300 z-[2147483648]"
         >
             <span className="bar top" />
             <span className="bar middle" />
@@ -244,13 +216,12 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         #hamburger .bar {
           display: block;
           width: 52px;
-          background-color: ${menuOpen ? "#000" : "#fff"};
+          background-color: ${menuOpen ? "#000" : "rgba(255,255,255,0.95)"};
           border-radius: 2.5px;
           margin: 5px 0;
-          transition:
-            transform 0.45s cubic-bezier(0.25,1.15,0.35,1),
-            opacity 0.3s ease,
-            background-color 0.3s ease;
+          box-shadow: 0 0 6px rgba(0,0,0,0.4);
+          transition: transform 0.45s cubic-bezier(0.25,1.15,0.35,1),
+            opacity 0.3s ease, background-color 0.3s ease;
           transform-origin: center;
         }
         #hamburger .bar.top, #hamburger .bar.bottom { height: 5.5px; }
@@ -271,25 +242,26 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                 <button
                     key={label}
                     onClick={() => handleNavClick(link)}
-                    className="menu-item relative text-left font-[900] uppercase leading-[1.05]
-                     text-[clamp(2rem,3.5vw,2.8rem)] tracking-tight
-                     transition-all duration-400 ease-[cubic-bezier(0.25,1,0.3,1)]
-                     hover:translate-x-[10px] hover:text-white
-                     hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]"
+                    className="menu-item relative text-left uppercase
+          text-[clamp(2.97rem,4.6vw,3.47rem)] font-[830]
+          tracking-[0.019em] leading-[0.95]
+          transition-all duration-[400ms] ease-in-out
+          hover:translate-x-[6px]
+          font-['Bebas_Neue',sans-serif]"
                     style={{
                         opacity: 0,
-                        transform: "translateY(60px)",
-                        filter: "blur(8px)",
+                        transform: "translateY(40px)",
                         color: "white",
-                        marginBottom: "0.5rem",
+                        marginTop: "-3.2px",
+                        marginBottom: "-3.2px",
+                        filter: "none",
                     }}
                 >
                     <span
-                        className="relative inline-block"
-                        style={{
-                            opacity: isActive ? 0.4 : 1,
-                            transition: "opacity 0.6s ease-in-out",
-                        }}
+                        className={`relative inline-block transition-all duration-[500ms] ease-in-out ${isActive
+                                ? "text-[rgba(220,200,255,0.45)]"
+                                : "hover:text-[rgba(220,200,255,0.45)]"
+                            }`}
                     >
                         {label}
                         <span
@@ -308,13 +280,36 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
 
     return (
         <>
-            {/* === Logo === */}
+            {/* === Fixed TT logo + divider + full logo === */}
             <div
                 className="fixed flex items-center pointer-events-auto cursor-pointer"
                 style={{ top: "26px", left: "28px", zIndex: 2147483647 }}
                 onClick={() => navigate("/")}
             >
-                <img src={logoTT} alt="Tony Thompson logo icon" style={{ width: "38px" }} />
+                <div className="relative flex items-start">
+                    <img
+                        src={ttLogo}
+                        alt="Tony Thompson TT logo"
+                        style={{
+                            width: "46px",
+                            filter: "brightness(0) invert(1)",
+                        }}
+                    />
+                    <span
+                        style={{
+                            position: "absolute",
+                            right: "-0.01rem",
+                            top: "1.1rem",
+                            fontSize: "0.4rem",
+                            fontWeight: "700",
+                            color: "#fff",
+                            textShadow: "0 0 6px rgba(255,255,255,0.85)",
+                        }}
+                    >
+                        ™
+                    </span>
+                </div>
+
                 <div
                     style={{
                         marginLeft: "0.3cm",
@@ -342,12 +337,12 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
                 />
             </div>
 
-            {/* === Menu Overlay === */}
+            {/* === Menu overlay restored === */}
             <div
                 ref={overlayRef}
                 id="global-overlay"
                 role="navigation"
-                className="fixed inset-0 z-[2147483646] pointer-events-none"
+                className="fixed inset-0 z-[2147483650] pointer-events-none"
                 style={{
                     opacity: menuOpen ? 1 : 0,
                     transition: "opacity 1.2s ease-in-out",
@@ -355,73 +350,64 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
             >
                 <div
                     ref={menuRef}
-                    className={`menu-overlay fixed top-0 right-0 h-screen w-full md:w-[40%]
-                      bg-gradient-to-br from-[#7d1f97] to-[#952ca8]
-                      flex flex-col items-start justify-start
-                      pl-[4.5cm] pr-[1cm] pt-[1cm]
-                      transition-transform duration-[1500ms]
-                      ease-[cubic-bezier(0.25,1,0.3,1)]
-                      ${menuOpen ? "translate-x-0" : "translate-x-full"}
-                      pointer-events-auto`}
+                    className={`menu-overlay fixed top-0 right-0 h-screen w-[88%] md:w-[44%]
+          bg-gradient-to-br from-[#7d1f97] to-[#952ca8]
+          flex flex-col justify-start items-start
+          pt-[4.5rem] md:pt-[1cm] pl-[1.65cm] md:pl-[4.8cm] pr-[1cm]
+          transition-transform duration-[1500ms]
+          ease-[cubic-bezier(0.25,1,0.3,1)]
+          ${menuOpen ? "translate-x-0" : "translate-x-full"}
+          pointer-events-auto`}
                     style={{
                         overflow: "hidden",
                         backdropFilter: "blur(36px) saturate(1.3)",
                     }}
                 >
                     <div
-                        className="absolute inset-0 pointer-events-none"
+                        id="menu-wiper"
+                        className="absolute top-0 left-0 w-full h-full z-[5] pointer-events-none"
                         style={{
                             background:
-                                "linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0))",
-                            opacity: 0.8,
-                            mixBlendMode: "soft-light",
+                                "linear-gradient(to top, rgba(125,31,151,1) 0%, rgba(125,31,151,0.6) 40%, rgba(125,31,151,0) 100%)",
+                            backgroundSize: "100% 300%",
+                            backgroundPositionY: "100%",
+                            opacity: 0,
                         }}
-                    />
-                    <div className="flex flex-col w-full mt-[0.5cm] relative z-10">
+                    ></div>
+
+                    <div className="flex flex-col w-full mt-[0.5cm] relative z-10 translate-x-[1cm]">
                         {renderItems(navItems.slice(0, 6))}
-                        <div className="w-[80%] h-[1px] bg-white/30 my-6"></div>
+                        <div className="w-[80%] h-[1px] bg-white/30 my-4"></div>
                         {renderItems(navItems.slice(6))}
                     </div>
+
+                    {/* Footer icons */}
                     <div
-                        className={`absolute bottom-[1.6rem] left-1/2 -translate-x-1/2 flex flex-col items-center ${cascadeDone ? "opacity-100" : "opacity-0"
-                            } transition-all duration-[1300ms]`}
+                        className={`absolute bottom-[2rem] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center ${cascadeDone ? "opacity-100" : "opacity-0"
+                            } transition-opacity duration-[1300ms]`}
                     >
-                        <div className="text-[0.75rem] text-white/80 text-center mb-3">
-                            © 2025 Tony Thompson
+                        <div className="flex gap-4 mb-3">
+                            {[Facebook, Twitter, Instagram, Linkedin, Youtube].map((Icon, i) => (
+                                <a
+                                    key={i}
+                                    href="#"
+                                    className="w-[30px] h-[30px] rounded-full flex items-center justify-center
+                  bg-white hover:bg-[#7d1f97] transition-all duration-500
+                  shadow-[0_2px_6px_rgba(255,255,255,0.25)] hover:scale-110 active:scale-90"
+                                    aria-label="Social link"
+                                >
+                                    <Icon size={15} strokeWidth={1.75} className="text-[#7d1f97] hover:text-white" />
+                                </a>
+                            ))}
                         </div>
-                        <div className="flex justify-between w-[240px]">
-                            {/* ✅ Social links now accessible */}
-                            <a href="#" aria-label="Visit Tony Thompson on Facebook" className="w-[26px] h-[26px] rounded-full flex items-center justify-center
-                             bg-white hover:bg-[#7d1f97] transition-all duration-500
-                             shadow-[0_2px_6px_rgba(255,255,255,0.25)] hover:scale-110 active:scale-90">
-                                <Facebook size={13} strokeWidth={1.75} className="text-[#7d1f97] hover:text-white" />
-                            </a>
-                            <a href="#" aria-label="Visit Tony Thompson on Twitter" className="w-[26px] h-[26px] rounded-full flex items-center justify-center
-                             bg-white hover:bg-[#7d1f97] transition-all duration-500
-                             shadow-[0_2px_6px_rgba(255,255,255,0.25)] hover:scale-110 active:scale-90">
-                                <Twitter size={13} strokeWidth={1.75} className="text-[#7d1f97] hover:text-white" />
-                            </a>
-                            <a href="#" aria-label="Visit Tony Thompson on Instagram" className="w-[26px] h-[26px] rounded-full flex items-center justify-center
-                             bg-white hover:bg-[#7d1f97] transition-all duration-500
-                             shadow-[0_2px_6px_rgba(255,255,255,0.25)] hover:scale-110 active:scale-90">
-                                <Instagram size={13} strokeWidth={1.75} className="text-[#7d1f97] hover:text-white" />
-                            </a>
-                            <a href="#" aria-label="Visit Tony Thompson on LinkedIn" className="w-[26px] h-[26px] rounded-full flex items-center justify-center
-                             bg-white hover:bg-[#7d1f97] transition-all duration-500
-                             shadow-[0_2px_6px_rgba(255,255,255,0.25)] hover:scale-110 active:scale-90">
-                                <Linkedin size={13} strokeWidth={1.75} className="text-[#7d1f97] hover:text-white" />
-                            </a>
-                            <a href="#" aria-label="Visit Tony Thompson on YouTube" className="w-[26px] h-[26px] rounded-full flex items-center justify-center
-                             bg-white hover:bg-[#7d1f97] transition-all duration-500
-                             shadow-[0_2px_6px_rgba(255,255,255,0.25)] hover:scale-110 active:scale-90">
-                                <Youtube size={13} strokeWidth={1.75} className="text-[#7d1f97] hover:text-white" />
-                            </a>
+                        <div className="text-[0.8rem] tracking-wide text-white/85 font-semibold select-none">
+                            © 2025 Tony Thompson<span style={{ fontSize: "0.6rem", verticalAlign: "super" }}>™</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* === Purple cinematic fog === */}
+            {/* === Fog === */}
             <div
                 ref={fadeRef}
                 className="fixed inset-0 z-[2147483645] pointer-events-none"

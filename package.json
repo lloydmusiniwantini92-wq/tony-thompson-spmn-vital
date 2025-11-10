@@ -13,7 +13,10 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@babylonjs/core": "^8.31.2",
+    "@babylonjs/core": "^8.36.1",
+    "@babylonjs/gui": "^8.36.1",
+    "@babylonjs/loaders": "^8.36.1",
+    "@babylonjs/materials": "^8.36.1",
     "@stripe/stripe-js": "^8.0.0",
     "@studio-freight/lenis": "^1.0.42",
     "@studio-freight/react-lenis": "^0.0.47",
@@ -22,6 +25,8 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "framer-motion": "^10.16.4",
+    "gsap": "^3.13.0",
+    "jspdf": "^3.0.3",
     "lucide-react": "^0.546.0",
     "phosphor-react": "^1.4.1",
     "react": "^18.3.1",

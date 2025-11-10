@@ -7,11 +7,13 @@ import Hero from "./components/Hero";
 const MeetTony = lazy(() => import("./components/MeetTony"));
 import About from "./components/About";
 import Testimonials from "./components/Testimonials";
+import TrustSection from "./components/TrustSection"; // ✅ NEW IMPORT
 import TierList from "./components/TierList";
 import ScrollFog from "./components/ScrollFog";
 import GlobalOverlay from "./components/GlobalOverlay";
 import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
+import StackBuilder from "./pages/StackBuilder/StackBuilder.jsx";
 
 import LetsWin from "./pages/LetsWin";
 import AboutTony from "./pages/AboutTony";
@@ -26,6 +28,8 @@ import QuizIntro from "./components/QuizIntro";
 import { VideoModalProvider } from "./context/VideoModalContext";
 import { QuizOverlayProvider } from "./context/QuizOverlayContext";
 import { dreamyOverlayStyle, animateDreamyPulse } from "./utils/fadeStyles.js";
+
+import useDeviceTier from "./hooks/useDeviceTier";
 
 /* =========================================================
    🩵 DREAMY PRE-MOUNT OVERLAY
@@ -47,9 +51,6 @@ function preMountFade() {
     animateDreamyPulse(overlay);
 }
 
-/* =========================================================
-   🧩 FAST DEBUG MODE
-   ========================================================= */
 if (import.meta.env.MODE === "development" && !window.__FAST_DEBUG) {
     window.__FAST_DEBUG = true;
     const log = (...a) =>
@@ -65,14 +66,23 @@ export default function App() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [heroVisible, setHeroVisible] = useState(true);
     const location = useLocation();
+
     const isHome =
         location.pathname === "/" ||
         location.pathname.endsWith("/tony-thompson-spmn-vital/");
+
+    const deviceTier = useDeviceTier();
+    const isLowDevice = deviceTier === "low";
 
     /* =========================================================
        🌀 LENIS INITIALIZATION
        ========================================================= */
     useEffect(() => {
+        if (isLowDevice) {
+            console.log("⚡️ Low-end device detected: skipping Lenis smooth scroll");
+            return;
+        }
+
         let lenis;
         let rafId;
 
@@ -103,7 +113,7 @@ export default function App() {
 
         window.addEventListener("load", initLenis, { once: true });
         return () => cancelAnimationFrame(rafId);
-    }, []);
+    }, [isLowDevice]);
 
     /* =========================================================
        ✨ Handle ?target Scroll Parameter (Full-Fog Edition)
@@ -119,7 +129,6 @@ export default function App() {
             const { smoothFadeScroll } = await import("./utils/smoothFadeScroll.js");
             preMountFade();
 
-            // Wait until Lenis + target ready
             const waitForLenis = async () => {
                 let tries = 0;
                 while (
@@ -132,15 +141,10 @@ export default function App() {
             };
 
             await waitForLenis();
-
-            // Execute the full-fog scroll
             await smoothFadeScroll(`#${cleanTarget}`);
-
-            // Clean URL
             window.history.replaceState({}, "", "/");
         };
 
-        // Give DOM a moment after React hydration
         setTimeout(doFadeScroll, 900);
     }, [location.pathname]);
 
@@ -149,6 +153,10 @@ export default function App() {
     /* =========================================================
        🎬 MAIN RENDER
        ========================================================= */
+    const hideFooter =
+        location.pathname.includes("quiz") ||
+        location.pathname.includes("stackbuilder");
+
     return (
         <VideoModalProvider>
             <QuizOverlayProvider>
@@ -171,7 +179,7 @@ export default function App() {
                             />
                         </div>
 
-                        <ScrollFog />
+                        {!isLowDevice && <ScrollFog />}
 
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -183,50 +191,45 @@ export default function App() {
                             >
                                 <Suspense fallback={<div className="h-screen bg-black" />}>
                                     <Routes location={location} key={location.pathname}>
+                                        {/* ===================== HOME ===================== */}
                                         <Route
                                             path="/"
                                             element={
                                                 <div className="flex flex-col w-full">
                                                     <Hero setHeroVisible={setHeroVisible} />
                                                     <Suspense
-                                                        fallback={
-                                                            <div className="h-screen bg-black" />
-                                                        }
+                                                        fallback={<div className="h-screen bg-black" />}
                                                     >
                                                         <MeetTony />
                                                     </Suspense>
                                                     <About />
                                                     <Testimonials />
+
+                                                    {/* 🟣 NEW TRUST SECTION */}
+                                                    <div className="h-[8vh] w-full bg-gradient-to-b from-transparent via-[#9b26b6]/20 to-black"></div>
+                                                    <TrustSection />
+
                                                     <TierList />
                                                 </div>
                                             }
                                         />
+
+                                        {/* ===================== OTHER ROUTES ===================== */}
                                         <Route path="/lets-win" element={<LetsWin />} />
-                                        <Route
-                                            path="/about-tony"
-                                            element={<AboutTony />}
-                                        />
+                                        <Route path="/about-tony" element={<AboutTony />} />
                                         <Route path="/shop" element={<Shop />} />
-                                        <Route
-                                            path="/thank-you"
-                                            element={<ThankYou />}
-                                        />
+                                        <Route path="/thank-you" element={<ThankYou />} />
                                         <Route path="/go" element={<Go />} />
-                                        <Route
-                                            path="/quiz-intro"
-                                            element={<QuizIntro />}
-                                        />
-                                        <Route
-                                            path="/privacy-policy"
-                                            element={<PrivacyPolicy />}
-                                        />
+                                        <Route path="/quiz-intro" element={<QuizIntro />} />
+                                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                         <Route path="/terms" element={<Terms />} />
+                                        <Route path="/stackbuilder" element={<StackBuilder />} />
                                     </Routes>
                                 </Suspense>
                             </motion.div>
                         </AnimatePresence>
 
-                        <Footer />
+                        {!hideFooter && <Footer />}
                     </motion.main>
                 </AnimatePresence>
             </QuizOverlayProvider>

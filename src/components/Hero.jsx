@@ -1,35 +1,16 @@
-// ✅ src/components/Hero.jsx — Hero fully accessible + GitHub Pages path-safe + LCP identifiable
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import "../styles/hero.css";
 import { useVideoModal } from "../context/VideoModalContext";
 import ScrollArrow from "./ScrollArrow";
 
 const base = import.meta.env.BASE_URL || "/";
-const heroBG = `${base}assets/hero.jpg`; // ✅ Correct folder
+const heroImage = `${base}assets/mzhandu1.jpg`;
 const verticallo = `${base}videos/verticallo.mp4`;
 
 export default function Hero({ setHeroVisible }) {
-    const [inTestimonials, setInTestimonials] = useState(false);
     const heroRef = useRef(null);
     const videoRef = useRef(null);
     const { openVideo } = useVideoModal();
-
-    /* === Visibility detection === */
-    useEffect(() => {
-        const testimonials = document.getElementById("testimonials");
-        if (!testimonials) return;
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    const ratio = entry.intersectionRatio;
-                    setInTestimonials(ratio >= 0.1 && ratio <= 0.9);
-                });
-            },
-            { threshold: Array.from({ length: 50 }, (_, i) => i / 50) }
-        );
-        observer.observe(testimonials);
-        return () => observer.disconnect();
-    }, []);
 
     useEffect(() => {
         if (!heroRef.current) return;
@@ -50,27 +31,20 @@ export default function Hero({ setHeroVisible }) {
         }
     }, []);
 
-    /* === Unified fog-powered scroll === */
     const fogScrollTo = (selector) => {
         const runScroll = () => {
             const el = document.querySelector(selector);
             if (!el) return;
-
             const lenis = window.lenis;
-            if (lenis) {
-                const onEnd = () => lenis.off("scrollEnd", onEnd);
-                lenis.on("scrollEnd", onEnd);
-                lenis.scrollTo(el, { duration: 1.4, offset: -40 });
-            } else {
-                el.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
+            if (lenis) lenis.scrollTo(el, { duration: 1.4, offset: -40 });
+            else el.scrollIntoView({ behavior: "smooth", block: "start" });
         };
         if (typeof window.triggerGlobalFog === "function") window.triggerGlobalFog(runScroll);
         else runScroll();
     };
 
+    const handleBookTony = () => fogScrollTo("#about");
     const handleWinNow = () => fogScrollTo("#programs");
-    const handleGetStarted = () => fogScrollTo("#about");
 
     return (
         <section
@@ -78,38 +52,79 @@ export default function Hero({ setHeroVisible }) {
             id="home"
             role="main"
             aria-label="Hero section"
-            className="hero relative w-full h-screen flex items-center justify-center overflow-hidden"
+            className="hero relative w-full h-screen flex items-center justify-center overflow-hidden bg-black text-white"
             style={{ contain: "layout paint style" }}
         >
-            {/* ✅ Background (fixed for GitHub Pages) */}
+            {/* === Background Image === */}
             <div
                 className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-[1]"
                 style={{
-                    backgroundImage: `url(${heroBG})`,
+                    backgroundImage: `url(${heroImage})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
-                role="img"
-                aria-label="Background image of Tony Thompson hero section"
             />
 
-            {/* === CTA Buttons === */}
+            {/* === Cinematic Slogan === */}
+            <div
+                className="absolute z-[3] text-left"
+                style={{
+                    top: "41%", // moved slightly lower
+                    left: "3rem",
+                    transform: "translateY(-50%)",
+                    maxWidth: "55vw",
+                }}
+            >
+                <h1
+                    className="slogan-block font-extrabold leading-[1.05] text-white"
+                    style={{
+                        fontSize: "clamp(3rem, 5vw, 5.8rem)",
+                        textShadow: "0 8px 20px rgba(0,0,0,0.5)",
+                    }}
+                >
+                    <span className="slogan-line delay-0">The piece</span>
+                    <br />
+                    <span className="slogan-line delay-1">that changes</span>
+                    <br />
+                    <span className="slogan-line delay-2 text-white">YOUR game.</span>
+                </h1>
+            </div>
+
+            {/* === CTA Buttons (bottom-left) === */}
             <div
                 className="absolute z-[900004] animate-buttonFloat flex gap-3
-                    left-1/2 top-[calc(55%+4cm)] -translate-x-1/2 -translate-y-1/2 flex-row items-center justify-center
-                    md:left-10 md:bottom-10 md:top-auto md:-translate-x-0 md:-translate-y-0 md:flex-row md:items-center md:justify-start"
+        bottom-[2rem] left-[3rem] md:bottom-[2.8rem]
+        flex-row items-center justify-start"
                 style={{ willChange: "transform" }}
             >
-                {/* WIN / NOW — uses fog */}
+                {/* BOOK TONY */}
+                <div
+                    onClick={handleBookTony}
+                    className="relative flex justify-center items-center w-[150px] h-[56px]
+          text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
+          bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
+          rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(177,79,192,0.7)]
+          transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
+          hover:translate-y-[-4px] uppercase tracking-wider"
+                    aria-label="Scroll to About section"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-[10px]" />
+                    <span className="transition-all duration-500 group-hover:opacity-0">BOOK</span>
+                    <span className="absolute opacity-0 transition-all duration-500 group-hover:opacity-100">
+                        TONY
+                    </span>
+                </div>
+
+                {/* WIN NOW */}
                 <div
                     onClick={handleWinNow}
-                    className="win-now-fog relative flex justify-center items-center w-[150px] h-[56px]
-                        text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
-                        bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
-                        rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
-                        transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
-                        hover:translate-y-[-4px] uppercase tracking-wider"
-                    aria-label="Navigate to Programs section"
+                    className="relative flex justify-center items-center w-[150px] h-[56px]
+          text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
+          bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
+          rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
+          transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
+          hover:translate-y-[-4px] uppercase tracking-wider"
+                    aria-label="Scroll to Programs section"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-[10px]" />
                     <span className="transition-all duration-500 group-hover:opacity-0">WIN</span>
@@ -117,37 +132,19 @@ export default function Hero({ setHeroVisible }) {
                         NOW
                     </span>
                 </div>
-
-                {/* GET / STARTED — uses fog */}
-                <div
-                    onClick={handleGetStarted}
-                    className="get-started-fog relative flex justify-center items-center w-[150px] h-[56px]
-                        text-white font-['Press_Start_2P'] text-[0.9rem] cursor-pointer group
-                        bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
-                        rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(177,79,192,0.7)]
-                        transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
-                        hover:translate-y-[-4px] uppercase tracking-wider"
-                    aria-label="Navigate to About section"
-                >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-[10px]" />
-                    <span className="transition-all duration-500 group-hover:opacity-0">GET</span>
-                    <span className="absolute opacity-0 transition-all duration-500 group-hover:opacity-100">
-                        STARTED
-                    </span>
-                </div>
             </div>
 
-            {/* === Video Widget === */}
+            {/* === Video Widget (bottom-right) === */}
             <div
-                className="video-widget group absolute bottom-8 right-8 z-[900003] cursor-pointer select-none hidden md:block"
+                className="video-widget group absolute bottom-[2rem] right-[2rem] z-[900003] cursor-pointer select-none hidden md:block"
                 onClick={() => openVideo(verticallo)}
                 aria-label="Open video modal"
             >
                 <div
                     className="relative w[6.5cm] h-[2.3cm] rounded-[2cm]
-                        bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
-                        shadow-[0_0_22px_rgba(155,38,182,0.75)]
-                        flex justify-center items-center overflow-hidden animate-float"
+          bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
+          shadow-[0_0_22px_rgba(155,38,182,0.75)]
+          flex justify-center items-center overflow-hidden animate-float"
                     style={{ width: "6.5cm", height: "2.3cm" }}
                 >
                     <video
@@ -160,18 +157,12 @@ export default function Hero({ setHeroVisible }) {
                         autoPlay
                     >
                         <source src={verticallo} type="video/mp4" />
-                        <track
-                            kind="captions"
-                            srcLang="en"
-                            label="Tony Thompson introduction"
-                            default
-                        />
                     </video>
 
                     <span
                         className="relative z-10 font-['Press_Start_2P'] text-[0.8rem] tracking-wide 
-                            text-transparent bg-clip-text bg-gradient-to-r 
-                            from-[#e5c4ff] via-[#ffffff] to-[#e5c4ff]"
+            text-transparent bg-clip-text bg-gradient-to-r 
+            from-[#e5c4ff] via-[#ffffff] to-[#e5c4ff]"
                     >
                         PRESS PLAY
                     </span>
@@ -179,18 +170,33 @@ export default function Hero({ setHeroVisible }) {
                 </div>
             </div>
 
-            {/* === Scroll Indicator === */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center z-[5]">
                 <ScrollArrow target="#meet-tony" />
             </div>
 
             <style>{`
-                @keyframes pulseGlow {
-                    0%,100% { opacity:0.4; transform:translateX(-25%); }
-                    50% { opacity:0.9; transform:translateX(25%); }
-                }
-                .animate-pulseGlow { animation:pulseGlow 6s ease-in-out infinite; }
-            `}</style>
+        @keyframes pulseGlow {
+          0%,100% { opacity:0.4; transform:translateX(-25%); }
+          50% { opacity:0.9; transform:translateX(25%); }
+        }
+        .animate-pulseGlow { animation:pulseGlow 6s ease-in-out infinite; }
+
+        @keyframes fadeSlideIn {
+          0% { opacity: 0; transform: translateX(-120px) scale(0.96); filter: blur(6px); }
+          60% { opacity: 1; transform: translateX(0) scale(1.02); filter: blur(0); }
+          100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        .slogan-line {
+          display: inline-block;
+          opacity: 0;
+          animation: fadeSlideIn 2.8s cubic-bezier(0.25,1,0.3,1) forwards;
+        }
+
+        .slogan-line.delay-0 { animation-delay: 0.3s; }
+        .slogan-line.delay-1 { animation-delay: 1.1s; }
+        .slogan-line.delay-2 { animation-delay: 2s; }
+      `}</style>
         </section>
     );
 }

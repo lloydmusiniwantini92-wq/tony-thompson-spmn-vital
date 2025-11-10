@@ -11,16 +11,17 @@
     <!-- ✅ Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap"
+    <!-- Montserrat (headings, body), Press Start 2P (buttons), Oswald (headlines), Bebas Neue for menu -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&family=Oswald:wght@700;800;900&family=Bebas+Neue&display=swap"
           rel="stylesheet" />
 
-    <!-- ✅ Preload hero image (corrected path) -->
-    <link rel="preload" as="image" href="./assets/hero.jpg" />
+    <!-- ✅ Preload hero image correctly -->
+    <link rel="preload" href="./assets/hero.jpg" as="image" type="image/jpeg" />
 
     <!-- ✅ Lazy load non-critical scripts -->
     <script src="https://js.stripe.com/v3/" async></script>
 
-    <!-- ✅ Theme & social -->
+    <!-- ✅ Theme & social meta -->
     <meta name="theme-color" content="#000000" />
     <meta property="og:title" content="Tony Thompson | Empower Your Growth Journey" />
     <meta property="og:description" content="Join Tony Thompson and take control of your personal and professional growth." />
@@ -31,7 +32,7 @@
 <body>
     <div id="root"></div>
 
-    <!-- ✅ Correct Vite entry -->
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- ✅ Correct Vite entry for GitHub Pages -->
+    <script type="module" src="./src/main.jsx"></script>
 </body>
 </html>
