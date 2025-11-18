@@ -13,7 +13,7 @@ import ScrollFog from "./components/ScrollFog";
 import GlobalOverlay from "./components/GlobalOverlay";
 import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
-import StackBuilder from "./pages/StackBuilder/StackBuilder.jsx";
+const StackBuilder = lazy(() => import("./pages/StackBuilder/StackBuilder.jsx"));
 
 import LetsWin from "./pages/LetsWin";
 import AboutTony from "./pages/AboutTony";
