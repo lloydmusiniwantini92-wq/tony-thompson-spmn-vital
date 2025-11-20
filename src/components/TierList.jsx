@@ -3,33 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useQuizOverlay } from "../context/QuizOverlayContext";
 import step5 from "../assets/quiz/step5.jpg";
 import TetrisCountdown from "./TetrisCountdown";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(
-    "pk_test_51SLRY52NRAQRhNmZ0wCRTrCoRHb3uiX2lWLh7M3zk9M5QsaPnqEK4aHwJlvIwcSeiIeRhVjshFHQPqbRAB6Cv5Gz00HvVfoNXq"
-);
-
-async function startCheckout(priceId) {
-    try {
-        const stripe = await stripePromise;
-        const response = await fetch("http://localhost:4242/create-checkout-session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ priceId }),
-        });
-
-        const data = await response.json();
-        if (data.url) {
-            window.location.href = data.url;
-        } else {
-            console.error("Stripe checkout error:", data.error);
-            alert("Something went wrong — check console for details.");
-        }
-    } catch (err) {
-        console.error("Checkout request failed:", err);
-        alert("Checkout failed — verify your local Stripe server is running.");
-    }
-}
 
 export default function TierList() {
     const { openQuiz } = useQuizOverlay();
@@ -37,15 +10,28 @@ export default function TierList() {
     const [endDate, setEndDate] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
 
+    // ✅ FIXED COUNTDOWN INITIALIZATION — ONLY CHANGE
     useEffect(() => {
         const stored = localStorage.getItem("countdownEndDate");
+
         let date;
-        if (stored) date = new Date(stored);
-        else {
+
+        if (stored) {
+            const parsed = Date.parse(stored);
+
+            if (!isNaN(parsed)) {
+                date = new Date(parsed);
+            } else {
+                date = new Date();
+                date.setDate(date.getDate() + 29);
+                localStorage.setItem("countdownEndDate", date.toISOString());
+            }
+        } else {
             date = new Date();
             date.setDate(date.getDate() + 29);
             localStorage.setItem("countdownEndDate", date.toISOString());
         }
+
         setEndDate(date);
     }, []);
 
@@ -106,16 +92,16 @@ export default function TierList() {
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 1.1, ease: [0.25, 1, 0.3, 1] }}
                         className="absolute top-[calc(12vh+0.6cm)] left-[calc(14.5%+0.1cm)]
-              w-[18.5%] text-center flex flex-col items-center z-[8]
-              scale-[0.88] sm:scale-[0.93] md:scale-[0.97] lg:scale-100
-              md:left-[calc(14.5%+0.1cm)] mobile-center"
+                            w-[18.5%] text-center flex flex-col items-center z-[8]
+                            scale-[0.88] sm:scale-[0.93] md:scale-[0.97] lg:scale-100
+                            mobile-center"
                     >
                         <motion.p
                             initial={{ opacity: 0, y: 5 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1 }}
                             className="text-white font-extrabold text-[0.48rem] md:text-[0.52rem]
-                tracking-[0.15em] uppercase mb-[0.25rem] w-full mt-[0.3rem]"
+                                tracking-[0.15em] uppercase mb-[0.25rem] w-full mt-[0.3rem]"
                         >
                             Limited Aspire Offer Ends In
                         </motion.p>
@@ -146,9 +132,9 @@ export default function TierList() {
                             }}
                             transition={{ duration: 0.4, ease: [0.25, 1, 0.3, 1] }}
                             className="relative rounded-[2.5rem]
-                bg-gradient-to-b from-[#1a001e]/90 via-black/80 to-[#120014]/95
-                border border-[#7d1f97]/40 shadow-[0_0_40px_rgba(155,38,182,0.25)]
-                backdrop-blur-[14px] flex flex-col cursor-pointer"
+                                bg-gradient-to-b from-[#1a001e]/90 via-black/80 to-[#120014]/95
+                                border border-[#7d1f97]/40 shadow-[0_0_40px_rgba(155,38,182,0.25)]
+                                backdrop-blur-[14px] flex flex-col cursor-pointer"
                         >
                             <div className="relative border-b border-[#7d1f97]/30 py-4">
                                 <h4 className="text-2xl font-extrabold text-white uppercase tracking-wider drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
@@ -161,7 +147,7 @@ export default function TierList() {
                                     {tier.price}
                                 </p>
 
-                                <ul className="flex-1 space-y-2 text-sm text-gray-300 mb-8 leading-relaxed tracking-normal text-left">
+                                <ul className="flex-1 space-y-2 text-sm text-gray-300 mb-8 leading-relaxed tracking-normal">
                                     {tier.features.map((f, idx) => (
                                         <li key={idx} className="flex items-start gap-2 leading-snug">
                                             <span className="text-[#9b26b6] mt-[0.1rem]">✓</span>
@@ -177,13 +163,13 @@ export default function TierList() {
                                 whileTap={{ scale: 0.97 }}
                                 transition={{ duration: 0.35 }}
                                 className="relative mt-auto mb-0 w-full select-none cursor-pointer
-                  text-white font-['Press_Start_2P'] text-[0.85rem] uppercase tracking-wider
-                  bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
-                  rounded-b-[2.5rem] border-t border-white/20
-                  shadow-[0_-10px_40px_rgba(155,38,182,0.4),inset_0_2px_6px_rgba(255,255,255,0.3)]
-                  transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
-                  hover:translate-y-[-2px] hover:shadow-[0_-14px_55px_rgba(155,38,182,0.8),inset_0_2px_10px_rgba(255,255,255,0.4)]
-                  will-change-transform overflow-hidden py-6"
+                                    text-white font-['Press_Start_2P'] text-[0.85rem] uppercase tracking-wider
+                                    bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
+                                    rounded-b-[2.5rem] border-t border-white/20
+                                    shadow-[0_-10px_40px_rgba(155,38,182,0.4),inset_0_2px_6px_rgba(255,255,255,0.3)]
+                                    transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
+                                    hover:translate-y-[-2px] hover:shadow-[0_-14px_55px_rgba(155,38,182,0.8),inset_0_2px_10px_rgba(255,255,255,0.4)]
+                                    will-change-transform overflow-hidden py-6"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-b-[2.5rem]" />
                                 <span className="relative z-10">{tier.button}</span>
@@ -193,7 +179,7 @@ export default function TierList() {
                 </div>
             </div>
 
-            {/* === FLOATING MODAL === */}
+            {/* === FLOATING POPUP === */}
             <AnimatePresence>
                 {showPopup && (
                     <motion.div
@@ -219,15 +205,14 @@ export default function TierList() {
                             </p>
                             <button
                                 onClick={() =>
-                                    window.open("https://lp.constantcontactpages.com/sl/ocTpycU", "_blank")
+                                    window.open("https://lp.constantcontactpages.com/sl/TrUL7SX/elevate", "_blank")
                                 }
                                 className="relative flex justify-center items-center w-full h-[60px]
-                  text-white font-['Press_Start_2P'] text-[0.8rem] uppercase tracking-wider
-                  bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
-                  rounded-[1rem] border border-white/20
-                  shadow-[inset_0_2px_6px_rgba(255,255,255,0.3)]
-                  transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
-                  hover:translate-y-[-3px]"
+                                    text-white font-['Press_Start_2P'] text-[0.8rem] uppercase tracking-wider
+                                    bg-gradient-to-br from-[#952ca8]/85 to-[#7d1f97]/70
+                                    rounded-[1rem] border border-white/20
+                                    shadow-[inset_0_2px_6px_rgba(255,255,255,0.3)]
+                                    transition-all duration-[600ms] hover:translate-y-[-3px]"
                             >
                                 Join Waitlist
                             </button>
@@ -242,15 +227,14 @@ export default function TierList() {
                 )}
             </AnimatePresence>
 
-            {/* === COMPARISON TABLE === */}
             <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease: [0.25, 1, 0.3, 1] }}
                 viewport={{ once: true }}
                 className="relative z-[5] overflow-hidden
-          bg-gradient-to-b from-[#7d1f97]/90 via-[#7f1aa1]/90 to-[#1a001e]/95
-          border-t border-[#7d1f97]/50 pt-14 pb-24 px-4 md:px-12"
+                    bg-gradient-to-b from-[#7d1f97]/90 via-[#7f1aa1]/90 to-[#1a001e]/95
+                    border-t border-[#7d1f97]/50 pt-14 pb-24 px-4 md:px-12"
             >
                 <h3 className="relative text-4xl md:text-5xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-white via-[#f2e0ff] to-white tracking-tight mb-12 drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
                     Compare Programs
@@ -294,36 +278,40 @@ export default function TierList() {
             </motion.div>
 
             <style>{`
-        @keyframes pulseGlow {
-          0%,100% { opacity:0.4; transform:translateX(-25%); }
-          50% { opacity:0.9; transform:translateX(25%); }
-        }
-        .animate-pulseGlow { animation:pulseGlow 6s ease-in-out infinite; }
-        @media (max-width: 768px) {
-          .mobile-center {
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: 90% !important;
-          }
-        }
-      `}</style>
+                @keyframes pulseGlow {
+                    0%,100% { opacity:0.4; transform:translateX(-25%); }
+                    50% { opacity:0.9; transform:translateX(25%); }
+                }
+                .animate-pulseGlow { animation:pulseGlow 6s ease-in-out infinite; }
+
+                @media (max-width: 768px) {
+                    .mobile-center {
+                        left: 50% !important;
+                        transform: translateX(-50%) !important;
+                        width: 90% !important;
+                    }
+                }
+            `}</style>
         </section>
     );
 }
+//constant contact redirect
+const handleAspire = () =>
+    window.open("https://lp.constantcontactpages.com/sl/QFIBwKF/aspire", "_blank");
 
-// === Stripe Handlers ===
-const handleAspire = () => startCheckout("price_1SLRkP2NRAQRhNmZtrOA49gW");
 const handleIgnite = () =>
-    window.open("https://lp.constantcontactpages.com/sl/ocTpycU", "_blank");
+    window.open("https://lp.constantcontactpages.com/sl/RaXnRmj/ignite", "_blank");
+
 const handleElevate = () =>
-    window.open("https://tonythompson.com/coming-soon", "_blank");
+    window.open("https://lp.constantcontactpages.com/sl/TrUL7SX/elevate", "_blank");
+
 
 // === Tier Data ===
 const tiers = [
     {
         name: "ASPIRE",
         price: "$95/mth",
-        button: "WIN NOW",
+        button: "WIN NOW →",
         onClick: handleAspire,
         features: [
             "One tailor-made playbook per year",
@@ -380,4 +368,3 @@ const comparisonData = [
     { feature: "Monthly Coaching", aspire: false, ignite: false, elevate: true },
     { feature: "Leadership Mastermind", aspire: false, ignite: false, elevate: true },
 ];
-

@@ -3,16 +3,11 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Lenis from "@studio-freight/lenis";
 
-import Hero from "./components/Hero";
-const MeetTony = lazy(() => import("./components/MeetTony"));
-import About from "./components/About";
-import Testimonials from "./components/Testimonials";
-import TrustSection from "./components/TrustSection"; // ✅ NEW IMPORT
-import TierList from "./components/TierList";
 import ScrollFog from "./components/ScrollFog";
 import GlobalOverlay from "./components/GlobalOverlay";
 import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
+
 import StackBuilder from "./pages/StackBuilder/StackBuilder.jsx";
 
 import LetsWin from "./pages/LetsWin";
@@ -21,8 +16,10 @@ import Shop from "./pages/Shop";
 import ThankYou from "./pages/ThankYou";
 import Go from "./pages/Go";
 
+const MeetTony = lazy(() => import("./components/MeetTony"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
+
 import QuizIntro from "./components/QuizIntro";
 
 import { VideoModalProvider } from "./context/VideoModalContext";
@@ -30,10 +27,11 @@ import { QuizOverlayProvider } from "./context/QuizOverlayContext";
 import { dreamyOverlayStyle, animateDreamyPulse } from "./utils/fadeStyles.js";
 
 import useDeviceTier from "./hooks/useDeviceTier";
+import BookTonyForm from "./pages/BookTonyForm";
 
-/* =========================================================
-   🩵 DREAMY PRE-MOUNT OVERLAY
-   ========================================================= */
+// ⭐ NEW — your extracted home page
+import HomePage from "./pages/HomePage";
+
 function preMountFade() {
     if (document.getElementById("fade-preoverlay")) return;
     const overlay = document.createElement("div");
@@ -74,9 +72,6 @@ export default function App() {
     const deviceTier = useDeviceTier();
     const isLowDevice = deviceTier === "low";
 
-    /* =========================================================
-       🌀 LENIS INITIALIZATION
-       ========================================================= */
     useEffect(() => {
         if (isLowDevice) {
             console.log("⚡️ Low-end device detected: skipping Lenis smooth scroll");
@@ -115,9 +110,6 @@ export default function App() {
         return () => cancelAnimationFrame(rafId);
     }, [isLowDevice]);
 
-    /* =========================================================
-       ✨ Handle ?target Scroll Parameter (Full-Fog Edition)
-       ========================================================= */
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const targetParam = params.get("target");
@@ -150,12 +142,11 @@ export default function App() {
 
     const heroVisibleForOverlay = isHome ? heroVisible : false;
 
-    /* =========================================================
-       🎬 MAIN RENDER
-       ========================================================= */
     const hideFooter =
         location.pathname.includes("quiz") ||
-        location.pathname.includes("stackbuilder");
+        location.pathname.includes("stackbuilder") ||
+        location.pathname.includes("book-tony") ||
+        location.pathname.includes("about-tony");
 
     return (
         <VideoModalProvider>
@@ -171,6 +162,7 @@ export default function App() {
                         style={{ minHeight: "100vh" }}
                     >
                         <ScrollToTop />
+
                         <div className="fixed top-0 left-0 w-full z-[2147483646] pointer-events-auto">
                             <GlobalOverlay
                                 menuOpen={menuOpen}
@@ -191,30 +183,26 @@ export default function App() {
                             >
                                 <Suspense fallback={<div className="h-screen bg-black" />}>
                                     <Routes location={location} key={location.pathname}>
-                                        {/* ===================== HOME ===================== */}
+
+                                        {/* Standalone MeetTony route */}
                                         <Route
-                                            path="/"
+                                            path="/meet-tony"
                                             element={
-                                                <div className="flex flex-col w-full">
-                                                    <Hero setHeroVisible={setHeroVisible} />
-                                                    <Suspense
-                                                        fallback={<div className="h-screen bg-black" />}
-                                                    >
-                                                        <MeetTony />
-                                                    </Suspense>
-                                                    <About />
-                                                    <Testimonials />
-
-                                                    {/* 🟣 NEW TRUST SECTION */}
-                                                    <div className="h-[8vh] w-full bg-gradient-to-b from-transparent via-[#9b26b6]/20 to-black"></div>
-                                                    <TrustSection />
-
-                                                    <TierList />
-                                                </div>
+                                                <Suspense fallback={<div className="h-screen bg-black" />}>
+                                                    <MeetTony />
+                                                </Suspense>
                                             }
                                         />
 
-                                        {/* ===================== OTHER ROUTES ===================== */}
+                                        {/* ⭐ HOME ROUTE — NOW USING HOMEPAGE.JSX */}
+                                        <Route
+                                            path="/"
+                                            element={
+                                                <HomePage setHeroVisible={setHeroVisible} />
+                                            }
+                                        />
+
+                                        {/* Other routes */}
                                         <Route path="/lets-win" element={<LetsWin />} />
                                         <Route path="/about-tony" element={<AboutTony />} />
                                         <Route path="/shop" element={<Shop />} />
@@ -224,6 +212,8 @@ export default function App() {
                                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                         <Route path="/terms" element={<Terms />} />
                                         <Route path="/stackbuilder" element={<StackBuilder />} />
+                                        <Route path="/book-tony" element={<BookTonyForm />} />
+
                                     </Routes>
                                 </Suspense>
                             </motion.div>

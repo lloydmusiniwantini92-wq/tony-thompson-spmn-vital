@@ -15,7 +15,9 @@ export function VideoModalProvider({ children }) {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showUI, setShowUI] = useState(true);
     const [hasInteracted, setHasInteracted] = useState(false);
-    const [showStartNow, setShowStartNow] = useState(false);
+
+    // ⭐ NEW: special override flag ONLY for BookTonySection modal
+    const [isProgramsJump, setIsProgramsJump] = useState(false);
 
     const videoRef = useRef(null);
     const timeoutRef = useRef(null);
@@ -37,19 +39,18 @@ export function VideoModalProvider({ children }) {
         }
     }, [videoSrc]);
 
-    const openVideo = (src) => {
+    const openVideo = (src, options = {}) => {
         setVideoSrc(src);
+        setIsProgramsJump(options.programsJump === true); // ⭐ ONLY TRUE FOR BOOK TONY SECTION
         setIsPlaying(false);
         setProgress(0);
         setShowUI(true);
         setHasInteracted(false);
-        setShowStartNow(false);
     };
 
     const closeVideo = () => {
         if (videoRef.current) videoRef.current.pause();
         setVideoSrc(null);
-        setShowStartNow(false);
         window.scrollTo({ top: lastScrollPos.current, behavior: "instant" });
     };
 
@@ -85,17 +86,16 @@ export function VideoModalProvider({ children }) {
             const pct = (v.currentTime / v.duration) * 100;
             setProgress(pct);
             setDuration(v.duration);
-            setShowStartNow(pct >= 85);
         }
     };
 
     const handleSeek = (e) => {
         const v = videoRef.current;
         if (v && duration) {
-            const newTime = (e.target.value / 100) * duration;
+            const newValue = Number(e.target.value);
+            const newTime = (newValue / 100) * duration;
             v.currentTime = newTime;
-            setProgress(e.target.value);
-            setShowStartNow(e.target.value >= 85);
+            setProgress(newValue);
         }
     };
 
@@ -135,44 +135,24 @@ export function VideoModalProvider({ children }) {
     const handleMouseMove = () => resetUITimer();
     const handleTouchStart = () => resetUITimer();
 
-    /* === START NOW (with fog scroll) === */
-    const handleStartNow = () => {
+    /* === BUTTON HANDLER === */
+    const handleButton = () => {
         closeVideo();
 
+        // ⭐ SPECIAL ONLY FOR BOOKTONYSECTION
+        if (isProgramsJump) {
+            setTimeout(() => {
+                window.location.href = "/?target=programs";
+            }, 250);
+            return;
+        }
+
+        // ⭐ ALL OTHER MODALS KEEP ORIGINAL BEHAVIOR
+        const base = import.meta.env.BASE_URL || "/";
         setTimeout(() => {
-            const fog = window.triggerGlobalFog;
-            const lenis = window.lenis;
-            const performScroll = () => {
-                const el = document.querySelector("#programs");
-                if (!el) return;
-                if (lenis) lenis.scrollTo(el, { duration: 1.4, offset: -60 });
-                else el.scrollIntoView({ behavior: "smooth", block: "start" });
-            };
-
-            // ✅ Check if already on home page with #programs available
-            const onHome =
-                window.location.pathname === "/" ||
-                window.location.pathname.endsWith("/tony-thompson-spmn-vital/");
-
-            const targetExists = document.querySelector("#programs");
-
-            if (typeof fog === "function") {
-                fog(() => {
-                    if (onHome && targetExists) {
-                        // Direct smooth fog scroll from anywhere on homepage
-                        performScroll();
-                    } else {
-                        // Navigate to home with ?target fallback
-                        window.location.href = `${import.meta.env.BASE_URL}?target=programs`;
-                    }
-                });
-            } else {
-                if (onHome && targetExists) performScroll();
-                else window.location.href = `${import.meta.env.BASE_URL}?target=programs`;
-            }
+            window.location.href = `${base}book-tony`;
         }, 300);
     };
-
 
     return (
         <VideoModalContext.Provider value={{ openVideo, closeVideo, videoSrc }}>
@@ -199,7 +179,6 @@ export function VideoModalProvider({ children }) {
                                 backdropFilter: "blur(80px)",
                             }}
                         >
-                            {/* === VIDEO === */}
                             <motion.div
                                 className="relative w-[95vw] h-[90vh] rounded-[20px] overflow-hidden bg-black flex items-center justify-center"
                                 initial={{ scale: 0.95, opacity: 0 }}
@@ -208,6 +187,7 @@ export function VideoModalProvider({ children }) {
                                 transition={{ duration: 0.5 }}
                                 onClick={(e) => e.stopPropagation()}
                             >
+                                {/* LOGO */}
                                 <div
                                     className="absolute top-[1.5vh] left-[0.5vw] z-[2147483650]"
                                     onClick={(e) => e.stopPropagation()}
@@ -219,6 +199,7 @@ export function VideoModalProvider({ children }) {
                                     />
                                 </div>
 
+                                {/* VIDEO */}
                                 <video
                                     ref={videoRef}
                                     src={videoSrc}
@@ -232,12 +213,12 @@ export function VideoModalProvider({ children }) {
                                     muted={isMuted}
                                 />
 
-                                {/* === START NOW CTA === */}
+                                {/* SPECIAL BUTTON — WIN NOW → IF programsJump */}
                                 <AnimatePresence>
-                                    {showStartNow && (
+                                    {showUI && (
                                         <motion.button
                                             key="start-now"
-                                            onClick={handleStartNow}
+                                            onClick={handleButton}
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.9 }}
@@ -246,24 +227,24 @@ export function VideoModalProvider({ children }) {
                                         >
                                             <div
                                                 className="absolute z-[9999] flex justify-center items-center 
-                                                w-[210px] h-[60px] text-white font-['Press_Start_2P'] text-[0.8rem]
-                                                cursor-pointer bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
-                                                rounded-[1rem] border border-white/20
-                                                shadow-[0_10px_25px_rgba(155,38,182,0.7)]
-                                                uppercase tracking-wider transition-all duration-[600ms]"
+                                                    w-[230px] h-[62px] text-white font-['Press_Start_2P'] text-[0.9rem]
+                                                    cursor-pointer bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
+                                                    rounded-[1rem] border border-white/20
+                                                    shadow-[0_10px_25px_rgba(155,38,182,0.7)]
+                                                    uppercase tracking-wider transition-all duration-[600ms]"
                                                 style={{
                                                     top: "80%",
                                                     left: "50%",
                                                     transform: "translate(-50%, -50%)",
                                                 }}
                                             >
-                                                START NOW →
+                                                {isProgramsJump ? "WIN NOW →" : "BOOK TONY →"}
                                             </div>
                                         </motion.button>
                                     )}
                                 </AnimatePresence>
 
-                                {/* === Controls === */}
+                                {/* CONTROLS */}
                                 <AnimatePresence>
                                     {showUI && (
                                         <motion.div
@@ -281,27 +262,32 @@ export function VideoModalProvider({ children }) {
                                                 onChange={handleSeek}
                                                 className="w-full accent-white cursor-pointer h-[4px] appearance-none bg-white/30 rounded-lg"
                                             />
+
                                             <div className="flex items-center justify-between mt-1">
                                                 <div className="flex items-center gap-5">
-                                                    <button onClick={togglePlay} className="hover:scale-110 transition-transform">
+                                                    <button onClick={togglePlay}>
                                                         {isPlaying ? (
                                                             <Pause size={26} strokeWidth={2} />
                                                         ) : (
                                                             <Play size={26} strokeWidth={2} />
                                                         )}
                                                     </button>
-                                                    <button onClick={toggleMute} className="hover:scale-110 transition-transform">
+
+                                                    <button onClick={toggleMute}>
                                                         {isMuted ? (
                                                             <VolumeX size={24} strokeWidth={2} />
                                                         ) : (
                                                             <Volume2 size={24} strokeWidth={2} />
                                                         )}
                                                     </button>
+
                                                     <span className="text-sm tracking-wide text-white/90 font-medium">
-                                                        {formatTime(videoRef.current?.currentTime || 0)} / {formatTime(duration)}
+                                                        {formatTime(videoRef.current?.currentTime || 0)} /{" "}
+                                                        {formatTime(duration)}
                                                     </span>
                                                 </div>
-                                                <button onClick={toggleFullscreen} className="hover:scale-110 transition-transform">
+
+                                                <button onClick={toggleFullscreen}>
                                                     {isFullscreen ? (
                                                         <Minimize size={24} strokeWidth={2} />
                                                     ) : (
@@ -314,7 +300,7 @@ export function VideoModalProvider({ children }) {
                                 </AnimatePresence>
                             </motion.div>
 
-                            {/* === CLOSE BUTTON === */}
+                            {/* CLOSE BUTTON */}
                             <AnimatePresence>
                                 {hasInteracted && showUI && (
                                     <motion.button
@@ -327,7 +313,6 @@ export function VideoModalProvider({ children }) {
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.3 }}
                                     >
                                         ×
                                     </motion.button>

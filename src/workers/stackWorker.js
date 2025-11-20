@@ -1,4 +1,4 @@
-﻿self.onmessage = (e) => {
+self.onmessage = (e) => {
     const { type, payload } = e.data;
 
     switch (type) {

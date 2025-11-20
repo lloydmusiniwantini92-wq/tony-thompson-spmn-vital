@@ -21,7 +21,9 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
     const navItems = [
         { label: "HOME", link: "#home" },
         { label: "MEET TONY", link: "#meet-tony" },
-        { label: "WIN NOW", link: "#about" },
+        { label: "BOOK TONY", link: "#book-tony" },
+
+        { label: "TAKE QUIZ", link: "#about" },   // UPDATED
         { label: "TESTIMONIALS", link: "#testimonials" },
         { label: "PROGRAMS", link: "#programs" },
         { label: "CONTACT", link: "#contact" },
@@ -29,9 +31,7 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         { label: "INQUIRIES", link: "#enquiries" },
         { label: "PODCASTS", link: "/podcasts" },
         { label: "NEWSLETTER", link: "/newsletter" },
-        { label: "BOOK TONY", link: "/book-tony" },
     ];
-
     /* === Persist active section === */
     useEffect(() => {
         const saved = sessionStorage.getItem("activeSection");
@@ -49,6 +49,7 @@ export default function GlobalOverlay({ menuOpen, setMenuOpen, heroVisible }) {
         "#programs",
         "#contact",
         "#enquiries",
+        "#book-tony", /* OPTIONAL: adding helps highlight active menu */
     ];
     const { active, lock } = useScrollSpy(selectors, { sample: 0.45, lockMs: 1000 });
 

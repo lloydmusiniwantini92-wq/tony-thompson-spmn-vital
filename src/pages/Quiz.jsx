@@ -103,7 +103,6 @@ export default function Quiz() {
         return newErrors;
     };
 
-    // 🧭 Composite Scoring Logic
     const deriveProfile = (answers) => {
         const scores = { Visionary: 0, Challenger: 0, Harmonizer: 0 };
         answers.forEach((a) => {
@@ -133,34 +132,18 @@ export default function Quiz() {
         await sendPlaybookEmail(form);
         setLoading(false);
         setSuccess(true);
+
+        // Auto-download PDF immediately
+        const link = document.createElement("a");
+        link.href = "/Mortgage-Broker-Business-Growth-Blueprint.pdf";
+        link.download = "Mortgage-Broker-Business-Growth-Blueprint.pdf";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
     };
 
-    const handleClose = () => {
-        setShowPopup(false);
-        setTimeout(() => navigate("/?target=#tiers"), 1200);
-    };
+    const handleClose = () => setShowPopup(false);
 
-    const goToStackBuilder = () => {
-        const profile = deriveProfile(answers);
-        localStorage.setItem("quizResult", JSON.stringify(profile));
-        const overlay = document.createElement("div");
-        Object.assign(overlay.style, {
-            position: "fixed",
-            inset: "0",
-            background:
-                "radial-gradient(circle at center, rgba(155,38,182,0.55) 0%, rgba(0,0,0,0.96) 100%)",
-            transition: "opacity 0.9s ease-in-out",
-            opacity: "0",
-            zIndex: "999999",
-            pointerEvents: "none",
-        });
-        document.body.appendChild(overlay);
-        requestAnimationFrame(() => (overlay.style.opacity = "1"));
-        setTimeout(() => navigate("/stackbuilder"), 900);
-        setTimeout(() => overlay.remove(), 1600);
-    };
-
-    // === Return (unchanged visuals) ===
     return (
         <AnimatePresence mode="wait">
             <motion.div
@@ -175,15 +158,14 @@ export default function Quiz() {
 
                     {!step.isFinal ? (
                         <>
-                            {/* Questions Section */}
+                            {/* Questions */}
                             <div className="w-full md:w-1/2 min-h-screen flex flex-col relative z-10">
                                 <div className="flex-1 overflow-y-auto px-6 md:px-16 pt-10 pb-32 md:pb-28">
                                     <div className="flex gap-6 mb-10">
                                         {Array.from({ length: stepCount }).map((_, i) => (
                                             <div key={i} className="h-[6px] w-24 rounded-full bg-gray-700 overflow-hidden">
                                                 <div
-                                                    className={`h-full rounded-full transition-all duration-500 ${i <= stepIndex ? "bg-[#7d1f97]" : "bg-transparent"
-                                                        }`}
+                                                    className={`h-full rounded-full transition-all duration-500 ${i <= stepIndex ? "bg-[#7d1f97]" : "bg-transparent"}`}
                                                     style={{
                                                         width: i < stepIndex ? "100%" : i === stepIndex ? "55%" : "0%",
                                                     }}
@@ -215,10 +197,10 @@ export default function Quiz() {
                                                             key={opt}
                                                             onClick={() => setSelected(i)}
                                                             className={`group relative flex flex-col justify-center items-center 
-                                text-center rounded-xl border transition-all duration-500
-                                font-semibold tracking-tight leading-snug px-6 py-8 
-                                min-h-[150px] md:min-h-[180px] h-full 
-                                ${active
+                                                                text-center rounded-xl border transition-all duration-500
+                                                                font-semibold tracking-tight leading-snug px-6 py-8 
+                                                                min-h-[150px] md:min-h-[180px] h-full 
+                                                                ${active
                                                                     ? "border-[#7d1f97] bg-[#7d1f97] text-white"
                                                                     : "border-gray-600 hover:border-[#7d1f97] hover:bg-[#1a001d]"
                                                                 }`}
@@ -230,14 +212,13 @@ export default function Quiz() {
                                                             <span className="block mb-4">{opt}</span>
                                                             <span
                                                                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                  ${active
+                                                                    ${active
                                                                         ? "border-white"
                                                                         : "border-gray-400 group-hover:border-[#7d1f97]"
                                                                     }`}
                                                             >
                                                                 <span
-                                                                    className={`w-3.5 h-3.5 rounded-full ${active ? "bg-white" : "bg-transparent"
-                                                                        }`}
+                                                                    className={`w-3.5 h-3.5 rounded-full ${active ? "bg-white" : "bg-transparent"}`}
                                                                 />
                                                             </span>
                                                         </button>
@@ -254,10 +235,10 @@ export default function Quiz() {
                                         onClick={handleBack}
                                         disabled={stepIndex === 0}
                                         className="rounded-full w-[160px] md:w-[180px] h-[54px] font-bold 
-                      bg-gradient-to-br from-[#952ca8]/90 to-[#7d1f97]/80 
-                      text-white uppercase shadow-[0_0_25px_rgba(155,38,182,0.7)] 
-                      border border-white/20 hover:opacity-90 transition-all duration-500 
-                      disabled:opacity-40"
+                                            bg-gradient-to-br from-[#952ca8]/90 to-[#7d1f97]/80 
+                                            text-white uppercase shadow-[0_0_25px_rgba(155,38,182,0.7)] 
+                                            border border-white/20 hover:opacity-90 transition-all duration-500 
+                                            disabled:opacity-40"
                                     >
                                         Back
                                     </button>
@@ -265,8 +246,8 @@ export default function Quiz() {
                                         onClick={handleNext}
                                         disabled={selected === null}
                                         className={`rounded-full w-[160px] md:w-[180px] h-[54px] font-bold uppercase transition-all duration-500 
-                      border border-white/20 shadow-[0_0_25px_rgba(155,38,182,0.7)] 
-                      ${selected === null
+                                            border border-white/20 shadow-[0_0_25px_rgba(155,38,182,0.7)] 
+                                            ${selected === null
                                                 ? "bg-gray-700 text-gray-400 cursor-not-allowed"
                                                 : "bg-gradient-to-br from-[#952ca8]/90 to-[#7d1f97]/80 text-white hover:opacity-90"
                                             }`}
@@ -276,7 +257,7 @@ export default function Quiz() {
                                 </div>
                             </div>
 
-                            {/* Image Side */}
+                            {/* Image */}
                             <div className="hidden md:block w-1/2 relative z-0">
                                 <div className="sticky top-0 h-screen w-full overflow-hidden">
                                     <AnimatePresence mode="wait">
@@ -296,7 +277,7 @@ export default function Quiz() {
                         </>
                     ) : (
                         <>
-                            {/* === Final Form === */}
+                            {/* Final Form */}
                             <motion.div className="hidden md:block w-1/2 relative z-0">
                                 <motion.img
                                     key={step.image}
@@ -335,10 +316,10 @@ export default function Quiz() {
                                                 onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
                                                 placeholder={f.placeholder}
                                                 className={`w-full bg-transparent border-b text-white placeholder-gray-500 py-3 text-lg focus:outline-none caret-white ${errors[f.key]
-                                                        ? "border-red-500"
-                                                        : form[f.key]
-                                                            ? "border-[#7d1f97]"
-                                                            : "border-[#7d1f97]/40"
+                                                    ? "border-red-500"
+                                                    : form[f.key]
+                                                        ? "border-[#7d1f97]"
+                                                        : "border-[#7d1f97]/40"
                                                     }`}
                                             />
                                             {errors[f.key] && <p className="text-xs text-red-500 mt-1">{errors[f.key]}</p>}
@@ -349,10 +330,10 @@ export default function Quiz() {
                                         type="submit"
                                         disabled={loading}
                                         className={`mt-4 inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold 
-                      text-black bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
-                      border border-[#7d1f97]/80 shadow-[0_0_35px_rgba(155,38,182,0.9)] 
-                      hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500 
-                      uppercase ${loading ? "opacity-60 cursor-wait" : "hover:opacity-90"}`}
+                                            text-black bg-gradient-to-br from-[#952ca8] to-[#7d1f97]
+                                            border border-[#7d1f97]/80 shadow-[0_0_35px_rgba(155,38,182,0.9)] 
+                                            hover:shadow-[0_0_50px_rgba(177,79,192,0.9)] transition-all duration-500 
+                                            uppercase ${loading ? "opacity-60 cursor-wait" : "hover:opacity-90"}`}
                                     >
                                         {loading ? "Submitting..." : "Get Your Personalized Program → Build Your Next Level Today"}
                                     </motion.button>
@@ -381,17 +362,25 @@ export default function Quiz() {
                                 {!success ? (
                                     !loading ? (
                                         <>
-                                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#7d1f97] mb-6">
-                                                Wow! You’re a Rare Fit for Our Elevate Program
+                                            {/* 🔥 UPDATED TEXT — AS YOU REQUESTED */}
+                                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#7d1f97] mb-6 leading-tight">
+                                                You Could Be an Ideal Fit for Our Elevate Program
                                             </h2>
-                                            <p className="text-lg text-gray-700 mb-8">
-                                                Only 1 in 50 participants reaches this level — and you’re one of them.
+
+                                            <p className="text-lg text-gray-700 mb-4">
+                                                Only 1 in 50 participants reach this level — and you’re one of them.
                                             </p>
+
+                                            <p className="text-lg text-gray-700 mb-8">
+                                                Let’s chat today and explore your next step.
+                                            </p>
+
+                                            {/* 🔥 UPDATED BUTTON */}
                                             <button
                                                 onClick={handleClaim}
                                                 className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-[#7d1f97] hover:bg-[#952ca8] border border-[#7d1f97]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] transition-all duration-500"
                                             >
-                                                Claim My Tailored Playbook
+                                                Download My Growth Blueprint →
                                             </button>
                                         </>
                                     ) : (
@@ -402,32 +391,26 @@ export default function Quiz() {
                                                 className="w-12 h-12 border-4 border-[#7d1f97] border-t-transparent rounded-full mb-6"
                                             />
                                             <p className="text-lg text-gray-600">
-                                                Building your personalized playbook...
+                                                Preparing your growth blueprint...
                                             </p>
                                         </motion.div>
                                     )
                                 ) : (
                                     <motion.div>
                                         <h2 className="text-3xl md:text-4xl font-extrabold text-[#7d1f97] mb-6">
-                                            Your Playbook Is On Its Way!
+                                            Your Blueprint Is Ready!
                                         </h2>
-                                        <p className="text-lg text-gray-700 mb-8">
-                                            Check your inbox for your next steps — welcome to the Elevate community.
+
+                                        <p className="text-lg text-gray-700 mb-6">
+                                            Your download has started automatically.
                                         </p>
-                                        <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
-                                            <button
-                                                onClick={goToStackBuilder}
-                                                className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-white bg-gradient-to-br from-[#952ca8] to-[#7d1f97] border border-[#7d1f97]/80 shadow-[0_0_35px_rgba(155,38,182,0.8)] transition-all duration-500"
-                                            >
-                                                Build My Stack →
-                                            </button>
-                                            <button
-                                                onClick={handleClose}
-                                                className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-[#7d1f97] border border-[#7d1f97]/80 hover:bg-[#7d1f97]/10 transition-all duration-500"
-                                            >
-                                                Close
-                                            </button>
-                                        </div>
+
+                                        <button
+                                            onClick={handleClose}
+                                            className="inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-[#7d1f97] border border-[#7d1f97]/80 hover:bg-[#7d1f97]/10 transition-all duration-500"
+                                        >
+                                            Close
+                                        </button>
                                     </motion.div>
                                 )}
                             </motion.div>

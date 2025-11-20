@@ -1,64 +1,68 @@
-// ✅ src/pages/ThankYou.jsx — Brand-Aligned + Dynamic Tier Detection
 import React from "react";
-import { motion } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ThankYou() {
-    // === Get ?plan query from URL ===
-    const query = new URLSearchParams(useLocation().search);
-    const plan = query.get("plan");
-
-    // === Normalize the plan name ===
-    const planName = plan ? plan.toUpperCase() : "OUR COMMUNITY";
+    const navigate = useNavigate();
 
     return (
-        <section
-            className="relative min-h-screen flex flex-col items-center justify-center text-center text-white bg-black overflow-hidden"
-            style={{
-                backgroundImage:
-                    "radial-gradient(circle at 50% 20%, rgba(155,38,182,0.25), transparent 60%), linear-gradient(to bottom, #000, #0a0010 80%)",
-            }}
-        >
-            {/* === Glowing backdrop orbs === */}
-            <div className="absolute w-[700px] h-[700px] bg-[#7d1f97]/20 rounded-full blur-[160px] top-1/4 left-1/2 -translate-x-1/2 z-0" />
-            <div className="absolute w-[400px] h-[400px] bg-[#7d1f97]/15 rounded-full blur-[120px] bottom-10 left-20 z-0" />
-            <div className="absolute w-[400px] h-[400px] bg-[#7d1f97]/15 rounded-full blur-[120px] bottom-10 right-20 z-0" />
+        <section className="min-h-screen bg-black text-white flex items-center justify-center px-6 py-20">
+            <div className="max-w-3xl text-center">
 
-            {/* === Fade-in content === */}
-            <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: [0.25, 1, 0.3, 1] }}
-                className="relative z-10 px-6"
-            >
-                <h1 className="text-5xl md:text-7xl font-extrabold mb-6 drop-shadow-[0_0_25px_rgba(155,38,182,0.4)]">
-                    Thank You for Joining{" "}
-                    <motion.span
-                        className="text-[#7d1f97]"
-                        animate={{ textShadow: ["0 0 10px #7d1f97", "0 0 25px #b84ed9", "0 0 10px #7d1f97"] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                        {planName}
-                    </motion.span>
+                {/* Heading */}
+                <h1 className="text-[clamp(2.4rem,4vw,3.5rem)] font-extrabold tracking-tight leading-tight">
+                    Thank You for Your Inquiry!
                 </h1>
 
-                <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-12 leading-relaxed">
-                    You’re officially part of Tony Thompson’s {planName} program.
-                    <br />
-                    Our team will reach out soon with your personalized next steps and exclusive updates.
-                    We’re thrilled to have you as part of the movement.
+                {/* Paragraph */}
+                <p className="mt-6 text-lg text-white/85 leading-relaxed max-w-2xl mx-auto">
+                    Your request to book Tony Thompson as a keynote speaker has been received.
+                    <br /><br />
+                    A member of our team will review your submission and contact you shortly to
+                    discuss availability, event details, and next steps.
+                    <br /><br />
+                    We appreciate your interest in having Tony inspire and engage your audience —
+                    and we look forward to connecting soon!
+                    <br /><br />
+                    <span className="opacity-70">— The Meet Tony Team</span>
                 </p>
 
-                <Link
-                    to="/"
-                    className="inline-block px-10 py-4 text-lg font-semibold rounded-full bg-[#7d1f97] hover:bg-[#b84ed9] text-white shadow-[0_0_25px_rgba(155,38,182,0.4)] transition-all duration-300"
-                >
-                    ← Back to Home
-                </Link>
-            </motion.div>
+                {/* Back Home Button */}
+                <div className="mt-14 flex justify-center">
+                    <button
+                        onClick={() => navigate("/")}
+                        className="relative flex justify-center items-center w-[180px] h-[62px]
+                        text-white font-['Press_Start_2P'] text-[0.85rem] cursor-pointer group
+                        bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
+                        rounded-[12px] border border-white/20
+                        shadow-[0_10px_25px_rgba(155,38,182,0.7)]
+                        transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
+                        hover:translate-y-[-5px] uppercase tracking-wider"
+                    >
+                        <div
+                            className="absolute inset-0 bg-gradient-to-r
+                            from-transparent via-white/25 to-transparent
+                            animate-pulseGlow rounded-[12px]"
+                        />
+                        <span className="transition-all duration-500 group-hover:opacity-0">
+                            BACK
+                        </span>
+                        <span className="absolute opacity-0 transition-all duration-500 group-hover:opacity-100">
+                            HOME
+                        </span>
+                    </button>
+                </div>
+            </div>
 
-            {/* === Subtle gradient footer bar === */}
-            <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#7d1f97]/10 to-transparent pointer-events-none" />
+            {/* Pulse Glow Animation */}
+            <style>{`
+                @keyframes pulseGlow {
+                    0%,100% { opacity:0.35; transform:translateX(-25%); }
+                    50% { opacity:0.95; transform:translateX(25%); }
+                }
+                .animate-pulseGlow {
+                    animation:pulseGlow 6s ease-in-out infinite;
+                }
+            `}</style>
         </section>
     );
 }
