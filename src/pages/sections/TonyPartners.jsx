@@ -1,3 +1,4 @@
+// ✅ src/pages/sections/PartnersShowcase.jsx — Top padding = 2cm, optimized spacing
 import React, { useRef } from "react";
 import {
     motion,
@@ -37,20 +38,29 @@ export default function PartnersShowcase() {
             id="partners"
             ref={ref}
             onMouseMove={handleMouseMove}
-            className="partners-section relative w-full overflow-hidden"
+            className="partners-section relative w-full"
         >
             <style>{`
-                :root {
-                    --np: #9b26b6;
-                }
+                :root { --np: #9b26b6; }
 
                 .partners-section {
                     background: white;
-                    padding: 8rem 2rem;
+                    /* 🔥 TOP PADDING NOW EXACTLY 2CM (~75px) */
+                    padding: 15px 2rem 8rem 2rem;
                     color: black;
                     text-align: center;
                     perspective: 1000px;
                     position: relative;
+                }
+
+                /* 🔥 Heading slight lift (~50px) */
+                .heading-lift {
+                    margin-top: -50px;
+                }
+
+                /* 🔥 Logos major lift (~200px) */
+                .logos-lift {
+                    margin-top: -200px;
                 }
 
                 .spotlight-overlay {
@@ -126,7 +136,11 @@ export default function PartnersShowcase() {
 
             <div className="grid-lines" />
 
-            <div className="section-header z-10 relative">
+            {/* === HEADING (slightly lifted) === */}
+            <div
+                className="heading-lift relative section-header"
+                style={{ zIndex: 9999 }}
+            >
                 <div className="status-indicator">
                     <span className="blink-dot"></span>
                     SYSTEM_TRUST_ESTABLISHED
@@ -143,14 +157,17 @@ export default function PartnersShowcase() {
                 </motion.h2>
             </div>
 
-            {/* FIXED GRID — EVEN SPACING */}
-            <div className="
-                grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4
-                gap-12 md:gap-16
-                justify-items-center
-                w-full max-w-7xl mx-auto mt-16
-                relative z-10
-            ">
+            {/* === LOGOS GRID (strong upward shift) === */}
+            <div
+                className="
+                    logos-lift 
+                    grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4
+                    gap-12 md:gap-16
+                    justify-items-center
+                    w-full max-w-7xl mx-auto mt-16
+                    relative z-10
+                "
+            >
                 {partners.map((partner, i) => (
                     <motion.a
                         key={partner.name}

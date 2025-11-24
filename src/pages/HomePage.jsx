@@ -10,20 +10,55 @@ import TierList from "../components/TierList";
 
 export default function HomePage({ setHeroVisible }) {
 
-    // ⭐ THIS is where scrollToPrograms MUST live
+    // ⭐ HARD OVERRIDE — TELEPORT TO PROGRAMS (WITH STUCK FOG FIX)
     useEffect(() => {
-        if (sessionStorage.getItem("scrollToPrograms") === "true") {
-            sessionStorage.removeItem("scrollToPrograms");
+        if (typeof window === "undefined") return;
 
-            setTimeout(() =>
-                window.triggerGlobalFog(() => {
-                    const el = document.querySelector("#programs");
-                    const lenis = window.lenis;
+        const params = new URLSearchParams(window.location.search);
+        const target = params.get("target");
 
-                    if (lenis) lenis.scrollTo(el, { duration: 1.4 });
-                    else el?.scrollIntoView({ behavior: "smooth" });
-                }),
-                250);
+        if (target === "programs") {
+            // 1. BACKUP: Save the original function to restore later
+            const originalFog = window.triggerGlobalFog;
+
+            // 2. NEUTRALIZE: Replace with a silent pass-through
+            window.triggerGlobalFog = (cb) => cb?.();
+
+            // 3. FORCE CLEANUP: aggressively find and hide the overlay
+            // We use an interval to fight any global scripts running on load
+            const cleanUpInterval = setInterval(() => {
+                const overlay = window.fadeOverlay || document.querySelector("#scroll-fog-overlay") || document.querySelector("[id*='fog']");
+                if (overlay) {
+                    overlay.style.opacity = "0";
+                    overlay.style.pointerEvents = "none";
+                }
+            }, 50);
+
+            // 4. JUMP: Perform the scroll
+            setTimeout(() => {
+                const el = document.querySelector("#programs");
+                if (el) {
+                    window.scrollTo({ top: el.offsetTop, behavior: "auto" });
+                }
+            }, 10);
+
+            // 5. RESTORE & RESET: After 2 seconds (safely landed), restore normalcy
+            setTimeout(() => {
+                clearInterval(cleanUpInterval); // Stop forcing it hidden
+
+                // Put the original function back for future scrolls
+                if (originalFog) {
+                    window.triggerGlobalFog = originalFog;
+                }
+
+                // IMPORTANT: Ensure the overlay is ready for next time (reset props)
+                const overlay = window.fadeOverlay || document.querySelector("#scroll-fog-overlay");
+                if (overlay) {
+                    overlay.style.opacity = "0";
+                    overlay.style.pointerEvents = "auto"; // Re-enable interaction for future fogs
+                    overlay.style.transition = ""; // Restore CSS transitions
+                }
+            }, 2000);
         }
     }, []);
 

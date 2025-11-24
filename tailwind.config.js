@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    important: true, // ✅ ensures your custom CSS overrides Tailwind utilities
+    important: true,
     content: [
         "./index.html",
         "./src/**/*.{js,jsx,ts,tsx}",
@@ -10,28 +10,39 @@ export default {
         "translate-x-0",
         "translate-x-full",
     ],
+
     theme: {
         extend: {
             /* =========================================
-               🔮 BRAND SYSTEM
+               🔮 BRAND SYSTEM — TONY’S PURPLE CORE
                ========================================= */
             colors: {
-                brandPurple: "#9b26b6",
-                brandLight: "#b84fd4",
-                brandDark: "#6d1a8c",
-                brandAccent: "#b14fc0",
+                brandPurple: "#A45BE0",   // ⭐ TRUE Tony purple (master)
+                brandPurpleLight: "#C88CF3",
+                brandPurpleDark: "#7A35B0",
+
                 brandBlack: "#111",
+                brandGray: "#3A3A3A",
             },
 
+            /* =========================================
+               🎨 UPDATED BRAND GRADIENTS 
+               (Built off Tony’s real purple #A45BE0)
+               ========================================= */
             backgroundImage: {
                 "brand-gradient":
-                    "linear-gradient(180deg, #9b26b6 0%, #b84fd4 50%, #6d1a8c 100%)",
+                    "linear-gradient(180deg, #A45BE0 0%, #C88CF3 50%, #7A35B0 100%)",
+
                 "brand-soft":
-                    "linear-gradient(180deg, #a94ad0 0%, #9b26b6 100%)",
+                    "linear-gradient(180deg, #B67DEB 0%, #A45BE0 100%)",
+
                 "brand-darkfade":
-                    "linear-gradient(180deg, #6d1a8c 0%, #111 100%)",
+                    "linear-gradient(180deg, #7A35B0 0%, #111 100%)",
             },
 
+            /* =========================================
+               ✒ TYPOGRAPHY
+               ========================================= */
             fontFamily: {
                 montserrat: ["Montserrat", "sans-serif"],
                 p2: ["'Press Start 2P'", "monospace"],
@@ -42,12 +53,12 @@ export default {
                📱 RESPONSIVE SCREENS + CONTAINER
                ========================================= */
             screens: {
-                xs: "360px",     // very small phones
-                sm: "480px",     // small phones
-                md: "768px",     // tablets
-                lg: "1024px",    // small laptops
-                xl: "1280px",    // desktops
-                "2xl": "1536px", // large screens
+                xs: "360px",
+                sm: "480px",
+                md: "768px",
+                lg: "1024px",
+                xl: "1280px",
+                "2xl": "1536px",
             },
             container: {
                 center: true,
@@ -72,9 +83,9 @@ export default {
                     "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
                 },
                 hazeGlow: {
-                    "0%": { textShadow: "0 0 8px rgba(155,38,182,0.0)" },
-                    "50%": { textShadow: "0 0 18px rgba(155,38,182,0.8)" },
-                    "100%": { textShadow: "0 0 0 rgba(155,38,182,0.0)" },
+                    "0%": { textShadow: "0 0 8px rgba(164,91,224,0.0)" },
+                    "50%": { textShadow: "0 0 18px rgba(164,91,224,0.8)" },
+                    "100%": { textShadow: "0 0 0 rgba(164,91,224,0.0)" },
                 },
                 pulseGlow: {
                     "0%,100%": { opacity: "0.4", transform: "translateX(-25%)" },
@@ -100,5 +111,6 @@ export default {
             },
         },
     },
+
     plugins: [],
 };

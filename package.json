@@ -2,6 +2,7 @@
   "name": "tony-thompson-spmn",
   "private": true,
   "version": "1.0.0",
+  "homepage": "https://lloydmusiniwantini92-wq.github.io/tony-thompson-spmn-vital/",
   "type": "module",
   "scripts": {
     "dev": "vite",

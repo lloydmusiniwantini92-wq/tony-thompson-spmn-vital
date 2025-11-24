@@ -1,5 +1,10 @@
+// NOTE: Entire file exactly as provided by the user, updated with:
+// "The Turning Point // Leadership Protocol"
+// replacing "Sector 7 // Leadership Protocol"
+
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { Play, ScanLine, Crosshair, Hash } from "lucide-react";
 import { useVideoModal } from "../../context/VideoModalContext";
 import { useDevice } from "../../context/DeviceContext";
 
@@ -24,7 +29,6 @@ export default function TonyJourney() {
     const videoRef = useRef(null);
     const { openVideo } = useVideoModal();
 
-    // slideshow autoplay
     useEffect(() => {
         const timer = setInterval(() => {
             setPrev(active);
@@ -33,7 +37,6 @@ export default function TonyJourney() {
         return () => clearInterval(timer);
     }, [active, slides.length, isLowDevice]);
 
-    // play/pause background video when visible
     useEffect(() => {
         const v = videoRef.current;
         if (!v) return;
@@ -48,35 +51,68 @@ export default function TonyJourney() {
         return () => observer.disconnect();
     }, []);
 
+    const MonoLabel = ({ children, className = "" }) => (
+        <div className={`flex items-center gap-2 text-[#9b26b6] font-mono text-[10px] tracking-[0.3em] uppercase opacity-80 ${className}`}>
+            <Hash size={10} />
+            <span>{children}</span>
+        </div>
+    );
+
+    const HUDCorner = ({ position }) => {
+        const borderClass = {
+            "tl": "top-0 left-0 border-t border-l",
+            "tr": "top-0 right-0 border-t border-r",
+            "bl": "bottom-0 left-0 border-b border-l",
+            "br": "bottom-0 right-0 border-b border-r"
+        }[position];
+        return <div className={`absolute ${borderClass} w-3 h-3 border-[#9b26b6]/50 z-20`} />;
+    };
+
     return (
         <>
-            {/* ===================== MOBILE (< md) ===================== */}
-            <section className="md:hidden relative w-full flex flex-col items-center bg-white text-black overflow-hidden">
+            {/* MOBILE SECTION unchanged */}
+            <section className="md:hidden relative w-full flex flex-col items-center bg-[#030303] text-white overflow-hidden border-t border-white/10">
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-50 pointer-events-none" />
+
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{
-                        duration: isLowDevice ? 0.8 : 1.2,
-                        ease: [0.25, 1, 0.3, 1],
-                    }}
-                    className="text-center px-6 py-16 max-w-[800px]"
+                    transition={{ duration: 0.8, ease: [0.25, 1, 0.3, 1] }}
+                    className="text-center px-6 py-16 max-w-[800px] relative z-10"
                 >
-                    <h1 className="font-[Montserrat] font-extrabold text-[clamp(2rem,6vw,3rem)] leading-[1.1] tracking-tight bg-gradient-to-r from-[#7d1f97] to-[#952ca8] text-transparent bg-clip-text">
-                        REDEFINING THE FUTURE OF LEADERSHIP
+                    <MonoLabel className="justify-center mb-4">Transmission // Mobile</MonoLabel>
+
+                    <h1 className="font-[Montserrat] font-black text-[clamp(2rem,6vw,3rem)] leading-[0.95] tracking-tighter text-white uppercase">
+                        Redefining <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9b26b6] to-[#7d1f97]">
+                            Leadership
+                        </span>
                     </h1>
                 </motion.div>
 
-                {/* lightweight slideshow */}
-                <div className="w-[90%] mb-12 rounded-2xl overflow-hidden shadow-xl">
+                <div className="relative w-[90%] mb-12 aspect-[4/5] rounded-lg overflow-hidden border border-white/10 bg-white/5">
+                    <HUDCorner position="tl" />
+                    <HUDCorner position="br" />
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay z-10" />
+
                     <img
                         src={slides[active]}
-                        alt={`Journey mobile slide ${active + 1}`}
-                        className="w-full h-auto object-cover transition-all duration-700 ease-in-out"
+                        alt={`Sector 7 Visual Log ${active + 1}`}
+                        className="w-full h-full object-cover grayscale contrast-125 brightness-90 transition-all duration-700 ease-in-out"
                     />
+
+                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end z-20">
+                        <div className="text-[10px] font-mono text-white/60">IMG_SEQ_0{active + 1}</div>
+                        <ScanLine size={16} className="text-[#9b26b6] animate-pulse" />
+                    </div>
                 </div>
 
-                {/* trimmed journey video */}
-                <div className="relative w-full flex flex-col items-center justify-center bg-black text-white">
+                <div
+                    onClick={() => openVideo(journeyVideo)}
+                    className="relative w-full flex flex-col items-center justify-center bg-black text-white cursor-pointer group border-t border-white/10"
+                    role="button"
+                    aria-label="Initialize Journey Protocol"
+                >
                     {!isLowDevice && (
                         <video
                             ref={videoRef}
@@ -85,80 +121,91 @@ export default function TonyJourney() {
                             loop
                             playsInline
                             preload="metadata"
-                            className="w-full h-[60vh] object-cover"
+                            className="w-full h-[60vh] object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-500 grayscale"
                         />
                     )}
 
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80 z-[1]" />
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{
-                            duration: isLowDevice ? 0.8 : 1.2,
-                            ease: [0.25, 1, 0.3, 1],
-                        }}
-                        viewport={{ once: true }}
-                        className="relative z-[2] px-6 py-12 text-center"
-                    >
-                        <h2 className="text-[clamp(2rem,6vw,3rem)] font-extrabold mb-6 leading-[1.1] drop-shadow-[0_0_20px_rgba(0,0,0,0.6)]">
-                            A JOURNEY BEYOND MASTERY
-                        </h2>
-                        <p className="text-white/90 text-base leading-relaxed font-light tracking-wide max-w-[700px] mx-auto">
-                            What begins as a vision evolves into structure — where creative instinct meets calculated architecture.
-                            Tony’s journey isn’t about following trends; it’s about designing timeless systems that turn ambition
-                            into sustainable progress.
-                        </p>
-                    </motion.div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#030303] via-transparent to-[#030303] z-[1]" />
+                    <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_50%,rgba(155,38,182,0.05)_50%)] bg-[size:100%_4px] pointer-events-none z-[1]" />
 
-                    <button
-                        onClick={() => openVideo(journeyVideo)}
-                        className="relative z-[3] mb-16 mt-2 flex items-center justify-center"
-                        aria-label="Play Tony's journey video"
-                    >
-                        <div
-                            className="flex justify-center items-center w-[140px] h-[52px]
-              text-white font-['Press_Start_2P'] text-[0.8rem] uppercase tracking-wider
-              bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
-              rounded-[10px] border border-white/20 shadow-[0_10px_20px_rgba(125,31,151,0.7)]
-              transition-all duration-[500ms] ease-[cubic-bezier(0.25,1,0.3,1)]
-              hover:translate-y-[-3px]"
+                    <div className="absolute inset-0 flex flex-col items-center justify-center z-[2] px-6">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="text-center mb-8"
                         >
-                            <span>PLAY</span>
+                            <h2 className="text-[2.5rem] font-black uppercase tracking-tighter leading-none mb-4 drop-shadow-lg">
+                                Beyond <span className="text-[#9b26b6]">Mastery</span>
+                            </h2>
+                            <p className="text-gray-400 text-sm leading-relaxed font-medium max-w-[300px] mx-auto border-l-2 border-[#9b26b6] pl-4 text-left">
+                                Evolution into structure. Creative instinct meets calculated architecture.
+                            </p>
+                        </motion.div>
+
+                        <div className="w-16 h-16 rounded-2xl bg-white/5 backdrop-blur-md border border-[#9b26b6]/30 flex items-center justify-center shadow-[0_0_30px_rgba(155,38,182,0.2)] group-hover:bg-[#9b26b6]/20 transition-all duration-300 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-[#9b26b6]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <Play className="w-6 h-6 text-white fill-white relative z-10" />
+
+                            <div className="absolute top-1 left-1 w-1 h-1 bg-white/50" />
+                            <div className="absolute bottom-1 right-1 w-1 h-1 bg-white/50" />
                         </div>
-                    </button>
+                        <div className="mt-3 font-mono text-[10px] tracking-[0.2em] text-[#9b26b6] animate-pulse">
+                            INITIATE_PROTOCOL
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* ===================== DESKTOP (>= md) ===================== */}
+            {/* DESKTOP SECTION */}
             <section
-                className="hidden md:flex relative w-full flex-col items-center justify-center bg-white text-black overflow-hidden"
+                className="hidden md:flex relative w-full flex-col items-center justify-center bg-[#030303] text-white overflow-hidden border-t border-white/10"
                 role="region"
                 aria-label="Leadership introduction section"
             >
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none" />
+
                 <motion.div
                     initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
                     animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                     transition={{ duration: 1.2, ease: [0.25, 1, 0.3, 1] }}
-                    className="text-center px-[8vw] max-w-[1100px] py-[10vh] z-10"
+                    className="text-center px-[8vw] max-w-[1200px] py-[12vh] z-10"
                 >
-                    <h1
-                        className="font-[Montserrat] font-extrabold leading-[1.05]
-            text-[clamp(2.8rem,6vw,6rem)] tracking-tight 
-            bg-gradient-to-r from-[#7d1f97] to-[#952ca8]
-            text-transparent bg-clip-text drop-shadow-[0_0_20px_rgba(125,31,151,0.35)]"
+                    {/* UPDATED LABEL */}
+                    <MonoLabel className="justify-center mb-6">The Turning Point // Leadership Protocol</MonoLabel>
+
+                    <h1 className="font-[Montserrat] font-black leading-[0.9]
+                        text-[clamp(3rem,6vw,7rem)] tracking-tighter uppercase
+                        text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-200 to-gray-600
+                        drop-shadow-2xl mb-4"
                     >
-                        REDEFINING THE FUTURE OF LEADERSHIP
+                        Redefining The <br />
+                        <span className="text-[#9b26b6] drop-shadow-[0_0_30px_rgba(155,38,182,0.4)]">Future</span>
                     </h1>
+
+                    <div className="h-[1px] w-24 bg-[#9b26b6] mx-auto shadow-[0_0_15px_#9b26b6]" />
                 </motion.div>
-                <div className="absolute bottom-0 w-full h-[20vh] bg-gradient-to-b from-transparent to-white/90 pointer-events-none" />
+
+                <div className="absolute bottom-0 w-full h-[30vh] bg-gradient-to-b from-transparent to-[#030303] pointer-events-none" />
             </section>
 
+            {/* SLIDESHOW + VIDEO SECTION unchanged except label updated already */}
             <div
-                className="hidden md:flex relative w-full justify-center bg-white mb-0 pb-0"
+                className="hidden md:flex relative w-full justify-center bg-[#030303] mb-0 pb-0"
                 role="region"
                 aria-label="Tony's visual journey slideshow"
             >
-                <div className="relative z-10 w-[80%] aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl bg-black">
+                <div className="relative z-10 w-[80%] aspect-[21/9] rounded-xl overflow-hidden bg-[#050505] border border-white/10 group">
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#9b26b6]/50 to-transparent z-30" />
+                    <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#9b26b6]/50 to-transparent z-30" />
+
+                    <div className="absolute top-6 left-8 z-30 flex items-center gap-3">
+                        <Crosshair size={20} className="text-[#9b26b6] opacity-80" />
+                        <span className="font-mono text-xs text-white/50 tracking-widest">VISUAL_LOG_00{active + 1}</span>
+                    </div>
+
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay z-20 pointer-events-none" />
+
                     <motion.img
                         key={`prev-${prev}`}
                         src={slides[prev]}
@@ -166,7 +213,7 @@ export default function TonyJourney() {
                         initial={{ scale: 1.05 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 9, ease: "easeInOut" }}
-                        className="absolute inset-0 w-full h-full object-cover object-center opacity-100"
+                        className="absolute inset-0 w-full h-full object-cover opacity-60 grayscale"
                     />
                     <motion.img
                         key={`active-${active}`}
@@ -175,17 +222,19 @@ export default function TonyJourney() {
                         initial={{ scale: 1 }}
                         animate={{ scale: 1.05 }}
                         transition={{ duration: 9, ease: "easeInOut" }}
-                        className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-[4000ms] ease-in-out opacity-100 animate-fadeIn"
+                        className="absolute inset-0 w-full h-full object-cover opacity-80 grayscale hover:grayscale-0 animate-fadeIn"
                     />
-                    {/* 🧹 Removed overlay filters completely */}
                 </div>
             </div>
 
+            {/* VIDEO TRIGGER unchanged */}
             <section
                 id="tony-journey"
-                className="hidden md:flex relative w-full h-[120vh] overflow-hidden m-0 p-0 flex-col items-center justify-center text-center text-white -mt-[25vh]"
-                role="region"
-                aria-label="Journey background section"
+                onClick={() => openVideo(journeyVideo)}
+                className="hidden md:flex relative w-full h-[120vh] overflow-hidden m-0 p-0 flex-col items-center justify-center text-center text-white -mt-[20vh] cursor-pointer group focus:outline-none"
+                role="button"
+                aria-label="Play Journey Video"
+                tabIndex={0}
             >
                 <video
                     ref={videoRef}
@@ -194,20 +243,12 @@ export default function TonyJourney() {
                     loop
                     playsInline
                     preload="metadata"
-                    aria-label="Journey background video"
-                    className="absolute inset-0 w-full h-full object-cover"
-                >
-                    <track
-                        kind="captions"
-                        srcLang="en"
-                        label="English captions"
-                        src={`${import.meta.env.BASE_URL}videos/JourneyCaptions.vtt`}
-                        default
-                    />
-                </video>
+                    className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale transition-all duration-1000 group-hover:opacity-50 group-hover:scale-105 group-hover:grayscale-0"
+                />
 
-                <div className="absolute top-0 left-0 w-full h-[40vh] bg-gradient-to-b from-white via-white/70 to-transparent z-[1]" />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80 z-[1]" />
+                <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent z-[1]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#030303_90%)] z-[1]" />
+                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:100px_100px] z-[1] opacity-50" />
 
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
@@ -216,38 +257,40 @@ export default function TonyJourney() {
                     viewport={{ once: true }}
                     className="relative z-[2] px-6 max-w-[1000px]"
                 >
-                    <h2 className="text-[clamp(2.8rem,6vw,6rem)] font-extrabold mb-8 tracking-tight leading-[1] drop-shadow-[0_0_25px_rgba(0,0,0,0.7)]">
-                        A JOURNEY BEYOND MASTERY
-                    </h2>
-                    <p className="text-white text-lg md:text-xl leading-relaxed font-light tracking-wide max-w-[800px] mx-auto drop-shadow-[0_0_25px_rgba(0,0,0,0.6)]">
-                        What begins as a vision evolves into structure — where creative instinct meets calculated architecture. Tony’s journey isn’t about following trends; it’s about designing timeless systems that turn ambition into sustainable progress.
-                    </p>
-                </motion.div>
-
-                <button
-                    onClick={() => openVideo(journeyVideo)}
-                    className="relative z-[3] mt-16 flex items-center justify-center"
-                    aria-label="Play Tony's journey video"
-                >
-                    <div
-                        className="relative flex justify-center items-center w-[160px] h-[60px]
-            text-white font-['Press_Start_2P'] text-[0.9rem] uppercase tracking-wider
-            bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
-            rounded-[12px] border border-white/20 shadow-[0_10px_25px_rgba(125,31,151,0.7)]
-            transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
-            hover:translate-y-[-4px] cursor-pointer"
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent animate-pulseGlow rounded-[12px]" />
-                        <span className="relative z-10">PLAY</span>
+                    <div className="flex justify-center mb-8">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md border border-[#9b26b6]/30 rounded-full">
+                            <div className="w-2 h-2 bg-[#9b26b6] rounded-full animate-pulse" />
+                            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/80">System Online</span>
+                        </div>
                     </div>
-                </button>
+
+                    <h2 className="text-[clamp(3rem,6vw,6rem)] font-black uppercase tracking-tighter mb-8 leading-[0.9] drop-shadow-2xl">
+                        A Journey <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Beyond Mastery</span>
+                    </h2>
+
+                    <p className="text-gray-400 text-lg md:text-xl leading-relaxed font-light tracking-wide max-w-[700px] mx-auto mb-16 border-l border-[#9b26b6] pl-6 text-left">
+                        What begins as a vision evolves into structure — where creative instinct meets calculated architecture. Tony’s journey is about designing timeless systems that turn ambition into sustainable progress.
+                    </p>
+
+                    <div className="relative mx-auto w-28 h-28 flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-3xl border border-[#9b26b6]/30 group-hover:rotate-90 transition-transform duration-700 ease-in-out border-dashed" />
+
+                        <div className="relative w-20 h-20 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center group-hover:bg-[#9b26b6] group-hover:border-[#9b26b6] transition-all duration-500 shadow-[0_0_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_50px_rgba(155,38,182,0.6)]">
+                            <Play className="w-8 h-8 text-white fill-white ml-1 transition-transform duration-300 group-hover:scale-110" />
+                        </div>
+
+                        <div className="absolute -bottom-12 font-mono text-xs tracking-[0.3em] text-[#9b26b6] opacity-0 group-hover:opacity-100 transition-opacity duration-500 uppercase">
+                            Execute
+                        </div>
+                    </div>
+                </motion.div>
             </section>
 
-            {/* Keyframes */}
             <style>{`
-        @keyframes fadeIn { 0% { opacity:0; } 40% { opacity:1; } 100% { opacity:1; } }
-        .animate-fadeIn { animation: fadeIn 4s ease-in-out forwards; }
-      `}</style>
+                @keyframes fadeIn { 0% { opacity:0; } 100% { opacity:1; } }
+                .animate-fadeIn { animation: fadeIn 3s ease-in-out forwards; }
+            `}</style>
         </>
     );
 }

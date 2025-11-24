@@ -1,4 +1,5 @@
-// ✅ src/components/Footer.jsx — authentic TikTok/X logos with unified hover behavior
+// ✅ src/components/Footer.jsx — unified Tony Purple across footer + menu
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -102,8 +103,9 @@ export default function Footer() {
 
     return (
         <footer id="contact" className="text-white font-sans bg-[#111] flex flex-col relative">
-            {/* === NEWSLETTER FORM === */}
-            <section className="relative text-center py-16 bg-gradient-to-r from-brandPurple to-brandAccent flex flex-col justify-center overflow-hidden">
+
+            {/* === NEWSLETTER FORM — MATCHING HAMBURGER PURPLE === */}
+            <section className="relative text-center py-16 bg-[#9b26b6] flex flex-col justify-center overflow-hidden">
                 <h2 className="text-3xl md:text-4xl font-bold mb-3 z-20 tracking-tight text-white">
                     JOIN TONY’S NEWSLETTER TODAY
                 </h2>
@@ -130,7 +132,7 @@ export default function Footer() {
                                         value={formData.first}
                                         onChange={handleChange}
                                         placeholder="First Name"
-                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                        className="flex-1 p-3 rounded bg-white text-black placeholder:text-gray-600"
                                     />
                                     <input
                                         type="text"
@@ -138,7 +140,7 @@ export default function Footer() {
                                         value={formData.last}
                                         onChange={handleChange}
                                         placeholder="Last Name"
-                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                        className="flex-1 p-3 rounded bg-white text-black placeholder:text-gray-600"
                                     />
                                 </div>
 
@@ -149,7 +151,7 @@ export default function Footer() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         placeholder="Email Address"
-                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                        className="flex-1 p-3 rounded bg-white text-black placeholder:text-gray-600"
                                     />
                                     <input
                                         type="tel"
@@ -157,7 +159,7 @@ export default function Footer() {
                                         value={formData.phone}
                                         onChange={handleChange}
                                         placeholder="Phone Number"
-                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                        className="flex-1 p-3 rounded bg-white text-black placeholder:text-gray-600"
                                     />
                                 </div>
 
@@ -168,7 +170,7 @@ export default function Footer() {
                                         value={formData.city}
                                         onChange={handleChange}
                                         placeholder="City / State"
-                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                        className="flex-1 p-3 rounded bg-white text-black placeholder:text-gray-600"
                                     />
                                     <input
                                         type="text"
@@ -176,7 +178,7 @@ export default function Footer() {
                                         value={formData.job}
                                         onChange={handleChange}
                                         placeholder="Job Title"
-                                        className="flex-1 p-3 rounded border-none bg-white text-black placeholder:text-gray-600"
+                                        className="flex-1 p-3 rounded bg-white text-black placeholder:text-gray-600"
                                     />
                                 </div>
 
@@ -186,7 +188,7 @@ export default function Footer() {
                                     type="submit"
                                     disabled={status === "loading"}
                                     className={`px-10 py-3 mt-2 rounded-full border-2 border-black font-bold text-black ${status === "loading"
-                                        ? "bg-brandAccent/50 cursor-wait animate-pulse"
+                                        ? "bg-white/50 cursor-wait animate-pulse"
                                         : "bg-white text-brandPurple hover:bg-black hover:text-white transition-all duration-300"
                                         }`}
                                 >
@@ -201,7 +203,7 @@ export default function Footer() {
                             Already subscribed?{" "}
                             <button
                                 onClick={handleDownload}
-                                className="underline text-white hover:text-brandLight transition-colors duration-300"
+                                className="underline hover:text-white transition-colors"
                             >
                                 Download your guide again →
                             </button>
@@ -224,15 +226,15 @@ export default function Footer() {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 20 }}
-                            transition={{ duration: 0.45, ease: [0.25, 1, 0.3, 1] }}
+                            transition={{ duration: 0.45 }}
                             className="bg-[#111] border border-brandPurple/40 rounded-2xl p-8 text-center max-w-md mx-auto relative"
                         >
                             <button
                                 onClick={closeModal}
-                                className="absolute top-3 right-3 text-white/60 hover:text-white transition-all duration-300"
+                                className="absolute top-3 right-3 text-white/60 hover:text-white"
                                 aria-label="Close"
                             >
-                                <CloseIcon size={22} strokeWidth={2.2} />
+                                <CloseIcon size={22} />
                             </button>
 
                             <h3 className="text-xl md:text-2xl font-bold mb-2 text-white">
@@ -243,7 +245,7 @@ export default function Footer() {
                             </p>
                             <button
                                 onClick={handleDownload}
-                                className="px-8 py-3 rounded-full bg-brandPurple text-white font-semibold hover:bg-brandAccent transition-all duration-300"
+                                className="px-8 py-3 rounded-full bg-brandPurple text-white font-semibold hover:bg-brandAccent transition-all"
                             >
                                 Download PDF
                             </button>
@@ -262,7 +264,9 @@ export default function Footer() {
                         rel="noreferrer"
                         className="relative overflow-hidden h-[3cm] flex justify-center items-center group border-r border-brandPurple/20"
                     >
-                        <div className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-brandPurple to-brandAccent opacity-90 transition-all duration-500 group-hover:left-0"></div>
+                        {/* ⭐ UPDATED SWEEP COLOR → TONY PURPLE (#9b26b6) */}
+                        <div className="absolute top-0 left-[-100%] w-full h-full bg-[#9b26b6] opacity-90 transition-all duration-500 group-hover:left-0"></div>
+
                         <div className="relative z-20 w-[1.25cm] h-[1.25cm] flex justify-center items-center group-hover:scale-110 transition-all duration-300">
                             {item.icon === "tiktok" ? (
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" className="w-full h-full transition-all duration-300 group-hover:fill-black" fill="white">
@@ -298,7 +302,7 @@ export default function Footer() {
     );
 }
 
-// ✅ Authentic social links (final)
+// SOCIAL ICON SET
 const socials = [
     { link: "https://www.instagram.com/tt5481562/", icon: Instagram },
     { link: "https://www.tiktok.com/@tonythompson08?is_from_webapp=1&sender_device=pc", icon: "tiktok" },

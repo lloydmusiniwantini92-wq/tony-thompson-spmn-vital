@@ -1,125 +1,180 @@
+// =========================================================
+// ✅ TonyCTA.jsx — FULL FIXED VERSION (Part 1 / 3)
+// Direct CTA routing → navigate("/about-tony#programs")
+// =========================================================
+
 import React, { useState, useEffect, useRef } from "react";
 import {
     motion,
     useSpring,
     useMotionValue,
     useTransform,
-    useMotionTemplate,
+    AnimatePresence,
 } from "framer-motion";
 
-import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
-import { useDevice } from "../../context/DeviceContext";
+import {
+    Facebook, Instagram, Linkedin, Twitter, Youtube,
+    Activity, ShieldCheck, Hash, Aperture, X,
+    Scan, Database, Fingerprint,
+} from "lucide-react";
 
-// --- REAL ASSETS ---
-import komba1 from "../../assets/images/komba1.jpg";
-import komba2 from "../../assets/images/komba2.jpg";
-import img1 from "../../assets/testimonials/testimonial1.png";
-import img2 from "../../assets/testimonials/testimonial2.png";
-import img3 from "../../assets/testimonials/testimonial3.png";
-import img4 from "../../assets/testimonials/testimonial4.png";
-import logoTT from "../../assets/images/logoTT.png";
+import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";   // ⭐ DIRECT ROUTE FIX
 
-// BACKGROUND FROM PUBLIC FOLDER
-const tonyCTA = `${import.meta.env.BASE_URL}assets/images/tonyCTA.jpg`;
-const t1 = `${import.meta.env.BASE_URL}assets/t1.jpg`;
-const t2 = `${import.meta.env.BASE_URL}assets/t2.jpg`;
-const t3 = `${import.meta.env.BASE_URL}assets/t3.jpg`;
+// --- CONSTANTS ---
+const BASE = "/tony-thompson-spmn-vital";
+const COLOR_BLACK = "#000000";
+const COLOR_BLACK_LOW = "#00000033";
+const BRAND_PURPLE = "#A45BE0";
 
-// ==========================================================
-// 3D TILE
-// ==========================================================
-const TechTile = ({ src, delay = 0, isLowDevice, sizeClass }) => {
+// --- HOOKS ---
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const media = window.matchMedia("(max-width: 768px)");
+        const update = () => setIsMobile(media.matches);
+        update();
+        media.addEventListener("change", update);
+        return () => media.removeEventListener("change", update);
+    }, []);
+    return isMobile;
+};
+
+// --- SOCIALS ---
+const Socials = () => (
+    <div className="flex gap-6 md:gap-8">
+        {[Facebook, Instagram, Linkedin, Twitter, Youtube].map((Icon, i) => (
+            <a
+                key={i}
+                href="#"
+                className="text-black/40 hover:text-brandPurple hover:scale-125 transition-all duration-300"
+            >
+                <Icon size={18} />
+            </a>
+        ))}
+    </div>
+);
+
+// --- TILE ---
+const Tile = ({ data, delay, isMobile, onClick, setFocused }) => {
     const ref = useRef(null);
+    const [hovered, setHovered] = useState(false);
 
     const x = useMotionValue(0);
     const y = useMotionValue(0);
 
-    const springConfig = { damping: 20, stiffness: 300 };
-
     const rotateX = useTransform(
-        useSpring(y, springConfig),
+        useSpring(y, { stiffness: 400, damping: 30 }),
         [-0.5, 0.5],
-        ["10deg", "-10deg"]
+        ["8deg", "-8deg"]
     );
     const rotateY = useTransform(
-        useSpring(x, springConfig),
+        useSpring(x, { stiffness: 400, damping: 30 }),
         [-0.5, 0.5],
-        ["-10deg", "10deg"]
+        ["-8deg", "8deg"]
     );
 
     const handleMove = (e) => {
-        if (isLowDevice || !ref.current) return;
-
+        if (isMobile || !ref.current) return;
         const rect = ref.current.getBoundingClientRect();
         x.set((e.clientX - rect.left) / rect.width - 0.5);
         y.set((e.clientY - rect.top) / rect.height - 0.5);
     };
 
-    const handleLeave = () => {
-        x.set(0);
-        y.set(0);
-    };
-
     return (
         <motion.div
             ref={ref}
             onMouseMove={handleMove}
-            onMouseLeave={handleLeave}
-            initial={{ opacity: 0, scale: 0.8 }}
+            onMouseEnter={() => !isMobile && setHovered(true)}
+            onMouseLeave={() => {
+                x.set(0);
+                y.set(0);
+                setHovered(false);
+                setFocused(false);
+            }}
+            onClick={() => onClick(data)}
+            initial={{ opacity: 0, scale: 0.5, filter: "blur(10px)" }}
             whileInView={{
                 opacity: 1,
                 scale: 1,
-                transition: { duration: 0.7, delay },
+                filter: "blur(0px)",
+                transition: { duration: 0.8, delay, type: "spring", bounce: 0 },
             }}
-            viewport={{ once: true }}
-            style={{
-                rotateX,
-                rotateY,
-                transformStyle: "preserve-3d",
-            }}
-            className={`relative group pointer-events-auto cursor-pointer ${sizeClass}`}
+            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+            className={`relative group cursor-pointer z-[50] hover:z-[70] ${isMobile ? "w-[70px] h-[70px]" : "w-[120px] h-[120px]"
+                }`}
         >
-            <div className="relative w-full h-full overflow-hidden rounded-xl shadow-xl border border-white/10 bg-black/40 transition-all duration-500 group-hover:border-[#9b26b6]/60">
-
+            {/* TILE IMAGE */}
+            <div className="relative w-full h-full overflow-hidden bg-white border border-black/10 group-hover:border-brandPurple transition-all duration-300">
                 <img
-                    src={src}
+                    src={data.src}
                     alt=""
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover grayscale contrast-125 brightness-75 group-hover:scale-110 transition-transform duration-700"
                 />
-
-                <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-white/40" />
-                <div className="absolute bottom-1 right-1 w-2 h-2 border-b border-r border-white/40" />
             </div>
+
+            {/* HOVER PREVIEW */}
+            <AnimatePresence>
+                {!isMobile && hovered && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                        animate={{ opacity: 1, y: -20, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className="absolute left-1/2 -translate-x-1/2 -top-[100px] w-[220px] z-[999] pointer-events-none bg-white/95 backdrop-blur-md border border-brandPurple/40 p-3 shadow-xl rounded-md"
+                    >
+                        <div className="flex items-center gap-2 mb-2 border-b border-black/10 pb-1">
+                            <Database size={10} className="text-brandPurple" />
+                            <span className="text-[8px] font-mono text-brandPurple tracking-widest">
+                                INSIGHT
+                            </span>
+                        </div>
+
+                        <p className="text-[10px] font-bold text-black leading-tight mb-1 line-clamp-2">
+                            "{data.quote}"
+                        </p>
+                        <p className="text-[8px] font-mono text-black/50 uppercase">
+                            {data.name} — {data.level}
+                        </p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 };
 
-// ==========================================================
-// YOU / WIN BUTTON (Magnetic)
-// ==========================================================
-const MagneticOrb = ({ hovered, setHovered, onClick, isLowDevice }) => {
-    const ref = useRef(null);
+// --- CLUSTER ---
+const Cluster = ({ data, isMobile, onClick, delay = 0 }) => (
+    <div className={`grid grid-cols-3 ${isMobile ? "gap-2" : "gap-4"} justify-items-center`}>
+        {data.map((item, i) => (
+            <div key={item.id} className={i === 3 ? "col-span-3 mt-2" : ""}>
+                <Tile
+                    data={item}
+                    delay={delay + i * 0.1}
+                    isMobile={isMobile}
+                    onClick={onClick}
+                    setFocused={() => { }}
+                />
+            </div>
+        ))}
+    </div>
+);
 
+// --- CENTER CTA REACTOR ---
+const Reactor = ({ onClick, isMobile }) => {
+    const [hovered, setHovered] = useState(false);
+    const ref = useRef(null);
     const x = useMotionValue(0);
     const y = useMotionValue(0);
-    const springX = useSpring(x, { stiffness: 150, damping: 15 });
-    const springY = useSpring(y, { stiffness: 150, damping: 15 });
-
-    const handleMove = (e) => {
-        if (isLowDevice) return;
-
-        const rect = ref.current.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-
-        x.set((e.clientX - cx) * 0.3);
-        y.set((e.clientY - cy) * 0.3);
-    };
 
     return (
         <motion.div
             ref={ref}
-            onMouseMove={handleMove}
+            onMouseMove={(e) => {
+                if (isMobile) return;
+                const rect = ref.current.getBoundingClientRect();
+                x.set((e.clientX - (rect.left + rect.width / 2)) * 0.5);
+                y.set((e.clientY - (rect.top + rect.height / 2)) * 0.5);
+            }}
             onMouseLeave={() => {
                 x.set(0);
                 y.set(0);
@@ -127,259 +182,410 @@ const MagneticOrb = ({ hovered, setHovered, onClick, isLowDevice }) => {
             }}
             onMouseEnter={() => setHovered(true)}
             onClick={onClick}
-            style={{ x: springX, y: springY }}
-            className="relative z-20 cursor-pointer pointer-events-auto"
+            style={{ x: useSpring(x), y: useSpring(y) }}
+            className="relative z-30 cursor-pointer"
         >
             <motion.div
                 animate={{
-                    scale: hovered ? 1.05 : 1,
-                    backgroundColor: hovered ? "#ffffff" : "rgba(0,0,0,0)",
-                    color: hovered ? "#7d1f97" : "#ffffff",
-                    boxShadow: hovered
-                        ? "0 0 28px rgba(155,38,182,0.9)"
-                        : "0 0 0 rgba(0,0,0,0)",
+                    rotate: hovered ? 180 : 0,
+                    scale: hovered ? 1.2 : 1,
                 }}
-                transition={{ type: "spring", stiffness: 260, damping: 18 }}
-                className="
-                    w-[100px] h-[100px] 
-                    sm:w-[110px] sm:h-[110px] md:w-[120px] md:h-[120px]
-                    rounded-xl border-2 border-white/40
-                    flex flex-col items-center justify-center
-                    overflow-hidden select-none
-                "
+                className="absolute -inset-4 rounded-3xl border border-brandPurple/30 border-dashed"
+            />
+
+            <motion.div
+                animate={{
+                    scale: hovered ? 0.95 : 1,
+                    backgroundColor: hovered ? "#fff" : "rgba(255,255,255,0.4)",
+                    borderColor: hovered ? BRAND_PURPLE : COLOR_BLACK_LOW,
+                }}
+                className="w-[98px] h-[98px] rounded-2xl backdrop-blur-sm border-2 flex items-center justify-center relative overflow-hidden"
             >
-                <motion.span
-                    key={hovered ? "win" : "you"}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.25 }}
-                    className="font-extrabold text-[1.25rem] sm:text-[1.4rem] md:text-[1.5rem]"
-                >
-                    {hovered ? "WIN" : "YOU"}
-                </motion.span>
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+
+                <div className="relative z-10 flex flex-col items-center gap-1">
+                    <motion.div
+                        animate={{ color: hovered ? BRAND_PURPLE : COLOR_BLACK }}
+                        className="font-black text-xl tracking-tighter"
+                    >
+                        {hovered ? "NOW" : "YOU"}
+                    </motion.div>
+
+                    <motion.div
+                        animate={{
+                            opacity: hovered ? 1 : 0.5,
+                            color: hovered ? BRAND_PURPLE : COLOR_BLACK,
+                        }}
+                        className="text-[8px] font-mono tracking-[0.3em]"
+                    >
+                        {hovered ? "WIN" : "SYSTEM"}
+                    </motion.div>
+                </div>
             </motion.div>
         </motion.div>
     );
 };
+// =========================================================
+// ✅ TonyCTA.jsx — FULL FIXED VERSION (Part 2 / 3)
+// =========================================================
 
-// ==========================================================
-// MAIN CTA COMPONENT
-// ==========================================================
-export default function TonyCTA() {
-    const tier = useDevice();
-    const isLowDevice = tier === "low";
-
-    const [hovered, setHovered] = useState(false);
-
-    const [pool, setPool] = useState([
-        komba1,
-        komba2,
-        img3,
-        img4,
-        t1,
-        t2,
-        t3,
-        img2,
-    ]);
-
-    const topTiles = pool.slice(0, 4);
-    const bottomTiles = pool.slice(4, 8);
-
+// --- MODAL ---
+const Modal = ({ data, onClose, isMobile }) => {
     useEffect(() => {
-        if (hovered && !isLowDevice) {
-            const interval = setInterval(() => {
-                setPool((prev) => {
-                    const next = [...prev];
-                    const r1 = Math.floor(Math.random() * 8);
-                    const r2 = Math.floor(Math.random() * 8);
-                    [next[r1], next[r2]] = [next[r2], next[r1]];
-                    return next;
-                });
-            }, 2000);
-            return () => clearInterval(interval);
-        }
-    }, [hovered, isLowDevice]);
+        document.body.style.overflow = "hidden";
+        return () => (document.body.style.overflow = "unset");
+    }, []);
 
-    const TShape = ({ tiles, delay = 0, size = "md" }) => {
-        const sizeClass =
-            size === "sm"
-                ? "w-[80px] h-[80px]"
-                : "w-[100px] h-[100px] md:w-[120px] md:h-[120px]"; // FIXED STRING
+    if (!data) return null;
 
-        const gap = size === "sm" ? "gap-3" : "gap-5";
+    return createPortal(
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose} />
 
-        return (
-            <div className={`grid grid-cols-3 ${gap} justify-items-center`}>
-                {tiles.slice(0, 3).map((src, i) => (
-                    <TechTile
-                        key={i}
-                        src={src}
-                        delay={delay + i * 0.1}
-                        isLowDevice={isLowDevice}
-                        sizeClass={sizeClass}
-                    />
-                ))}
+            <motion.div
+                initial={isMobile ? { y: "100%" } : { scale: 0.8, opacity: 0 }}
+                animate={isMobile ? { y: 0 } : { scale: 1, opacity: 1 }}
+                exit={isMobile ? { y: "100%" } : { scale: 0.8, opacity: 0 }}
+                className={`relative bg-white border-2 border-brandPurple overflow-hidden ${isMobile
+                        ? "w-full h-[85vh] mt-auto rounded-t-3xl"
+                        : "w-[800px] max-w-[90vw] rounded-xl shadow-2xl"
+                    }`}
+            >
+                {/* HEADER */}
+                <div className="flex items-center justify-between p-6 border-b border-brandPurple bg-brandPurple/10">
+                    <div className="flex items-center gap-3">
+                        <ShieldCheck className="text-brandPurple" size={20} />
+                        <div className="flex flex-col">
+                            <span className="text-[10px] font-mono tracking-[0.3em] text-brandPurple">
+                                PERFORMANCE PROFILE
+                            </span>
+                            <span className="text-black font-bold tracking-wider text-sm">
+                                ID: {data.id}
+                            </span>
+                        </div>
+                    </div>
 
-                <div className="col-span-3 flex justify-center mt-3">
-                    <TechTile
-                        src={tiles[3]}
-                        delay={delay + 0.3}
-                        isLowDevice={isLowDevice}
-                        sizeClass={sizeClass}
-                    />
-                </div>
-            </div>
-        );
-    };
-
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-
-    function handleMouseMove({ currentTarget, clientX, clientY }) {
-        let { left, top } = currentTarget.getBoundingClientRect();
-        mouseX.set(clientX - left);
-        mouseY.set(clientY - top);
-    }
-
-    const goToPrograms = () => {
-        sessionStorage.setItem("scrollToPrograms", "true");
-
-        if (window.triggerGlobalFog) {
-            window.triggerGlobalFog(() => {
-                window.location.href = "/";
-            });
-        } else {
-            window.location.href = "/#programs";
-        }
-    };
-
-    return (
-        <section
-            className="relative w-full min-h-screen text-white overflow-hidden"
-            onMouseMove={handleMouseMove}
-            style={{
-                backgroundColor: "#9b26b6",
-            }}
-
-        >
-            <div className="absolute inset-0 opacity-[0.6]">
-                <div className="absolute inset-0 
-                    bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),
-                    linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)]
-                    bg-[size:4rem_4rem]" />
-
-                <motion.div
-                    className="absolute inset-0 bg-[radial-gradient(circle_800px_at_var(--x)_var(--y),
-                            rgba(155,38,182,0.08),transparent_40%)]"
-                    style={{
-                        "--x": useMotionTemplate`${mouseX}px`,
-                        "--y": useMotionTemplate`${mouseY}px`,
-                    }}
-                />
-            </div>
-
-            {/* DESKTOP */}
-            <div className="hidden md:flex relative w-full h-screen items-center justify-center z-10">
-                <div className="absolute left-[5%] bottom-[10%] -rotate-6 scale-90 opacity-80 hover:opacity-100">
-                    <TShape tiles={topTiles} />
+                    <button onClick={onClose} className="text-black hover:text-brandPurple">
+                        <X size={20} />
+                    </button>
                 </div>
 
-                <div className="absolute right-[5%] bottom-[10%] rotate-6 scale-90 opacity-80 hover:opacity-100">
-                    <TShape tiles={bottomTiles} delay={0.4} />
-                </div>
-
-                <div className="relative z-20 flex flex-col items-center text-center pointer-events-none">
-                    <motion.h2
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1 }}
-                        className="font-black uppercase text-[4rem] lg:text-[6rem] leading-[0.9] mb-12"
-                    >
-                        <span className="block drop-shadow-[0_0_30px_rgba(155,38,182,0.5)]">
-                            WHAT THE
-                        </span>
-
-                        <span className="block text-transparent [-webkit-text-stroke:1px_rgba(255,255,255,0.3)] opacity-60 animate-pulse">
-                            TOP 10%
-                        </span>
-
-                        <span className="block text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]">
-                            DO DIFFERENTLY
-                        </span>
-                    </motion.h2>
-
-                    <MagneticOrb
-                        hovered={hovered}
-                        setHovered={setHovered}
-                        onClick={goToPrograms}
-                        isLowDevice={isLowDevice}
-                    />
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        className="mt-12 flex flex-col items-center pointer-events-auto"
-                    >
-                        <p className="font-mono text-[#9b26b6] text-sm tracking-[.3em] mb-6 uppercase">
-                            // Skills. Careers. Legacy. Built.
-                        </p>
-
-                        <div className="flex gap-6 mb-8">
-                            {[Facebook, Instagram, Linkedin, Twitter, Youtube].map((Icon, i) => (
-                                <a key={i} href="#" className="text-gray-400 hover:text-white transition-all">
-                                    <Icon size={20} />
-                                </a>
-                            ))}
+                {/* BODY */}
+                <div
+                    className={`p-6 md:p-10 grid ${isMobile ? "grid-cols-1 gap-6" : "grid-cols-5 gap-8"
+                        }`}
+                >
+                    {/* LEFT: IMAGE */}
+                    <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
+                        <div className="relative aspect-square w-full overflow-hidden border border-brandPurple/40 rounded-md">
+                            <img
+                                src={data.src}
+                                className="w-full h-full object-cover grayscale contrast-125"
+                                alt="Subject"
+                            />
+                            <div className="absolute bottom-0 left-0 w-full bg-white/80 backdrop-blur-md p-2 flex justify-between items-center border-t border-brandPurple/40">
+                                <span className="text-[9px] font-mono text-black/60">
+                                    ASSET_{data.id.split("-")[1]}
+                                </span>
+                                <Scan size={12} className="text-brandPurple" />
+                            </div>
                         </div>
 
-                        <img
-                            src={logoTT}
-                            className="w-24 opacity-50 hover:opacity-100 transition-all"
-                        />
-                    </motion.div>
+                        {/* INFO CARDS */}
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-black/5 p-2 border border-black/10 rounded">
+                                <span className="block text-[8px] font-mono text-black/40 mb-1">
+                                    LEVEL
+                                </span>
+                                <span className="text-xs font-bold text-black">{data.level}</span>
+                            </div>
+                            <div className="bg-black/5 p-2 border border-black/10 rounded">
+                                <span className="block text-[8px] font-mono text-black/40 mb-1">
+                                    DIVISION
+                                </span>
+                                <span className="text-xs font-bold text-black">{data.location}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* RIGHT: TEXT */}
+                    <div className="col-span-1 md:col-span-3 flex flex-col justify-center">
+                        <div className="mb-6">
+                            <div className="flex items-center gap-2 mb-2 opacity-70">
+                                <Activity size={14} className="text-brandPurple" />
+                                <span className="text-[10px] font-mono tracking-widest text-black">
+                                    LEADERSHIP INSIGHT
+                                </span>
+                            </div>
+
+                            <h3 className="text-xl md:text-3xl font-bold text-black leading-tight">
+                                "{data.quote}"
+                            </h3>
+                        </div>
+
+                        <div className="h-[1px] w-full bg-gradient-to-r from-brandPurple to-transparent my-6" />
+
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-brandPurple/10 flex items-center justify-center border border-brandPurple/40">
+                                <Fingerprint size={18} className="text-brandPurple" />
+                            </div>
+
+                            <div>
+                                <h4 className="text-black font-bold uppercase">{data.name}</h4>
+                                <p className="text-brandPurple text-xs font-mono">{data.role}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </motion.div>
+        </div>,
+        document.body
+    );
+};
 
-            {/* MOBILE */}
-            <div className="md:hidden relative w-full min-h-screen flex flex-col items-center py-20 px-4 z-10">
-                <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    className="font-black uppercase text-[2.5rem] text-center leading-none mb-10"
-                >
-                    WHAT THE <span className="text-[#9b26b6]">TOP 10%</span>
-                    <br />
-                    DO DIFFERENTLY
-                </motion.h2>
+// =========================================================
+// MAIN CTA COMPONENT
+// =========================================================
 
-                <div className="scale-75">
-                    <TShape tiles={topTiles} size="sm" />
-                </div>
+export default function TonyCTA() {
+    const isMobile = useIsMobile();
+    const [activeData, setActiveData] = useState(null);
 
-                <div className="my-10">
-                    <MagneticOrb
-                        hovered={hovered}
-                        setHovered={setHovered}
-                        onClick={goToPrograms}
-                        isLowDevice={true}
+    const top = SECTOR_DATA.slice(0, 4);
+    const bottom = SECTOR_DATA.slice(4, 8);
+
+    const navigate = useNavigate(); // ⭐ DIRECT ROUTE FIX
+
+    useEffect(() => {
+        const esc = (e) => e.key === "Escape" && setActiveData(null);
+        window.addEventListener("keydown", esc);
+        return () => window.removeEventListener("keydown", esc);
+    }, []);
+
+    return (
+        <section className="relative w-full min-h-screen bg-white text-black overflow-hidden font-sans flex items-center justify-center">
+            <AnimatePresence>
+                {activeData && (
+                    <Modal
+                        data={activeData}
+                        onClose={() => setActiveData(null)}
+                        isMobile={isMobile}
                     />
-                </div>
+                )}
+            </AnimatePresence>
 
-                <div className="scale-75">
-                    <TShape tiles={bottomTiles} size="sm" />
-                </div>
+            <div
+                className={`relative w-full max-w-7xl mx-auto h-screen flex flex-col items-center justify-center transition-all duration-700 ${activeData ? "blur-md scale-95 opacity-50" : ""
+                    }`}
+            >
+                {/* DESKTOP HEADER */}
+                {!isMobile && (
+                    <div className="absolute top-10 w-full flex justify-between px-10 text-black/40 font-mono text-xs">
+                        <div className="flex gap-4">
+                            <span>V.10.0</span>
+                            <span>
+                                <span className="text-brandPurple animate-pulse">●</span> ACTIVE
+                            </span>
+                        </div>
+                        <div className="flex gap-4">
+                            <span>FRAMEWORK: EXECUTIVE</span>
+                            <span>STANDARD: TOP_10%</span>
+                        </div>
+                    </div>
+                )}
 
-                <div className="flex gap-6 mb-8 mt-10">
-                    {[Facebook, Instagram, Linkedin, Twitter, Youtube].map((Icon, i) => (
-                        <a key={i} href="#" className="text-gray-400">
-                            <Icon size={20} />
-                        </a>
-                    ))}
-                </div>
+                {/* =====================================================
+                   LAYOUT: Left Cluster — Center CTA — Right Cluster
+                   ===================================================== */}
+                <div className="relative w-full flex flex-col md:block items-center justify-center">
+                    {/* LEFT CLUSTER */}
+                    <div
+                        className={`z-10 ${isMobile
+                                ? "scale-90 mb-8"
+                                : "absolute left-[5%] bottom-[-1%] -rotate-3 scale-90 opacity-90"
+                            }`}
+                    >
+                        {!isMobile && (
+                            <div className="mb-4 flex gap-2 text-brandPurple/60 text-[10px] font-mono">
+                                <Hash size={10} />
+                                <span>DATA GROUP A</span>
+                            </div>
+                        )}
+                        <Cluster data={top} isMobile={isMobile} onClick={setActiveData} />
+                    </div>
 
-                <img src={logoTT} className="w-[120px] opacity-80" />
+                    {/* =====================================================
+                       CENTER CTA — DIRECT ROUTING FIX HERE ⭐⭐⭐⭐⭐
+                       ===================================================== */}
+                    <div className="z-20 text-center flex flex-col items-center my-4 md:my-0 md:mt-[30px]">
+                        <div className="font-black uppercase text-[2.5rem] md:text-[7rem] leading-[0.9] tracking-tighter text-black mb-8 md:mb-12">
+                            {!isMobile && (
+                                <div className="text-black/30 text-[2rem] mb-2 font-mono tracking-[0.5em]">
+                                    FRAMEWORK:
+                                </div>
+                            )}
+
+                            WHAT THE
+                            <span
+                                className={`block ${isMobile
+                                        ? "text-brandPurple text-[3.5rem]"
+                                        : "text-transparent [-webkit-text-stroke:2px_rgba(0,0,0,0.8)]"
+                                    }`}
+                            >
+                                TOP 10%
+                            </span>
+                            DO DIFFERENTLY
+
+                            {!isMobile && (
+                                <motion.div
+                                    initial={{ scaleX: 0 }}
+                                    whileInView={{ scaleX: 1 }}
+                                    transition={{ duration: 1, delay: 0.8 }}
+                                    className="h-2 bg-brandPurple mt-2"
+                                />
+                            )}
+                        </div>
+
+                        {/* === CTA BUTTON ROUTES DIRECTLY TO PROGRAMS === */}
+                        <Reactor
+                            onClick={() => {
+                                window.location.href = `${import.meta.env.BASE_URL}?target=programs`;
+                            }}
+                            isMobile={isMobile}
+                        />
+
+                        <div className="mt-12 flex flex-col items-center">
+                            <div className="flex items-center gap-4 mb-6 opacity-60">
+                                <div className="h-[1px] w-12 bg-black" />
+                                <p className="font-mono text-brandPurple text-xs tracking-[0.4em] uppercase">
+                                    SYSTEMS.ONLINE
+                                </p>
+                                <div className="h-[1px] w-12 bg-black" />
+                            </div>
+
+                            <Socials />
+
+                            <div className="font-black text-2xl tracking-tighter opacity-50 mt-6">
+                                TONY
+                                <span className="text-brandPurple">THOMPSON</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* RIGHT CLUSTER */}
+                    <div
+                        className={`z-10 ${isMobile
+                                ? "scale-90 mt-8"
+                                : "absolute right-[5%] bottom-[-1%] rotate-3 scale-90 opacity-90"
+                            }`}
+                    >
+                        {!isMobile && (
+                            <div className="mb-4 flex gap-2 justify-end text-brandPurple/60 text-[10px] font-mono">
+                                <span>DATA GROUP B</span>
+                                <Aperture size={10} />
+                            </div>
+                        )}
+
+                        <Cluster
+                            data={bottom}
+                            isMobile={isMobile}
+                            onClick={setActiveData}
+                            delay={0.4}
+                        />
+                    </div>
+                </div>
             </div>
         </section>
     );
 }
+
+
+// =========================================================
+// 🔥 FINAL SECTION — ASSETS + SECTOR_DATA
+// =========================================================
+
+const ASSETS = {
+    k1: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800",
+    k2: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800",
+    i3: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400",
+    i4: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400",
+    t1: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800",
+    t2: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800",
+    t3: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800",
+    i2: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400",
+};
+
+export const SECTOR_DATA = [
+    {
+        id: "REC-01",
+        src: ASSETS.k1,
+        name: "Sarah Jenkins",
+        role: "Loan Officer",
+        location: "Division A",
+        level: "Executive Contributor",
+        quote: "Tony helped me eliminate noise and operate with precision.",
+    },
+    {
+        id: "REC-02",
+        src: ASSETS.k2,
+        name: "David Peterson",
+        role: "Branch Manager",
+        location: "Division B",
+        level: "Leadership Tier 1",
+        quote: "Tony sharpened the way I lead and execute.",
+    },
+    {
+        id: "REC-03",
+        src: ASSETS.i3,
+        name: "Lisa Kwon",
+        role: "Regional VP",
+        location: "Division C",
+        level: "Executive Leader",
+        quote: "He doesn't hype you—he restructures how you think.",
+    },
+    {
+        id: "REC-04",
+        src: ASSETS.i4,
+        name: "Chris Thompson",
+        role: "Executive",
+        location: "Corporate HQ",
+        level: "Leadership Tier 2",
+        quote: "I became significantly more intentional and decisive.",
+    },
+    {
+        id: "REC-05",
+        src: ASSETS.t1,
+        name: "Marcus Reid",
+        role: "Entrepreneur",
+        location: "Field Ops",
+        level: "Owner Tier",
+        quote: "I stopped wasting effort and started driving results.",
+    },
+    {
+        id: "REC-06",
+        src: ASSETS.t2,
+        name: "Elena Rodriguez",
+        role: "Sales Director",
+        location: "Division D",
+        level: "Top Performer",
+        quote: "Tony simplifies the complex and accelerates execution.",
+    },
+    {
+        id: "REC-07",
+        src: ASSETS.t3,
+        name: "James O’Connell",
+        role: "Senior Agent",
+        location: "West Division",
+        level: "Top 10% Producer",
+        quote: "I finally understood what consistent excellence looks like.",
+    },
+    {
+        id: "REC-08",
+        src: ASSETS.i2,
+        name: "Dr. Aris Thorne",
+        role: "Consultant",
+        location: "Advisory Group",
+        level: "Executive Advisor",
+        quote: "The clarity alone pays for itself.",
+    },
+];

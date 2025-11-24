@@ -10,15 +10,13 @@ export default function TierList() {
     const [endDate, setEndDate] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
 
-    // ✅ FIXED COUNTDOWN INITIALIZATION — ONLY CHANGE
+    // === COUNTDOWN INITIALIZATION (unchanged) ===
     useEffect(() => {
         const stored = localStorage.getItem("countdownEndDate");
-
         let date;
 
         if (stored) {
             const parsed = Date.parse(stored);
-
             if (!isNaN(parsed)) {
                 date = new Date(parsed);
             } else {
@@ -31,7 +29,6 @@ export default function TierList() {
             date.setDate(date.getDate() + 29);
             localStorage.setItem("countdownEndDate", date.toISOString());
         }
-
         setEndDate(date);
     }, []);
 
@@ -295,7 +292,8 @@ export default function TierList() {
         </section>
     );
 }
-//constant contact redirect
+
+// === CONSTANT CONTACT REDIRECTS ===
 const handleAspire = () =>
     window.open("https://lp.constantcontactpages.com/sl/QFIBwKF/aspire", "_blank");
 
@@ -305,8 +303,7 @@ const handleIgnite = () =>
 const handleElevate = () =>
     window.open("https://lp.constantcontactpages.com/sl/TrUL7SX/elevate", "_blank");
 
-
-// === Tier Data ===
+// === UPDATED TIER DATA WITH NAMMBA ITEMS MOVED UP ===
 const tiers = [
     {
         name: "ASPIRE",
@@ -314,6 +311,11 @@ const tiers = [
         button: "WIN NOW →",
         onClick: handleAspire,
         features: [
+            // MOVED TO TOP
+            "Complimentary NAMMBA Membership ($150 value)",
+            "Discount to NAMMBA CONNECT",
+
+            // ORIGINAL ORDER BELOW
             "One tailor-made playbook per year",
             "Local realtor performance data",
             "12 month market forecast",
@@ -322,8 +324,6 @@ const tiers = [
             "Content Library Access",
             "Monthly Sales Mastermind Call",
             "Live group coaching & accountability",
-            "Complimentary NAMMBA Membership ($150 value)",
-            "Discount to NAMMBA CONNECT",
         ],
     },
     {
@@ -332,13 +332,18 @@ const tiers = [
         button: "BOOK A CALL →",
         onClick: handleIgnite,
         features: [
+            // MOVED TO TOP
             "All ASPIRE benefits plus:",
+            "Complimentary NAMMBA Membership ($150 value)",
+            "Discount to NAMMBA CONNECT",
+            "Complimentary Ticket to NAMMBA CONNECT",
+
+            // ORIGINAL ORDER BELOW
             "Four quarterly playbooks per year",
             "Multicultural Marketing On Demand",
             "1,700+ social media content pieces",
             "Posting to 10+ platforms",
             "Your brand colors integration",
-            "Complimentary Ticket to NAMMBA CONNECT",
         ],
     },
     {
@@ -358,7 +363,7 @@ const tiers = [
     },
 ];
 
-// === Comparison Data ===
+// === COMPARISON DATA ===
 const comparisonData = [
     { feature: "Personalized Playbooks", aspire: true, ignite: true, elevate: true },
     { feature: "NAMMBA CONNECT Membership", aspire: true, ignite: true, elevate: true },

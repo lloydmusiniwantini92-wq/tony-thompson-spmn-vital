@@ -1,127 +1,203 @@
 import React, { useRef, useEffect } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import tonyVideo from "../assets/videos/tony_about.mp4";
 
 export default function About() {
     const sectionRef = useRef(null);
     const videoRef = useRef(null);
-    const inView = useInView(sectionRef, { threshold: 0.35, margin: "-15% 0px -15% 0px" });
     const navigate = useNavigate();
 
-    const { scrollYProgress } = useScroll();
-    const y = useTransform(scrollYProgress, [0, 1], [0, -80]);
+    // Track last playback time (same logic as Testimonials)
+    const lastTime = useRef(0);
 
+    // === TYPE 7 PARALLAX PHYSICS ===
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"],
+    });
+
+    const yVideo = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+    const yText = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
+    const bloomOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.8], [0, 0.6, 0]);
+
+    // ============================================================================
+    // === VIDEO AUTOPLAY CONTROL (full visibility only - identical behavior to Hero)
+    // ============================================================================
     useEffect(() => {
-        const vid = videoRef.current;
-        if (!vid) return;
-        if (inView) {
-            vid.loop = true;
-            vid.play().catch(() => { });
-        } else {
-            vid.pause();
-        }
-    }, [inView]);
+        const section = sectionRef.current;
+        const video = videoRef.current;
+        if (!section || !video) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                const mostlyVisible = entry.intersectionRatio >= 0.6;
+
+                if (mostlyVisible) {
+                    video.currentTime = lastTime.current || 0;
+
+                    setTimeout(() => {
+                        video.play().catch(() => { });
+                    }, 40);
+                } else {
+                    lastTime.current = video.currentTime;
+                    video.pause();
+                }
+            },
+            { threshold: [0, 0.3, 0.5, 0.6, 0.8, 1] }
+        );
+
+
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
 
     return (
         <section
             ref={sectionRef}
             id="about"
-            className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-black"
+            className="relative w-full h-[110vh] flex items-center justify-center overflow-hidden bg-black perspective-[1000px]"
         >
-            <video
-                ref={videoRef}
-                className="absolute inset-0 w-full h-full object-cover brightness-[0.9]"
-                src={tonyVideo}
-                muted
-                playsInline
-                preload="metadata"
-                decoding="async"
-                loop
-            />
-
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-[1]" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-transparent z-[1]" />
-            <div className="absolute inset-0 bg-[#7d1f97]/10 mix-blend-overlay z-[2]" />
-
+            {/* === PARALLAX VIDEO LAYER === */}
             <motion.div
-                className="absolute left-1/2 top-0 w-[1px] h-full bg-gradient-to-b from-transparent via-[#7d1f97]/50 to-transparent blur-[1px] z-[2]"
-                animate={{ opacity: [0.1, 0.3, 0.1], x: ["-30%", "50%", "130%"] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            />
-
-            <motion.div
-                style={{ y }}
-                className="relative z-[5] flex flex-col items-center justify-center text-center px-6"
+                className="absolute inset-0 w-full h-[120%] top-[-10%]"
+                style={{ y: yVideo }}
             >
-                <motion.h2
-                    initial={{ opacity: 0, y: 60 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.2, ease: [0.25, 1, 0.3, 1] }}
-                    className="text-[clamp(3.5rem,7vw,6rem)] font-extrabold text-white leading-[0.95] tracking-tight mb-4"
-                >
-                    Empower
-                </motion.h2>
+                <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover opacity-60 grayscale-[20%] scale-105"
+                    src={tonyVideo}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    decoding="async"
+                    loop
+                />
 
-                <motion.h3
-                    initial={{ opacity: 0, y: 80 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.4, delay: 0.2, ease: [0.25, 1, 0.3, 1] }}
-                    className="text-[clamp(2rem,5vw,3.5rem)] font-semibold text-white tracking-wide mb-8"
-                >
-                    Your Growth Journey
-                </motion.h3>
+                {/* Cinematic Grain */}
+                <div
+                    className="absolute inset-0 opacity-[0.06] pointer-events-none"
+                    style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E")`,
+                    }}
+                />
             </motion.div>
 
+            {/* === ATMOSPHERE === */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-transparent to-black/90 z-[1]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60 z-[1]" />
+            <div className="absolute inset-0 bg-[#7d1f97]/10 mix-blend-overlay z-[2]" />
+
+            {/* Searchlight */}
             <motion.div
-                className="absolute bottom-16 left-0 right-0 flex justify-center z-[5]"
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.2, delay: 1.1, ease: "easeOut" }}
+                className="absolute top-0 w-[1px] h-full bg-gradient-to-b from-transparent via-[#9b26b6] to-transparent z-[2] blur-[1px]"
+                animate={{ x: ["-40vw", "40vw"], opacity: [0, 0.5, 0] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            {/* === CONTENT === */}
+            <motion.div
+                className="relative z-[10] flex flex-col items-center justify-center text-center px-6 w-full"
+                style={{ y: yText }}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                        opacity: 1,
+                        transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+                    },
+                }}
             >
+                {/* Purple Vertical Energy Line */}
                 <motion.div
+                    className="w-[2px] h-[100px] bg-gradient-to-b from-transparent via-[#9b26b6] to-transparent mb-8"
+                    initial={{ height: 0, opacity: 0 }}
+                    whileInView={{ height: 120, opacity: 1 }}
+                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                />
+
+                {/* Backlight Bloom */}
+                <motion.div
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+                    w-[500px] h-[300px] bg-[#9b26b6] blur-[120px] -z-10 rounded-full mix-blend-screen"
+                    style={{ opacity: bloomOpacity }}
+                />
+
+                {/* HEADLINE */}
+                <div className="overflow-hidden">
+                    <motion.h2
+                        variants={{
+                            hidden: { y: 100, opacity: 0, skewY: 4 },
+                            visible: {
+                                y: 0,
+                                opacity: 1,
+                                skewY: 0,
+                                transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
+                            },
+                        }}
+                        className="text-[clamp(5rem,15vw,11rem)] font-['Bebas_Neue'] font-black text-white leading-[0.85] tracking-tighter drop-shadow-2xl"
+                        style={{ WebkitTextStroke: "1px rgba(255,255,255,0.1)" }}
+                    >
+                        EMPOWER
+                    </motion.h2>
+                </div>
+
+                {/* SUBHEAD */}
+                <div className="overflow-hidden mt-6 mb-14">
+                    <motion.h3
+                        variants={{
+                            hidden: { y: 100, opacity: 0, skewY: 4 },
+                            visible: {
+                                y: 0,
+                                opacity: 1,
+                                skewY: 0,
+                                transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
+                            },
+                        }}
+                        className="text-[clamp(1rem,3vw,1.8rem)] font-sans font-bold text-white/90 tracking-[0.4em] uppercase drop-shadow-lg"
+                    >
+                        Your Growth Journey
+                    </motion.h3>
+                </div>
+
+                {/* BUTTON */}
+                <motion.div
+                    variants={{
+                        hidden: { y: 100, opacity: 0, skewY: 4 },
+                        visible: {
+                            y: 0,
+                            opacity: 1,
+                            skewY: 0,
+                            transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
+                        },
+                    }}
                     onClick={() => navigate("/quiz-intro")}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.97 }}
-                    transition={{ duration: 0.35 }}
-                    className="relative w-[210px] h-[60px] select-none cursor-pointer group
-                        flex items-center justify-center overflow-hidden
-                        rounded-[1rem] border border-white/20
-                        bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
-                        font-['Press_Start_2P'] text-[0.8rem] uppercase tracking-wider text-white
-                        shadow-[0_10px_25px_rgba(155,38,182,0.7),inset_0_2px_6px_rgba(255,255,255,0.3)]
-                        hover:shadow-[0_14px_35px_rgba(155,38,182,0.85),inset_0_2px_10px_rgba(255,255,255,0.4)]
-                        transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]"
+                    className="mt-16 group cursor-pointer relative"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent animate-pulseGlow rounded-[1rem]" />
-                    <div className="relative z-10 flex items-center gap-3">
-                        <span>GET STARTED</span>
-                        <motion.span
-                            className="text-white text-[1.6rem] font-extrabold leading-none"
-                            animate={{ x: [0, 3, 0], opacity: [0.8, 1, 0.8] }}
-                            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                        >
-                            <motion.span
-                                className="inline-block"
-                                whileHover={{
-                                    x: 8,
-                                    scale: 1.15,
-                                    color: "#d7a3f2",
-                                }}
-                                transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                            >
-                                ➜
-                            </motion.span>
-                        </motion.span>
+                    <div
+                        className="relative flex justify-center items-center w-[260px] h-[56px] gap-3
+                        text-white font-['Press_Start_2P'] text-[0.75rem] uppercase tracking-wider
+                        bg-white/5 backdrop-blur-sm border border-white/20
+                        rounded-[1rem] shadow-[0_10px_25px_rgba(155,38,182,0.3)]
+                        transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
+                        hover:translate-y-[-4px] overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#952ca8]/90 to-[#7d1f97]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent animate-pulseGlow rounded-[1rem]" />
+
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[200%] skew-x-[-15deg] group-hover:animate-sheen" />
+
+                        <span className="relative z-10">GET STARTED</span>
+                        <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                     </div>
                 </motion.div>
             </motion.div>
-
-            <motion.div
-                className="absolute bottom-0 left-0 right-0 h-[20vh] bg-gradient-to-t from-[#7d1f97]/25 via-transparent to-transparent blur-3xl z-[1]"
-                animate={{ opacity: [0.1, 0.25, 0.1] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            />
 
             <style>{`
                 @keyframes pulseGlow {
@@ -129,6 +205,14 @@ export default function About() {
                     50% { opacity:0.9; transform:translateX(25%); }
                 }
                 .animate-pulseGlow { animation:pulseGlow 6s ease-in-out infinite; }
+
+                @keyframes sheen {
+                    0% { transform: translateX(-200%) skewX(-15deg); }
+                    100% { transform: translateX(200%) skewX(-15deg); }
+                }
+                .group:hover .group-hover\\:animate-sheen {
+                    animation: sheen 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+                }
             `}</style>
         </section>
     );

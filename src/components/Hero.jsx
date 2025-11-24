@@ -9,36 +9,73 @@ const verticallo = `${base}videos/verticallo.mp4`;
 
 export default function Hero({ setHeroVisible }) {
     const heroRef = useRef(null);
+    const widgetRef = useRef(null);
     const videoRef = useRef(null);
+
     const { openVideo } = useVideoModal();
 
+    // Timestamp saved exactly like Testimonials.jsx
+    const lastTime = useRef(0);
+
+    // === HERO VISIBILITY (logo animation only) ===
     useEffect(() => {
         if (!heroRef.current) return;
+
         const observer = new IntersectionObserver(
             ([entry]) => setHeroVisible(entry.intersectionRatio > 0.15),
             { threshold: Array.from({ length: 11 }, (_, i) => i / 10) }
         );
+
         observer.observe(heroRef.current);
         return () => observer.disconnect();
     }, [setHeroVisible]);
 
+    // ========================================================================
+    // === STRICT HERO-ONLY VIDEO AUTOPLAY CONTROL ============================
+    // === Video only plays when HERO is 100% fully visible ===================
+    // ========================================================================
     useEffect(() => {
-        const v = videoRef.current;
-        if (v) {
-            const playVideo = () => v.play().catch(() => { });
-            v.addEventListener("loadeddata", playVideo);
-            return () => v.removeEventListener("loadeddata", playVideo);
-        }
+        const hero = heroRef.current;
+        const video = videoRef.current;
+
+        if (!hero || !video) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                const fullyVisible = entry.intersectionRatio === 1;
+
+                if (fullyVisible) {
+                    // Resume exactly from last time
+                    video.currentTime = lastTime.current || 0;
+                    setTimeout(() => video.play().catch(() => { }), 40);
+                } else {
+                    // Save timestamp & pause
+                    lastTime.current = video.currentTime;
+                    video.pause();
+                }
+            },
+            { threshold: 1.0 } // 🔥 FULL VISIBILITY ONLY
+        );
+
+        observer.observe(hero);
+        return () => observer.disconnect();
     }, []);
 
+    const handleTimeUpdate = (e) => {
+        lastTime.current = e.target.currentTime;
+    };
+
+    // Fog scroll
     const fogScrollTo = (selector) => {
         const runScroll = () => {
             const el = document.querySelector(selector);
             if (!el) return;
+
             const lenis = window.lenis;
             if (lenis) lenis.scrollTo(el, { duration: 1.4, offset: -40 });
             else el.scrollIntoView({ behavior: "smooth", block: "start" });
         };
+
         if (typeof window.triggerGlobalFog === "function") window.triggerGlobalFog(runScroll);
         else runScroll();
     };
@@ -55,7 +92,7 @@ export default function Hero({ setHeroVisible }) {
             className="hero relative w-full h-screen flex items-center justify-center overflow-hidden bg-black text-white"
             style={{ contain: "layout paint style" }}
         >
-            {/* === Background Image === */}
+            {/* Background */}
             <div
                 className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-[1]"
                 style={{
@@ -65,7 +102,7 @@ export default function Hero({ setHeroVisible }) {
                 }}
             />
 
-            {/* === Cinematic Slogan === */}
+            {/* Slogan */}
             <div
                 className="absolute z-[3] text-left"
                 style={{
@@ -90,14 +127,13 @@ export default function Hero({ setHeroVisible }) {
                 </h1>
             </div>
 
-            {/* === CTA Buttons (bottom-left) === */}
+            {/* CTA Buttons */}
             <div
                 className="absolute z-[900004] animate-buttonFloat flex gap-3
                     bottom-[2rem] left-[3rem] md:bottom-[2.8rem]
                     flex-row items-center justify-start"
                 style={{ willChange: "transform" }}
             >
-                {/* GET STARTED (formerly BOOK TONY) */}
                 <div
                     onClick={handleBookTony}
                     className="relative flex justify-center items-center w-[150px] h-[56px]
@@ -106,18 +142,15 @@ export default function Hero({ setHeroVisible }) {
                         rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(177,79,192,0.7)]
                         transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
                         hover:translate-y-[-4px] uppercase tracking-wider"
-                    aria-label="Scroll to About section"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-[10px]" />
 
-                    {/* ONLY TEXT CHANGED */}
                     <span className="transition-all duration-500 group-hover:opacity-0">GET</span>
                     <span className="absolute opacity-0 transition-all duration-500 group-hover:opacity-100">
                         STARTED
                     </span>
                 </div>
 
-                {/* WIN NOW */}
                 <div
                     onClick={handleWinNow}
                     className="relative flex justify-center items-center w-[150px] h-[56px]
@@ -126,7 +159,6 @@ export default function Hero({ setHeroVisible }) {
                     rounded-[10px] border border-white/20 shadow-[0_10px_25px_rgba(155,38,182,0.7)]
                     transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.3,1)]
                     hover:translate-y-[-4px] uppercase tracking-wider"
-                    aria-label="Scroll to Programs section"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulseGlow rounded-[10px]" />
                     <span className="transition-all duration-500 group-hover:opacity-0">WIN</span>
@@ -136,11 +168,11 @@ export default function Hero({ setHeroVisible }) {
                 </div>
             </div>
 
-            {/* === Video Widget (bottom-right) === */}
+            {/* VIDEO WIDGET */}
             <div
+                ref={widgetRef}
                 className="video-widget group absolute bottom-[2rem] right-[2rem] z-[900003] cursor-pointer select-none hidden md:block"
                 onClick={() => openVideo(verticallo)}
-                aria-label="Open video modal"
             >
                 <div
                     className="relative w[6.5cm] h-[2.3cm] rounded-[2cm]
@@ -156,7 +188,7 @@ export default function Hero({ setHeroVisible }) {
                         loop
                         playsInline
                         preload="auto"
-                        autoPlay
+                        onTimeUpdate={handleTimeUpdate}
                     >
                         <source src={verticallo} type="video/mp4" />
                     </video>

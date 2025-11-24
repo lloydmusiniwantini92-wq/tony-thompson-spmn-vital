@@ -16,7 +16,7 @@ export function VideoModalProvider({ children }) {
     const [showUI, setShowUI] = useState(true);
     const [hasInteracted, setHasInteracted] = useState(false);
 
-    // ⭐ NEW: special override flag ONLY for BookTonySection modal
+    // ⭐ SPECIAL FLAG ONLY for BookTonySection
     const [isProgramsJump, setIsProgramsJump] = useState(false);
 
     const videoRef = useRef(null);
@@ -24,7 +24,7 @@ export function VideoModalProvider({ children }) {
     const modalRef = useRef(null);
     const lastScrollPos = useRef(0);
 
-    /* === Scroll Lock === */
+    /* === SCROLL LOCK === */
     useEffect(() => {
         if (videoSrc) {
             lastScrollPos.current = window.scrollY;
@@ -41,7 +41,7 @@ export function VideoModalProvider({ children }) {
 
     const openVideo = (src, options = {}) => {
         setVideoSrc(src);
-        setIsProgramsJump(options.programsJump === true); // ⭐ ONLY TRUE FOR BOOK TONY SECTION
+        setIsProgramsJump(options.programsJump === true); // ⭐ ONLY TRUE FOR BOOKTONYSECTION
         setIsPlaying(false);
         setProgress(0);
         setShowUI(true);
@@ -54,7 +54,7 @@ export function VideoModalProvider({ children }) {
         window.scrollTo({ top: lastScrollPos.current, behavior: "instant" });
     };
 
-    /* === Keyboard Controls === */
+    /* === KEYBOARD SUPPORT === */
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (!videoSrc || !videoRef.current) return;
@@ -67,7 +67,7 @@ export function VideoModalProvider({ children }) {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [videoSrc, isPlaying]);
 
-    /* === Playback Logic === */
+    /* === VIDEO CONTROLS === */
     const togglePlay = () => {
         const v = videoRef.current;
         if (!v) return;
@@ -93,8 +93,7 @@ export function VideoModalProvider({ children }) {
         const v = videoRef.current;
         if (v && duration) {
             const newValue = Number(e.target.value);
-            const newTime = (newValue / 100) * duration;
-            v.currentTime = newTime;
+            v.currentTime = (newValue / 100) * duration;
             setProgress(newValue);
         }
     };
@@ -135,11 +134,11 @@ export function VideoModalProvider({ children }) {
     const handleMouseMove = () => resetUITimer();
     const handleTouchStart = () => resetUITimer();
 
-    /* === BUTTON HANDLER === */
+    /* === CTA BUTTON (CONDITIONAL) === */
     const handleButton = () => {
         closeVideo();
 
-        // ⭐ SPECIAL ONLY FOR BOOKTONYSECTION
+        // ⭐ SPECIAL CASE: only in BookTonySection → jump to programs
         if (isProgramsJump) {
             setTimeout(() => {
                 window.location.href = "/?target=programs";
@@ -147,7 +146,7 @@ export function VideoModalProvider({ children }) {
             return;
         }
 
-        // ⭐ ALL OTHER MODALS KEEP ORIGINAL BEHAVIOR
+        // ⭐ OTHER MODALS → normal BOOK TONY
         const base = import.meta.env.BASE_URL || "/";
         setTimeout(() => {
             window.location.href = `${base}book-tony`;
@@ -188,10 +187,7 @@ export function VideoModalProvider({ children }) {
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 {/* LOGO */}
-                                <div
-                                    className="absolute top-[1.5vh] left-[0.5vw] z-[2147483650]"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
+                                <div className="absolute top-[1.5vh] left-[0.5vw] z-[2147483650]">
                                     <img
                                         src={logoTT}
                                         alt="TT"
@@ -213,7 +209,7 @@ export function VideoModalProvider({ children }) {
                                     muted={isMuted}
                                 />
 
-                                {/* SPECIAL BUTTON — WIN NOW → IF programsJump */}
+                                {/* ⭐ CONDITIONAL CTA BUTTON */}
                                 <AnimatePresence>
                                     {showUI && (
                                         <motion.button
@@ -227,18 +223,18 @@ export function VideoModalProvider({ children }) {
                                         >
                                             <div
                                                 className="absolute z-[9999] flex justify-center items-center 
-                                                    w-[230px] h-[62px] text-white font-['Press_Start_2P'] text-[0.9rem]
-                                                    cursor-pointer bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
-                                                    rounded-[1rem] border border-white/20
-                                                    shadow-[0_10px_25px_rgba(155,38,182,0.7)]
-                                                    uppercase tracking-wider transition-all duration-[600ms]"
+                                                w-[230px] h-[62px] text-white font-['Press_Start_2P'] text-[0.9rem]
+                                                cursor-pointer bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
+                                                rounded-[1rem] border border-white/20
+                                                shadow-[0_10px_25px_rgba(155,38,182,0.7)]
+                                                uppercase tracking-wider transition-all duration-[600ms]"
                                                 style={{
                                                     top: "80%",
                                                     left: "50%",
                                                     transform: "translate(-50%, -50%)",
                                                 }}
                                             >
-                                                {isProgramsJump ? "WIN NOW →" : "BOOK TONY →"}
+                                                {isProgramsJump ? "SEE PROGRAMS →" : "BOOK TONY →"}
                                             </div>
                                         </motion.button>
                                     )}
@@ -306,9 +302,7 @@ export function VideoModalProvider({ children }) {
                                     <motion.button
                                         key="close-btn"
                                         onClick={closeVideo}
-                                        className="absolute top-[3vh] right-[3vw] text-[3.5rem] text-white 
-                                            hover:text-[#7d1f97] font-light transition-all duration-300 
-                                            z-[2147483650]"
+                                        className="absolute top-[3vh] right-[3vw] text-[3.5rem] text-white hover:text-[#7d1f97] font-light transition-all duration-300 z-[2147483650]"
                                         whileHover={{ rotate: 90, scale: 1.1 }}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
