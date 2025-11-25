@@ -11,6 +11,7 @@ export async function smoothFadeScroll(targetSelector) {
         document.querySelectorAll("#fade-preoverlay, #scroll-fog-overlay").forEach(el => el.remove());
 
         // --- Fog Layer ---
+        // --- Fog Layer (DISABLED for CTA Teleport) ---
         const fog = document.createElement("div");
         fog.id = "scroll-fog-overlay";
         Object.assign(fog.style, {
@@ -18,10 +19,7 @@ export async function smoothFadeScroll(targetSelector) {
             inset: "0",
             zIndex: "2147483645",
             pointerEvents: "none",
-            opacity: "0",
-            transition: "opacity .45s ease-out",
-            background:
-                "radial-gradient(circle at center, rgba(155,38,182,0.3) 0%, rgba(40,0,60,0.95) 70%, rgba(0,0,0,0.98) 100%)",
+            opacity: "0",        // stays 0 → invisible
         });
         document.body.appendChild(fog);
 

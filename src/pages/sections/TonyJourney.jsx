@@ -1,6 +1,8 @@
 // NOTE: Entire file exactly as provided by the user, updated with:
 // "The Turning Point // Leadership Protocol"
 // replacing "Sector 7 // Leadership Protocol"
+// AND "PRESS PLAY" updates with P2P font
+// AND openVideo called with 'false' to suppress global CTA
 
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
@@ -80,7 +82,7 @@ export default function TonyJourney() {
                     transition={{ duration: 0.8, ease: [0.25, 1, 0.3, 1] }}
                     className="text-center px-6 py-16 max-w-[800px] relative z-10"
                 >
-                    <MonoLabel className="justify-center mb-4">Transmission // Mobile</MonoLabel>
+                    <MonoLabel className="justify-center mb-4">Orientation // Mobile</MonoLabel>
 
                     <h1 className="font-[Montserrat] font-black text-[clamp(2rem,6vw,3rem)] leading-[0.95] tracking-tighter text-white uppercase">
                         Redefining <br />
@@ -108,7 +110,7 @@ export default function TonyJourney() {
                 </div>
 
                 <div
-                    onClick={() => openVideo(journeyVideo)}
+                    onClick={() => openVideo(journeyVideo, false)}
                     className="relative w-full flex flex-col items-center justify-center bg-black text-white cursor-pointer group border-t border-white/10"
                     role="button"
                     aria-label="Initialize Journey Protocol"
@@ -150,8 +152,8 @@ export default function TonyJourney() {
                             <div className="absolute top-1 left-1 w-1 h-1 bg-white/50" />
                             <div className="absolute bottom-1 right-1 w-1 h-1 bg-white/50" />
                         </div>
-                        <div className="mt-3 font-mono text-[10px] tracking-[0.2em] text-[#9b26b6] animate-pulse">
-                            INITIATE_PROTOCOL
+                        <div className="mt-3 font-['Press_Start_2P'] text-[10px] tracking-[0.2em] text-[#9b26b6] animate-pulse">
+                            PRESS PLAY
                         </div>
                     </div>
                 </div>
@@ -230,7 +232,7 @@ export default function TonyJourney() {
             {/* VIDEO TRIGGER unchanged */}
             <section
                 id="tony-journey"
-                onClick={() => openVideo(journeyVideo)}
+                onClick={() => openVideo(journeyVideo, false)}
                 className="hidden md:flex relative w-full h-[120vh] overflow-hidden m-0 p-0 flex-col items-center justify-center text-center text-white -mt-[20vh] cursor-pointer group focus:outline-none"
                 role="button"
                 aria-label="Play Journey Video"
@@ -260,7 +262,7 @@ export default function TonyJourney() {
                     <div className="flex justify-center mb-8">
                         <div className="flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md border border-[#9b26b6]/30 rounded-full">
                             <div className="w-2 h-2 bg-[#9b26b6] rounded-full animate-pulse" />
-                            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/80">System Online</span>
+                            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/80">Now Playing</span>
                         </div>
                     </div>
 
@@ -280,8 +282,8 @@ export default function TonyJourney() {
                             <Play className="w-8 h-8 text-white fill-white ml-1 transition-transform duration-300 group-hover:scale-110" />
                         </div>
 
-                        <div className="absolute -bottom-12 font-mono text-xs tracking-[0.3em] text-[#9b26b6] opacity-0 group-hover:opacity-100 transition-opacity duration-500 uppercase">
-                            Execute
+                        <div className="absolute -bottom-12 font-['Press_Start_2P'] text-xs tracking-[0.3em] text-[#9b26b6] opacity-0 group-hover:opacity-100 transition-opacity duration-500 uppercase">
+                            PRESS PLAY
                         </div>
                     </div>
                 </motion.div>

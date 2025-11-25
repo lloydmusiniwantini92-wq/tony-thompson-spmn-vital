@@ -157,7 +157,9 @@ export default function TonyImpact() {
     );
 }
 
-// === HOLOGRAPHIC CARD ===
+/* ======================================================
+   HOLOGRAPHIC CARD
+====================================================== */
 function HolographicCard({ data, index }) {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -192,7 +194,10 @@ function HolographicCard({ data, index }) {
     );
 }
 
-// === INTERACTIVE LINK COMPONENTS ===
+/* ======================================================
+   INTERACTIVE LINKS
+====================================================== */
+
 const InteractiveExternal = ({ href, children }) => (
     <a
         href={href}
@@ -207,16 +212,20 @@ const InteractiveExternal = ({ href, children }) => (
     </a>
 );
 
+/* ======================================================
+   FIXED — GROWTH PLATFORM (now identical behavior to CTA)
+====================================================== */
+
+/* ======================================================
+   FIXED — GROWTH PLATFORM (now identical behavior to CTA)
+====================================================== */
+
 const GrowthPlatformLink = () => {
     const goToPrograms = () => {
         const base = import.meta.env.BASE_URL;
-        sessionStorage.setItem("scrollToPrograms", "true");
 
-        if (window.triggerGlobalFog) {
-            window.triggerGlobalFog(() => (window.location.href = base));
-        } else {
-            window.location.href = `${base}#programs`;
-        }
+        // EXACT MATCH with CTA behavior
+        window.location.href = `${base}?target=programs`;
     };
 
     return (
@@ -231,3 +240,4 @@ const GrowthPlatformLink = () => {
         </span>
     );
 };
+

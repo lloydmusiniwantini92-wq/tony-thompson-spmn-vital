@@ -74,8 +74,8 @@ export default function TrustSection() {
                             alt={partner.name}
                             loading="lazy"
                             className={`object-contain ${partner.name.includes("NAMB")
-                                ? "w-[90%] h-[90%] scale-125 -translate-y-1"
-                                : "w-[75%] h-auto"
+                                    ? "w-[80%] h-auto scale-100 translate-y-0"
+                                    : "w-[75%] h-auto"
                                 }`}
                         />
                     </motion.a>

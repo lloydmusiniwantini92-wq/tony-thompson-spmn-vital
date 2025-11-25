@@ -16,8 +16,8 @@ export function VideoModalProvider({ children }) {
     const [showUI, setShowUI] = useState(true);
     const [hasInteracted, setHasInteracted] = useState(false);
 
-    // ⭐ SPECIAL FLAG ONLY for BookTonySection
     const [isProgramsJump, setIsProgramsJump] = useState(false);
+    const [showCTA, setShowCTA] = useState(true);
 
     const videoRef = useRef(null);
     const timeoutRef = useRef(null);
@@ -41,7 +41,15 @@ export function VideoModalProvider({ children }) {
 
     const openVideo = (src, options = {}) => {
         setVideoSrc(src);
-        setIsProgramsJump(options.programsJump === true); // ⭐ ONLY TRUE FOR BOOKTONYSECTION
+
+        // Handle CTA visibility: accept boolean 'false' or object property
+        const hideCTA = options === false || (options && options.showCTA === false);
+        setShowCTA(!hideCTA);
+
+        // Handle programs jump (check if options is object to avoid property access on boolean)
+        const jump = (typeof options === 'object' && options) ? options.programsJump : false;
+        setIsProgramsJump(jump === true);
+
         setIsPlaying(false);
         setProgress(0);
         setShowUI(true);
@@ -134,11 +142,10 @@ export function VideoModalProvider({ children }) {
     const handleMouseMove = () => resetUITimer();
     const handleTouchStart = () => resetUITimer();
 
-    /* === CTA BUTTON (CONDITIONAL) === */
+    /* === CTA BUTTON HANDLER === */
     const handleButton = () => {
         closeVideo();
 
-        // ⭐ SPECIAL CASE: only in BookTonySection → jump to programs
         if (isProgramsJump) {
             setTimeout(() => {
                 window.location.href = "/?target=programs";
@@ -146,7 +153,6 @@ export function VideoModalProvider({ children }) {
             return;
         }
 
-        // ⭐ OTHER MODALS → normal BOOK TONY
         const base = import.meta.env.BASE_URL || "/";
         setTimeout(() => {
             window.location.href = `${base}book-tony`;
@@ -209,34 +215,72 @@ export function VideoModalProvider({ children }) {
                                     muted={isMuted}
                                 />
 
-                                {/* ⭐ CONDITIONAL CTA BUTTON */}
+                                {/* ⭐ FIXED CTA BUTTON — CORRECTED HOVER LOGIC */}
                                 <AnimatePresence>
-                                    {showUI && (
-                                        <motion.button
-                                            key="start-now"
-                                            onClick={handleButton}
+                                    {showCTA && showUI && (
+                                        <motion.div
+                                            key="cta-btn-wrapper"
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.9 }}
                                             transition={{ duration: 0.6 }}
                                             className="absolute inset-0 flex items-center justify-center"
                                         >
+                                            {/* REAL CTA BUTTON */}
                                             <div
-                                                className="absolute z-[9999] flex justify-center items-center 
-                                                w-[230px] h-[62px] text-white font-['Press_Start_2P'] text-[0.9rem]
-                                                cursor-pointer bg-gradient-to-br from-[#7d1f97]/85 to-[#952ca8]/70
-                                                rounded-[1rem] border border-white/20
-                                                shadow-[0_10px_25px_rgba(155,38,182,0.7)]
-                                                uppercase tracking-wider transition-all duration-[600ms]"
+                                                onClick={handleButton}
+                                                className="
+                                                    group
+                                                    absolute z-[9999] flex items-center justify-center
+                                                    w-[230px] h-[62px]
+                                                    text-white font-['Press_Start_2P']
+                                                    text-[0.9rem] uppercase tracking-wider
+                                                    bg-gradient-to-br
+                                                    from-[#7d1f97]/85 to-[#952ca8]/70
+                                                    rounded-[1rem] border border-white/20
+                                                    shadow-[0_10px_25px_rgba(155,38,182,0.7)]
+                                                    overflow-hidden
+                                                    transition-all duration-700
+                                                    cursor-pointer
+                                                "
                                                 style={{
                                                     top: "80%",
                                                     left: "50%",
                                                     transform: "translate(-50%, -50%)",
                                                 }}
                                             >
-                                                {isProgramsJump ? "SEE PROGRAMS →" : "BOOK TONY →"}
+                                                {isProgramsJump ? (
+                                                    <>
+                                                        {/* WIN (before hover) */}
+                                                        <span
+                                                            className="
+                                                                absolute
+                                                                transition-all duration-500
+                                                                group-hover:-translate-y-[150%]
+                                                                group-hover:opacity-0
+                                                            "
+                                                        >
+                                                            WIN →
+                                                        </span>
+
+                                                        {/* NOW (after hover) */}
+                                                        <span
+                                                            className="
+                                                                absolute
+                                                                opacity-0 translate-y-[150%]
+                                                                transition-all duration-500
+                                                                group-hover:opacity-100
+                                                                group-hover:translate-y-0
+                                                            "
+                                                        >
+                                                            NOW →
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    "BOOK TONY →"
+                                                )}
                                             </div>
-                                        </motion.button>
+                                        </motion.div>
                                     )}
                                 </AnimatePresence>
 
@@ -302,7 +346,13 @@ export function VideoModalProvider({ children }) {
                                     <motion.button
                                         key="close-btn"
                                         onClick={closeVideo}
-                                        className="absolute top-[3vh] right-[3vw] text-[3.5rem] text-white hover:text-[#7d1f97] font-light transition-all duration-300 z-[2147483650]"
+                                        className="
+                                            absolute top-[3vh] right-[3vw]
+                                            text-[3.5rem] text-white
+                                            hover:text-[#7d1f97]
+                                            font-light transition-all duration-300
+                                            z-[2147483650]
+                                        "
                                         whileHover={{ rotate: 90, scale: 1.1 }}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}

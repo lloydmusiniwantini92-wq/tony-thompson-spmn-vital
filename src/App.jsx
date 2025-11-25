@@ -1,3 +1,4 @@
+/* FULL UPDATED & CLEANED App.jsx */
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,90 +17,45 @@ import Shop from "./pages/Shop";
 import ThankYou from "./pages/ThankYou";
 import Go from "./pages/Go";
 
-const MeetTony = lazy(() => import("./components/MeetTony"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 
 import { VideoModalProvider } from "./context/VideoModalContext";
 import { QuizOverlayProvider } from "./context/QuizOverlayContext";
-import { dreamyOverlayStyle, animateDreamyPulse } from "./utils/fadeStyles.js";
 
 import useDeviceTier from "./hooks/useDeviceTier";
 import BookTonyForm from "./pages/BookTonyForm";
 
 import HomePage from "./pages/HomePage";
 
+// QUIZ
 import QuizIntro from "./pages/Quiz/QuizIntro.jsx";
 import Quiz from "./pages/Quiz/Quiz.jsx";
 import QuizResults from "./pages/Quiz/QuizResults.jsx";
 
-/* ===============================
-   ⭐ MEET TONY – 6 Subpages
-================================= */
-import TonyStory from "./pages/sections/TonyStory";
-import TonyImpact from "./pages/sections/TonyImpact";
-import TonyMission from "./pages/sections/TonyMission";
-import TonyVoices from "./pages/sections/TonyVoices";
-import TonyPartners from "./pages/sections/TonyPartners";
-import TonyCTA from "./pages/sections/TonyCTA";
+// ⭐ NEW — FULL STACKED UNIVERSE PAGE
+import MeetTonyPage from "./pages/MeetTonyPage";
 
-/* ===============================
-   Pre-Mount Fade (initial overlay)
-================================= */
-function preMountFade() {
-    if (document.getElementById("fade-preoverlay")) return;
-    const overlay = document.createElement("div");
-    overlay.id = "fade-preoverlay";
-    Object.assign(overlay.style, {
-        position: "fixed",
-        inset: "0",
-        zIndex: "999999",
-        opacity: "1",
-        pointerEvents: "none",
-        transition: "opacity 0.6s ease",
-        ...dreamyOverlayStyle,
-    });
-    document.body.appendChild(overlay);
-    animateDreamyPulse(overlay);
-}
 
-/* ===============================
-   Debug Mode
-================================= */
-if (import.meta.env.MODE === "development" && !window.__FAST_DEBUG) {
-    window.__FAST_DEBUG = true;
-    const log = (...a) =>
-        console.log(
-            `%c[DEBUG ${new Date().toISOString().split("T")[1].split(".")[0]}]`,
-            "color:#7d1f97;font-weight:bold",
-            ...a
-        );
-    log("🚀 Fast Debug Mode Ready");
-}
-
-/* ===============================
-   MAIN APP COMPONENT
-================================= */
 export default function App() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [heroVisible, setHeroVisible] = useState(true);
-    const location = useLocation();
 
+    const location = useLocation();
     const isHome =
         location.pathname === "/" ||
         location.pathname.endsWith("/tony-thompson-spmn-vital/");
 
+    const heroVisibleForOverlay = isHome && heroVisible;
+
     const deviceTier = useDeviceTier();
     const isLowDevice = deviceTier === "low";
 
-    /* ===============================
+    /* ====================================================
        ⭐ Lenis Smooth Scroll Setup
-    ================================= */
+    ==================================================== */
     useEffect(() => {
-        if (isLowDevice) {
-            console.log("⚡ Low-end device detected: skipping Lenis");
-            return;
-        }
+        if (isLowDevice) return;
 
         let lenis;
         let rafId;
@@ -123,11 +79,8 @@ export default function App() {
             });
             window.lenis = lenis;
 
-            // ⭐ Prevent initial Hero jump
             lenis.stop();
-            setTimeout(() => {
-                if (lenis) lenis.start();
-            }, 1400);
+            setTimeout(() => lenis.start(), 1400);
 
             const raf = (time) => {
                 lenis.raf(time);
@@ -140,9 +93,9 @@ export default function App() {
         return () => cancelAnimationFrame(rafId);
     }, [isLowDevice]);
 
-    /* ===============================
-       ⭐ Fade Scroll + Lenis Override
-    ================================= */
+    /* ====================================================
+       ⭐ Fade Scroll override logic
+    ==================================================== */
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const targetParam = params.get("target");
@@ -155,7 +108,6 @@ export default function App() {
 
         const doFadeScroll = async () => {
             const { smoothFadeScroll } = await import("./utils/smoothFadeScroll.js");
-            preMountFade();
 
             const waitForLenis = async () => {
                 let tries = 0;
@@ -183,107 +135,87 @@ export default function App() {
         setTimeout(doFadeScroll, 900);
     }, [location.pathname]);
 
-    const heroVisibleForOverlay = isHome ? heroVisible : false;
-
+    /* ====================================================
+       ⭐ FOOTER HIDE RULES (FINAL)
+    ==================================================== */
     const hideFooter =
         location.pathname.includes("quiz") ||
         location.pathname.includes("stackbuilder") ||
         location.pathname.includes("book-tony") ||
-        location.pathname.includes("about-tony");
+        location.pathname.includes("about-tony") ||
+        location.pathname.startsWith("/meet-tony");
 
-    /* ===============================
+    /* ====================================================
        ⭐ RENDER
-    ================================= */
+    ==================================================== */
     return (
         <VideoModalProvider>
             <QuizOverlayProvider>
-                <AnimatePresence mode="wait">
-                    <motion.main
-                        key={location.pathname}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.6, ease: [0.25, 1, 0.3, 1] }}
-                        className="bg-black text-white overflow-x-hidden relative flex flex-col"
-                        style={{ minHeight: "100vh" }}
-                    >
-                        <ScrollToTop />
+                <main
+                    className="bg-black text-white overflow-x-hidden relative flex flex-col"
+                    style={{ minHeight: "100vh" }}
+                >
+                    <ScrollToTop />
 
-                        {/* GLOBAL HEADER / OVERLAY */}
-                        <div className="fixed top-0 left-0 w-full z-[2147483646] pointer-events-auto">
-                            <GlobalOverlay
-                                menuOpen={menuOpen}
-                                setMenuOpen={setMenuOpen}
-                                heroVisible={heroVisibleForOverlay}
-                            />
-                        </div>
+                    {/* GLOBAL HEADER */}
+                    <div className="fixed top-0 left-0 w-full z-[2147483646] pointer-events-auto">
+                        <GlobalOverlay
+                            menuOpen={menuOpen}
+                            setMenuOpen={setMenuOpen}
+                            heroVisible={heroVisibleForOverlay}
+                        />
+                    </div>
 
-                        {!isLowDevice && <ScrollFog />}
+                    {!isLowDevice && <ScrollFog />}
 
-                        {/* PAGE TRANSITION WRAPPER */}
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={location.pathname}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.6, ease: [0.25, 1, 0.3, 1] }}
-                            >
-                                <Suspense fallback={<div className="h-screen bg-black" />}>
-                                    <Routes location={location} key={location.pathname}>
+                    {/* ROUTE TRANSITIONS */}
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={location.pathname}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.55, ease: [0.25, 1, 0.3, 1] }}
+                        >
+                            <Suspense fallback={<div className="h-screen bg-black" />}>
+                                <Routes location={location} key={location.pathname}>
 
-                                        {/* =============================
-                                            ⭐ MEET TONY PAGES
-                                        ============================== */}
-                                        <Route
-                                            path="/meet-tony"
-                                            element={
-                                                <Suspense fallback={<div className="h-screen bg-black" />}>
-                                                    <MeetTony />
-                                                </Suspense>
-                                            }
-                                        />
+                                    {/* HOME */}
+                                    <Route
+                                        path="/"
+                                        element={<HomePage setHeroVisible={setHeroVisible} />}
+                                    />
 
-                                        <Route path="/meet-tony/story" element={<TonyStory />} />
-                                        <Route path="/meet-tony/impact" element={<TonyImpact />} />
-                                        <Route path="/meet-tony/mission" element={<TonyMission />} />
-                                        <Route path="/meet-tony/voices" element={<TonyVoices />} />
-                                        <Route path="/meet-tony/partners" element={<TonyPartners />} />
-                                        <Route path="/meet-tony/cta" element={<TonyCTA />} />
+                                    {/* STATIC ROUTES */}
+                                    <Route path="/lets-win" element={<LetsWin />} />
+                                    <Route path="/about-tony" element={<AboutTony />} />
+                                    <Route path="/shop" element={<Shop />} />
+                                    <Route path="/thank-you" element={<ThankYou />} />
+                                    <Route path="/go" element={<Go />} />
 
-                                        {/* =============================
-                                            ⭐ MAIN ROUTES
-                                        ============================== */}
-                                        <Route
-                                            path="/"
-                                            element={<HomePage setHeroVisible={setHeroVisible} />}
-                                        />
+                                    {/* ⭐ FULL UNIVERSE PAGE */}
+                                    <Route path="/meet-tony" element={<MeetTonyPage />} />
 
-                                        <Route path="/lets-win" element={<LetsWin />} />
-                                        <Route path="/about-tony" element={<AboutTony />} />
-                                        <Route path="/shop" element={<Shop />} />
-                                        <Route path="/thank-you" element={<ThankYou />} />
-                                        <Route path="/go" element={<Go />} />
-                                        <Route path="/terms" element={<Terms />} />
-                                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                                        <Route path="/stackbuilder" element={<StackBuilder />} />
-                                        <Route path="/book-tony" element={<BookTonyForm />} />
+                                    {/* META */}
+                                    <Route path="/terms" element={<Terms />} />
+                                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-                                        {/* =============================
-                                            ⭐ QUIZ ROUTES
-                                        ============================== */}
-                                        <Route path="/quiz-intro" element={<QuizIntro />} />
-                                        <Route path="/quiz" element={<Quiz />} />
-                                        <Route path="/quiz/results" element={<QuizResults />} />
+                                    {/* BOOKING */}
+                                    <Route path="/stackbuilder" element={<StackBuilder />} />
+                                    <Route path="/book-tony" element={<BookTonyForm />} />
 
-                                    </Routes>
-                                </Suspense>
-                            </motion.div>
-                        </AnimatePresence>
+                                    {/* QUIZ */}
+                                    <Route path="/quiz-intro" element={<QuizIntro />} />
+                                    <Route path="/quiz" element={<Quiz />} />
+                                    <Route path="/quiz/results" element={<QuizResults />} />
 
-                        {!hideFooter && <Footer />}
-                    </motion.main>
-                </AnimatePresence>
+                                </Routes>
+                            </Suspense>
+                        </motion.div>
+                    </AnimatePresence>
+
+                    {!hideFooter && <Footer />}
+                </main>
             </QuizOverlayProvider>
         </VideoModalProvider>
     );

@@ -1,9 +1,9 @@
-// ✅ src/pages/AboutTony.jsx — FINAL FIXED VERSION
+// ✅ src/pages/AboutTony.jsx — FINAL FIXED UNIVERSE ENTRY
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 // === Page Sections ===
-import TonyStory from "./sections/TonyStory";          // ⬅️ FIXED (replaces AboutTonyHero)
+import TonyStory from "./sections/TonyStory";          // Universe Page #1
 import TonyJourney from "./sections/TonyJourney";
 import TonyMission from "./sections/TonyMission";
 import TonyImpact from "./sections/TonyImpact";
@@ -20,8 +20,9 @@ import { QuizOverlayProvider } from "../context/QuizOverlayContext";
 export default function AboutTony() {
     const [heroVisible, setHeroVisible] = useState(true);
 
+    // Always start at top of universe
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: "auto" });
     }, []);
 
     const containerRef = useRef(null);
@@ -43,7 +44,8 @@ export default function AboutTony() {
                         transition={{ duration: 1.4, ease: [0.25, 1, 0.3, 1] }}
                         className="w-full space-y-0"
                     >
-                        {/* === HERO SECTION — now TonyStory === */}
+
+                        {/* === PAGE 1 — TONY STORY (HERO) === */}
                         <motion.div
                             initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -52,7 +54,7 @@ export default function AboutTony() {
                             <TonyStory />
                         </motion.div>
 
-                        {/* === JOURNEY === */}
+                        {/* === PAGE 2 — JOURNEY === */}
                         <motion.section
                             initial={{ opacity: 0, y: 60 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -63,7 +65,7 @@ export default function AboutTony() {
                             <TonyJourney />
                         </motion.section>
 
-                        {/* === MISSION === */}
+                        {/* === PAGE 3 — MISSION === */}
                         <motion.section
                             initial={{ opacity: 0, scale: 0.97 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -74,7 +76,7 @@ export default function AboutTony() {
                             <TonyMission />
                         </motion.section>
 
-                        {/* === IMPACT === */}
+                        {/* === PAGE 4 — IMPACT === */}
                         <motion.section
                             initial={{ opacity: 0, y: 80 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -83,6 +85,8 @@ export default function AboutTony() {
                             className="relative z-10 overflow-hidden"
                         >
                             <TonyImpact />
+
+                            {/* Animated atmospheric glow */}
                             <motion.div
                                 className="absolute inset-0 bg-gradient-to-b from-transparent via-[#7d1f9720] to-transparent pointer-events-none"
                                 animate={{
@@ -97,7 +101,7 @@ export default function AboutTony() {
                             />
                         </motion.section>
 
-                        {/* === VOICES === */}
+                        {/* === PAGE 5 — VOICES === */}
                         <motion.section
                             initial={{ opacity: 0, y: 80 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -108,13 +112,8 @@ export default function AboutTony() {
                             <TonyVoices />
                         </motion.section>
 
-                        {/* Anchor used by BookTony or deep links */}
-                        <section id="programs" className="h-[1px] w-full"></section>
-
-                        {/* === FINAL CTA === */}
-                        {/* === FINAL CTA === */}
+                        {/* === PAGE 6 — FINAL CTA === */}
                         <motion.section
-                            id="programs"
                             initial={{ opacity: 0, y: 100 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1.6, ease: [0.25, 1, 0.3, 1] }}

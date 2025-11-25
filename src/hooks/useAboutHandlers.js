@@ -1,10 +1,10 @@
-
 import { useEffect } from "react";
 
 export const useAboutHandlers = () => {
     useEffect(() => {
         let frame;
         let lastScrollY = 0;
+        let handleScroll;
 
         const init = () => {
             const btn = document.querySelector("#knowMoreBtn");
@@ -13,7 +13,6 @@ export const useAboutHandlers = () => {
             const parallaxBg = document.querySelector(".about-modal-bg img");
 
             if (!btn || !modal || !closeBtn) {
-                // try again next frame until DOM is ready
                 frame = requestAnimationFrame(init);
                 return;
             }
@@ -24,12 +23,23 @@ export const useAboutHandlers = () => {
             const openModal = () => {
                 modal.classList.add("active", "animate-modalEnter");
                 document.body.style.overflow = "hidden";
+
+                // Enable parallax
+                window.addEventListener("scroll", handleScroll);
             };
 
             // === Modal Close ===
             const closeModal = () => {
                 modal.classList.remove("active", "animate-modalEnter");
                 document.body.style.overflow = "auto";
+
+                // Disable parallax COMPLETELY
+                window.removeEventListener("scroll", handleScroll);
+
+                // Reset background transform (kills Chrome blur caching)
+                if (parallaxBg) {
+                    parallaxBg.style.transform = "translateY(0) scale(1)";
+                }
             };
 
             // === Overlay Click to Close ===
@@ -37,16 +47,18 @@ export const useAboutHandlers = () => {
                 if (e.target === modal) closeModal();
             };
 
-            // === Parallax Effect ===
-            const handleScroll = () => {
+            // === Parallax Effect (ONLY WHEN MODAL OPEN!) ===
+            handleScroll = () => {
                 if (!parallaxBg || !modal.classList.contains("active")) return;
+
                 const diff = window.scrollY - lastScrollY;
                 lastScrollY = window.scrollY;
-                const offset = diff * 0.2; // parallax factor
+
+                const offset = diff * 0.2;
                 parallaxBg.style.transform = `translateY(${offset}px) scale(1.05)`;
             };
 
-            // === Button Hover Animation ===
+            // === Hover Animation ===
             const handleHoverIn = () => btn.classList.add("elongate");
             const handleHoverOut = () => btn.classList.remove("elongate");
 
@@ -56,9 +68,8 @@ export const useAboutHandlers = () => {
             modal.addEventListener("click", handleOverlayClick);
             btn.addEventListener("mouseenter", handleHoverIn);
             btn.addEventListener("mouseleave", handleHoverOut);
-            window.addEventListener("scroll", handleScroll);
 
-            // === Cleanup ===
+            // Cleanup
             return () => {
                 cancelAnimationFrame(frame);
                 btn.removeEventListener("click", openModal);

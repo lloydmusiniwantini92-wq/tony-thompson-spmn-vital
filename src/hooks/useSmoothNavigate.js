@@ -14,14 +14,24 @@ export default function useSmoothNavigate() {
         if (isFading && target) {
             const fadeOutTimeout = setTimeout(() => {
                 const element = document.getElementById(target);
+
                 if (element) {
-                    // Scroll instantly without animation
-                    element.scrollIntoView({ behavior: "instant", block: "start" });
+                    // GPU-SAFE instant jump
+                    const top =
+                        element.getBoundingClientRect().top + window.scrollY;
+
+                    // NO smooth scroll, NO invalid behavior value
+                    window.scrollTo({
+                        top,
+                        behavior: "auto",
+                    });
                 }
-                // Fade in after reposition
+
+                // Allow fade-in after scroll
                 const fadeInTimeout = setTimeout(() => setIsFading(false), 300);
                 return () => clearTimeout(fadeInTimeout);
             }, 300);
+
             return () => clearTimeout(fadeOutTimeout);
         }
     }, [isFading, target]);

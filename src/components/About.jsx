@@ -9,10 +9,8 @@ export default function About() {
     const videoRef = useRef(null);
     const navigate = useNavigate();
 
-    // Track last playback time (same logic as Testimonials)
     const lastTime = useRef(0);
 
-    // === TYPE 7 PARALLAX PHYSICS ===
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ["start end", "end start"],
@@ -22,9 +20,6 @@ export default function About() {
     const yText = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
     const bloomOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.8], [0, 0.6, 0]);
 
-    // ============================================================================
-    // === VIDEO AUTOPLAY CONTROL (full visibility only - identical behavior to Hero)
-    // ============================================================================
     useEffect(() => {
         const section = sectionRef.current;
         const video = videoRef.current;
@@ -32,14 +27,11 @@ export default function About() {
 
         const observer = new IntersectionObserver(
             ([entry]) => {
-                const mostlyVisible = entry.intersectionRatio >= 0.6;
+                const visible = entry.intersectionRatio >= 0.6;
 
-                if (mostlyVisible) {
+                if (visible) {
                     video.currentTime = lastTime.current || 0;
-
-                    setTimeout(() => {
-                        video.play().catch(() => { });
-                    }, 40);
+                    setTimeout(() => video.play().catch(() => { }), 40);
                 } else {
                     lastTime.current = video.currentTime;
                     video.pause();
@@ -47,7 +39,6 @@ export default function About() {
             },
             { threshold: [0, 0.3, 0.5, 0.6, 0.8, 1] }
         );
-
 
         observer.observe(section);
         return () => observer.disconnect();
@@ -59,7 +50,7 @@ export default function About() {
             id="about"
             className="relative w-full h-[110vh] flex items-center justify-center overflow-hidden bg-black perspective-[1000px]"
         >
-            {/* === PARALLAX VIDEO LAYER === */}
+            {/* BACKGROUND VIDEO */}
             <motion.div
                 className="absolute inset-0 w-full h-[120%] top-[-10%]"
                 style={{ y: yVideo }}
@@ -75,7 +66,6 @@ export default function About() {
                     loop
                 />
 
-                {/* Cinematic Grain */}
                 <div
                     className="absolute inset-0 opacity-[0.06] pointer-events-none"
                     style={{
@@ -84,7 +74,7 @@ export default function About() {
                 />
             </motion.div>
 
-            {/* === ATMOSPHERE === */}
+            {/* ATMOSPHERE */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-transparent to-black/90 z-[1]" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60 z-[1]" />
             <div className="absolute inset-0 bg-[#7d1f97]/10 mix-blend-overlay z-[2]" />
@@ -96,7 +86,7 @@ export default function About() {
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             />
 
-            {/* === CONTENT === */}
+            {/* CONTENT */}
             <motion.div
                 className="relative z-[10] flex flex-col items-center justify-center text-center px-6 w-full"
                 style={{ y: yText }}
@@ -111,7 +101,7 @@ export default function About() {
                     },
                 }}
             >
-                {/* Purple Vertical Energy Line */}
+                {/* Purple Line */}
                 <motion.div
                     className="w-[2px] h-[100px] bg-gradient-to-b from-transparent via-[#9b26b6] to-transparent mb-8"
                     initial={{ height: 0, opacity: 0 }}
@@ -119,49 +109,45 @@ export default function About() {
                     transition={{ duration: 1.5, ease: "easeInOut" }}
                 />
 
-                {/* Backlight Bloom */}
+                {/* Bloom */}
                 <motion.div
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
                     w-[500px] h-[300px] bg-[#9b26b6] blur-[120px] -z-10 rounded-full mix-blend-screen"
                     style={{ opacity: bloomOpacity }}
                 />
 
-                {/* HEADLINE */}
-                <div className="overflow-hidden">
-                    <motion.h2
-                        variants={{
-                            hidden: { y: 100, opacity: 0, skewY: 4 },
-                            visible: {
-                                y: 0,
-                                opacity: 1,
-                                skewY: 0,
-                                transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
-                            },
-                        }}
-                        className="text-[clamp(5rem,15vw,11rem)] font-['Bebas_Neue'] font-black text-white leading-[0.85] tracking-tighter drop-shadow-2xl"
-                        style={{ WebkitTextStroke: "1px rgba(255,255,255,0.1)" }}
-                    >
-                        EMPOWER
-                    </motion.h2>
-                </div>
+                {/* HEADLINE — NO MASKING */}
+                <motion.h2
+                    variants={{
+                        hidden: { y: 100, opacity: 0, skewY: 4 },
+                        visible: {
+                            y: 0,
+                            opacity: 1,
+                            skewY: 0,
+                            transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
+                        },
+                    }}
+                    className="text-[clamp(5rem,15vw,11rem)] font-['Bebas_Neue'] font-black text-white leading-[0.85] tracking-tighter drop-shadow-2xl"
+                    style={{ WebkitTextStroke: "1px rgba(255,255,255,0.1)" }}
+                >
+                    EMPOWER
+                </motion.h2>
 
-                {/* SUBHEAD */}
-                <div className="overflow-hidden mt-6 mb-14">
-                    <motion.h3
-                        variants={{
-                            hidden: { y: 100, opacity: 0, skewY: 4 },
-                            visible: {
-                                y: 0,
-                                opacity: 1,
-                                skewY: 0,
-                                transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
-                            },
-                        }}
-                        className="text-[clamp(1rem,3vw,1.8rem)] font-sans font-bold text-white/90 tracking-[0.4em] uppercase drop-shadow-lg"
-                    >
-                        Your Growth Journey
-                    </motion.h3>
-                </div>
+                {/* SUBHEAD — NO MASKING */}
+                <motion.h3
+                    variants={{
+                        hidden: { y: 100, opacity: 0, skewY: 4 },
+                        visible: {
+                            y: 0,
+                            opacity: 1,
+                            skewY: 0,
+                            transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
+                        },
+                    }}
+                    className="text-[clamp(1rem,3vw,1.8rem)] font-sans font-bold text-white/90 tracking-[0.4em] uppercase drop-shadow-lg mt-6 mb-14"
+                >
+                    Your Growth Journey
+                </motion.h3>
 
                 {/* BUTTON */}
                 <motion.div

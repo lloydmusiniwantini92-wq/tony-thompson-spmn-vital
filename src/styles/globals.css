@@ -1,20 +1,26 @@
 /* =========================================================
-   🌌 TONY THOMPSON — GLOBAL BASE STYLES
+   🌌 TONY THOMPSON — GLOBAL BASE STYLES (GPU-SAFE VERSION)
    ========================================================= */
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap");
 
+/* RESET + BASE */
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     font-family: "Montserrat", sans-serif;
-    background: #111;
+    background: #000;
     overflow-x: hidden;
-    scroll-behavior: auto !important; /* Let Lenis handle scroll */
+    scroll-behavior: auto !important; /* Lenis scroll */
+    transform: translateZ(0);
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
 }
 
-/* === PP Talisman Font === */
+/* =========================================================
+   🧱 FONT FACE
+   ========================================================= */
 @font-face {
     font-family: "PP Talisman Display";
     src: url("/src/assets/fonts/PPTalismanDisplay.otf") format("opentype");
@@ -24,7 +30,16 @@ html, body {
 }
 
 /* =========================================================
-   🌫️ SCROLLBAR + GPU SAFETY
+   🖼 UNIVERSAL MEDIA
+   ========================================================= */
+img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* =========================================================
+   🌫️ SCROLLBAR HIDE (SAFE)
    ========================================================= */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -35,17 +50,21 @@ html, body {
     scrollbar-width: none;
 }
 
+/* =========================================================
+   ⚡ GPU STABILITY
+   ========================================================= */
 * {
-    will-change: unset !important;
-    backface-visibility: visible !important;
+    will-change: auto !important; /* prevent forced GPU promotion */
+    backface-visibility: hidden;
 }
 
 /* =========================================================
-   🎬 VIDEO CINEMATIC FRAME
+   🎬 VIDEO CINEMATIC FRAME — GPU SAFE
    ========================================================= */
 .video-cinematic-environment {
-    background: radial-gradient(circle at center, rgba(155,38,182,0.25) 0%, rgba(0,0,0,0.95) 65%);
-    backdrop-filter: blur(80px);
+    background: radial-gradient(circle at center, rgba(155,38,182,0.25) 0%, rgba(0,0,0,0.92) 65%);
+    /* ❌ removed backdrop-filter */
+    padding: 40px 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,21 +86,17 @@ html, body {
     }
 
 /* =========================================================
-   🍔 HAMBURGER MENU & OVERLAY — ORIGINAL “SILK CASCADE”
+   🍔 MENU OVERLAY — GPU SAFE
    ========================================================= */
-
-/* === Overlay Panel === */
 .menu-overlay {
     position: fixed;
     inset: 0;
-    width: 100%;
-    background: linear-gradient(135deg, rgba(155,38,182,0.94), rgba(177,79,192,0.94));
-    backdrop-filter: blur(32px);
-    -webkit-backdrop-filter: blur(32px);
+    background: radial-gradient(circle at center, rgba(155,38,182,0.75) 0%, rgba(0,0,0,0.9) 100%);
+    /* ❌ removed backdrop-filter */
     transform: translateX(100%);
-    transition: transform 1.2s cubic-bezier(0.25,1,0.3,1);
+    transition: transform 1.4s cubic-bezier(0.25,1,0.3,1), opacity 0.6s ease-out;
     z-index: 9999;
-    will-change: transform, opacity, filter;
+    pointer-events: auto;
     overflow-y: auto;
 }
 
@@ -89,7 +104,9 @@ html, body {
         transform: translateX(0);
     }
 
-/* === Menu Items — Smooth Greased Fall === */
+/* =========================================================
+   🟣 MENU ITEMS
+   ========================================================= */
 .menu-item {
     color: white;
     text-transform: uppercase;
@@ -97,31 +114,30 @@ html, body {
     font-weight: 900;
     opacity: 0;
     transform: translateY(-45px);
-    filter: blur(10px);
-    transition: opacity 2.4s cubic-bezier(0.19,1,0.22,1), transform 2.4s cubic-bezier(0.19,1,0.22,1), filter 1.6s ease-out;
-    will-change: opacity, transform, filter;
+    transition: opacity 1.8s cubic-bezier(0.19,1,0.22,1), transform 1.8s cubic-bezier(0.19,1,0.22,1);
     margin-bottom: 0.65rem;
 }
 
     .menu-item.show {
         opacity: 1;
         transform: translateY(0);
-        filter: blur(0);
     }
 
     .menu-item:hover {
-        color: #fff;
+        color: #b84fd4;
         transform: translateX(6px);
     }
 
-/* === Hamburger Button === */
+/* =========================================================
+   🍔 HAMBURGER
+   ========================================================= */
 #hamburger .bar {
     display: block;
     width: 52px;
     background-color: #fff;
     border-radius: 2.5px;
     margin: 5px 0;
-    transition: transform 0.45s cubic-bezier(0.25, 1.15, 0.35, 1), opacity 0.3s ease, background-color 0.3s ease;
+    transition: transform 0.45s cubic-bezier(0.25,1.15,0.35,1), opacity 0.3s ease, background-color 0.3s ease;
     transform-origin: center;
 }
 
@@ -152,100 +168,42 @@ html, body {
 }
 
 /* =========================================================
-   📱 SAFE AREA SUPPORT
+   📱 SAFE AREA
    ========================================================= */
 body {
     padding-bottom: env(safe-area-inset-bottom);
     padding-top: env(safe-area-inset-top);
 }
 
-/* =========================================================
-   🖼 UNIVERSAL IMAGE + VIDEO
+    /* =========================================================
+   💡 REMOVE THE GPU-KILLER AMBIENT SHINE
    ========================================================= */
-img, video {
-    max-width: 100%;
-    height: auto;
-    display: block;
-}
 
-/* =========================================================
-   🌫️ PURPLE AMBIENT SHINE
-   ========================================================= */
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(circle at center, rgba(155,38,182,0.08) 0%, rgba(0,0,0,0.8) 75%);
-    mix-blend-mode: lighten;
-    opacity: 0.6;
-    z-index: -1;
-    animation: subtlePurpleShift 30s ease-in-out infinite;
-}
+    /* OLD VERSION CAUSED BLUR:
+   - mix-blend-mode
+   - fixed + animation
+   - hue-rotate
+*/
 
+    body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(circle at center, rgba(155,38,182,0.10) 0%, rgba(0,0,0,0.85) 80%);
+        opacity: 0.35;
+        z-index: -1;
+        transform: translateZ(0);
+    }
+
+/* Remove the dangerous animation */
 @keyframes subtlePurpleShift {
-    0%, 100% {
-        opacity: 0.6;
-        filter: hue-rotate(0deg);
-    }
-
-    50% {
-        opacity: 0.85;
-        filter: hue-rotate(12deg);
-    }
-}
-/* ===============================================
-   🌌 GLOBAL BASE STYLE — Cinematic Purple Overlay
-   =============================================== */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&display=swap");
-
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: #000;
-    font-family: "Montserrat", sans-serif;
-    overflow-x: hidden;
-    scroll-behavior: auto !important;
 }
 
-/* === LOGO CLUSTER PROTECTION === */
-img, video {
-    display: block;
-    max-width: 100%;
-    height: auto;
-}
-
-/* === PURPLE CINEMATIC MENU === */
-.menu-overlay {
-    background: radial-gradient(circle at center, rgba(155,38,182,0.75) 0%, rgba(0,0,0,0.92) 100%);
-    backdrop-filter: blur(80px);
-    transition: transform 2.2s cubic-bezier(0.25,1,0.3,1);
-}
-
-/* === MENU ITEM === */
-.menu-item {
-    font-family: "Press Start 2P", monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.015em;
-    transition: color 0.6s ease, transform 1s cubic-bezier(0.19,1,0.22,1);
-}
-
-    .menu-item:hover {
-        color: #b84fd4;
-        transform: translateY(-3px);
-    }
-
-/* === HAMBURGER === */
-#hamburger:hover {
-    transform: scale(1.08);
-}
-
-/* === SMOOTH GLASS EFFECT === */
-.video-cinematic-environment {
-    background: radial-gradient(circle at center, rgba(155,38,182,0.25) 0%, rgba(0,0,0,0.95) 65%);
-    backdrop-filter: blur(80px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* =========================================================
+   🚫 PREVENT UNWANTED GLOBAL BLUR
+   ========================================================= */
+#root, body {
+    -webkit-filter: none !important;
+    filter: none !important;
 }

@@ -91,7 +91,6 @@ export default function BookTonySection() {
         openVideo(bookTonyVideo, { programsJump: true });
     };
 
-    // ⭐ Minimal override only for this jump
     const handleWinNowJump = () => {
         window.__tt_jumpOverride = true;
 
@@ -118,7 +117,6 @@ export default function BookTonySection() {
                 });
             }
 
-            // turn override back off after jump
             setTimeout(() => {
                 window.__tt_jumpOverride = false;
             }, 350);
@@ -152,7 +150,30 @@ export default function BookTonySection() {
                         hover:bg-white hover:text-[#9b26b6]
                     "
                 >
-                    <span className="relative z-10">SEE PROGRAMS</span>
+                    {/* BEFORE hover = WIN */}
+                    <span
+                        className="
+                            relative z-10
+                            group-hover:-translate-y-[150%]
+                            group-hover:opacity-0
+                            transition-all duration-500
+                        "
+                    >
+                        WIN
+                    </span>
+
+                    {/* ON hover = NOW */}
+                    <span
+                        className="
+                            absolute z-10
+                            opacity-0 translate-y-[150%]
+                            group-hover:opacity-100 group-hover:translate-y-0
+                            transition-all duration-500
+                        "
+                    >
+                        NOW
+                    </span>
+
                     <ArrowRight className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </button>
 

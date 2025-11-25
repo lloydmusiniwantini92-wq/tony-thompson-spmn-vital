@@ -1,6 +1,5 @@
 // =========================================================
-// ✅ TonyCTA.jsx — FULL FIXED VERSION (Part 1 / 3)
-// Direct CTA routing → navigate("/about-tony#programs")
+// ✅ TonyCTA.jsx — FULL UPDATED VERSION
 // =========================================================
 
 import React, { useState, useEffect, useRef } from "react";
@@ -19,7 +18,7 @@ import {
 } from "lucide-react";
 
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";   // ⭐ DIRECT ROUTE FIX
+import { useNavigate } from "react-router-dom";
 
 // --- CONSTANTS ---
 const BASE = "/tony-thompson-spmn-vital";
@@ -208,26 +207,13 @@ const Reactor = ({ onClick, isMobile }) => {
                         animate={{ color: hovered ? BRAND_PURPLE : COLOR_BLACK }}
                         className="font-black text-xl tracking-tighter"
                     >
-                        {hovered ? "NOW" : "YOU"}
-                    </motion.div>
-
-                    <motion.div
-                        animate={{
-                            opacity: hovered ? 1 : 0.5,
-                            color: hovered ? BRAND_PURPLE : COLOR_BLACK,
-                        }}
-                        className="text-[8px] font-mono tracking-[0.3em]"
-                    >
-                        {hovered ? "WIN" : "SYSTEM"}
+                        {hovered ? "WIN" : "THEY"}
                     </motion.div>
                 </div>
             </motion.div>
         </motion.div>
     );
 };
-// =========================================================
-// ✅ TonyCTA.jsx — FULL FIXED VERSION (Part 2 / 3)
-// =========================================================
 
 // --- MODAL ---
 const Modal = ({ data, onClose, isMobile }) => {
@@ -247,8 +233,8 @@ const Modal = ({ data, onClose, isMobile }) => {
                 animate={isMobile ? { y: 0 } : { scale: 1, opacity: 1 }}
                 exit={isMobile ? { y: "100%" } : { scale: 0.8, opacity: 0 }}
                 className={`relative bg-white border-2 border-brandPurple overflow-hidden ${isMobile
-                        ? "w-full h-[85vh] mt-auto rounded-t-3xl"
-                        : "w-[800px] max-w-[90vw] rounded-xl shadow-2xl"
+                    ? "w-full h-[85vh] mt-auto rounded-t-3xl"
+                    : "w-[800px] max-w-[90vw] rounded-xl shadow-2xl"
                     }`}
             >
                 {/* HEADER */}
@@ -354,7 +340,7 @@ export default function TonyCTA() {
     const top = SECTOR_DATA.slice(0, 4);
     const bottom = SECTOR_DATA.slice(4, 8);
 
-    const navigate = useNavigate(); // ⭐ DIRECT ROUTE FIX
+    const navigate = useNavigate();
 
     useEffect(() => {
         const esc = (e) => e.key === "Escape" && setActiveData(null);
@@ -382,54 +368,38 @@ export default function TonyCTA() {
                 {!isMobile && (
                     <div className="absolute top-10 w-full flex justify-between px-10 text-black/40 font-mono text-xs">
                         <div className="flex gap-4">
-                            <span>V.10.0</span>
-                            <span>
-                                <span className="text-brandPurple animate-pulse">●</span> ACTIVE
-                            </span>
+                            <span>Winning Requires: Whatever Is Necessary</span>
                         </div>
                         <div className="flex gap-4">
-                            <span>FRAMEWORK: EXECUTIVE</span>
-                            <span>STANDARD: TOP_10%</span>
+                            <span>Game-Changers Do What Others Won’t</span>
                         </div>
                     </div>
                 )}
 
                 {/* =====================================================
-                   LAYOUT: Left Cluster — Center CTA — Right Cluster
-                   ===================================================== */}
+                    LAYOUT: Left Cluster — Center CTA — Right Cluster
+                    ===================================================== */}
                 <div className="relative w-full flex flex-col md:block items-center justify-center">
                     {/* LEFT CLUSTER */}
                     <div
                         className={`z-10 ${isMobile
-                                ? "scale-90 mb-8"
-                                : "absolute left-[5%] bottom-[-1%] -rotate-3 scale-90 opacity-90"
+                            ? "scale-90 mb-8"
+                            : "absolute left-[5%] bottom-[-1%] -rotate-3 scale-90 opacity-90"
                             }`}
                     >
-                        {!isMobile && (
-                            <div className="mb-4 flex gap-2 text-brandPurple/60 text-[10px] font-mono">
-                                <Hash size={10} />
-                                <span>DATA GROUP A</span>
-                            </div>
-                        )}
                         <Cluster data={top} isMobile={isMobile} onClick={setActiveData} />
                     </div>
 
                     {/* =====================================================
-                       CENTER CTA — DIRECT ROUTING FIX HERE ⭐⭐⭐⭐⭐
-                       ===================================================== */}
-                    <div className="z-20 text-center flex flex-col items-center my-4 md:my-0 md:mt-[30px]">
+                        CENTER CTA
+                        ===================================================== */}
+                    <div className="z-20 text-center flex flex-col items-center my-4 md:my-0 md:-mt-24">
                         <div className="font-black uppercase text-[2.5rem] md:text-[7rem] leading-[0.9] tracking-tighter text-black mb-8 md:mb-12">
-                            {!isMobile && (
-                                <div className="text-black/30 text-[2rem] mb-2 font-mono tracking-[0.5em]">
-                                    FRAMEWORK:
-                                </div>
-                            )}
-
                             WHAT THE
                             <span
                                 className={`block ${isMobile
-                                        ? "text-brandPurple text-[3.5rem]"
-                                        : "text-transparent [-webkit-text-stroke:2px_rgba(0,0,0,0.8)]"
+                                    ? "text-brandPurple text-[3.5rem]"
+                                    : "text-transparent [-webkit-text-stroke:2px_rgba(0,0,0,0.8)]"
                                     }`}
                             >
                                 TOP 10%
@@ -475,17 +445,10 @@ export default function TonyCTA() {
                     {/* RIGHT CLUSTER */}
                     <div
                         className={`z-10 ${isMobile
-                                ? "scale-90 mt-8"
-                                : "absolute right-[5%] bottom-[-1%] rotate-3 scale-90 opacity-90"
+                            ? "scale-90 mt-8"
+                            : "absolute right-[5%] bottom-[-1%] rotate-3 scale-90 opacity-90"
                             }`}
                     >
-                        {!isMobile && (
-                            <div className="mb-4 flex gap-2 justify-end text-brandPurple/60 text-[10px] font-mono">
-                                <span>DATA GROUP B</span>
-                                <Aperture size={10} />
-                            </div>
-                        )}
-
                         <Cluster
                             data={bottom}
                             isMobile={isMobile}
@@ -498,7 +461,6 @@ export default function TonyCTA() {
         </section>
     );
 }
-
 
 // =========================================================
 // 🔥 FINAL SECTION — ASSETS + SECTOR_DATA

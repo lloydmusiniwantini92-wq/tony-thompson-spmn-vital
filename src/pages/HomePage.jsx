@@ -1,7 +1,15 @@
+// ⭐ src/pages/HomePage.jsx — UPDATED TO USE TonyStory INSTEAD OF MeetTony
+
 import React, { useEffect } from "react";
 
 import Hero from "../components/Hero";
-import MeetTony from "../components/MeetTony";
+
+// ❌ REMOVED MeetTony
+// import MeetTony from "../components/MeetTony";
+
+// ✅ CINEMATIC UNIVERSE ENTRY
+import TonyStory from "./sections/TonyStory";
+
 import About from "../components/About";
 import Testimonials from "../components/Testimonials";
 import TrustSection from "../components/TrustSection";
@@ -10,72 +18,71 @@ import TierList from "../components/TierList";
 
 export default function HomePage({ setHeroVisible }) {
 
-    // ⭐ HARD OVERRIDE — TELEPORT TO PROGRAMS (WITH STUCK FOG FIX)
+    /* ================================
+       HERO VISIBILITY LOGIC
+    =================================*/
     useEffect(() => {
-        if (typeof window === "undefined") return;
+        const heroEl = document.querySelector("#home");
+        if (!heroEl) return;
 
+        const observer = new IntersectionObserver(
+            ([entry]) => setHeroVisible(entry.isIntersecting),
+            { threshold: 0.35 }
+        );
+
+        observer.observe(heroEl);
+        return () => observer.disconnect();
+    }, [setHeroVisible]);
+
+    /* ================================
+       CTA Jump “?target=programs”
+    =================================*/
+    useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const target = params.get("target");
 
         if (target === "programs") {
-            // 1. BACKUP: Save the original function to restore later
-            const originalFog = window.triggerGlobalFog;
-
-            // 2. NEUTRALIZE: Replace with a silent pass-through
-            window.triggerGlobalFog = (cb) => cb?.();
-
-            // 3. FORCE CLEANUP: aggressively find and hide the overlay
-            // We use an interval to fight any global scripts running on load
-            const cleanUpInterval = setInterval(() => {
-                const overlay = window.fadeOverlay || document.querySelector("#scroll-fog-overlay") || document.querySelector("[id*='fog']");
-                if (overlay) {
-                    overlay.style.opacity = "0";
-                    overlay.style.pointerEvents = "none";
-                }
-            }, 50);
-
-            // 4. JUMP: Perform the scroll
+            const el = document.querySelector("#programs");
             setTimeout(() => {
-                const el = document.querySelector("#programs");
                 if (el) {
-                    window.scrollTo({ top: el.offsetTop, behavior: "auto" });
+                    window.scrollTo({
+                        top: el.offsetTop,
+                        behavior: "auto",
+                    });
                 }
-            }, 10);
-
-            // 5. RESTORE & RESET: After 2 seconds (safely landed), restore normalcy
-            setTimeout(() => {
-                clearInterval(cleanUpInterval); // Stop forcing it hidden
-
-                // Put the original function back for future scrolls
-                if (originalFog) {
-                    window.triggerGlobalFog = originalFog;
-                }
-
-                // IMPORTANT: Ensure the overlay is ready for next time (reset props)
-                const overlay = window.fadeOverlay || document.querySelector("#scroll-fog-overlay");
-                if (overlay) {
-                    overlay.style.opacity = "0";
-                    overlay.style.pointerEvents = "auto"; // Re-enable interaction for future fogs
-                    overlay.style.transition = ""; // Restore CSS transitions
-                }
-            }, 2000);
+            }, 20);
         }
     }, []);
 
+    /* ================================
+       PAGE STRUCTURE
+    =================================*/
     return (
         <div className="flex flex-col w-full">
-            <Hero setHeroVisible={setHeroVisible} />
 
-            <MeetTony />
+            {/* 1 — HERO */}
+            <Hero id="home" />
 
+            {/* 2 — TONY STORY (cinematic universe preview) */}
+            <TonyStory />
+
+            {/* 3 — ABOUT / QUIZ INTRO */}
             <About />
+
+            {/* 4 — TESTIMONIALS */}
             <Testimonials />
 
             <div className="h-[8vh] w-full bg-gradient-to-b from-transparent via-[#9b26b6]/20 to-black"></div>
 
+            {/* 5 — TRUST */}
             <TrustSection />
+
+            {/* 6 — BOOK TONY */}
             <BookTonySection />
+
+            {/* 7 — PROGRAMS (TierList) */}
             <TierList />
+
         </div>
     );
 }

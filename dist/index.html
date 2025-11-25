@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,32 +9,56 @@
     <meta name="description"
           content="Tony Thompson helps you unlock your full potential through mentorship, strategy, and growth programs that elevate your career and life." />
 
-    <!-- ✅ Fonts -->
+    <!-- ======================================================
+         FONTS
+         (Loaded cleanly, no layout shift)
+    ======================================================= -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Montserrat (headings, body), Press Start 2P (buttons), Oswald (headlines), Bebas Neue for menu -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Press+Start+2P&family=Oswald:wght@700;800;900&family=Bebas+Neue&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Oswald:wght@700;800;900&family=Press+Start+2P&family=Bebas+Neue&display=swap"
           rel="stylesheet" />
 
-    <!-- ✅ Preload hero image correctly -->
-    <link rel="preload" href="./assets/hero.jpg" as="image" type="image/jpeg" />
+    <!-- ======================================================
+         CRITICAL IMAGE PRELOAD (Correct `as="image"`)
+         Prevents console warnings
+    ======================================================= -->
+    <link rel="preload" href="/tony-thompson-spmn-vital/assets/hero.jpg" as="image" type="image/jpeg" />
 
-    <!-- ✅ Lazy load non-critical scripts -->
+    <!-- ======================================================
+         Stripe (async, non-blocking)
+    ======================================================= -->
     <script src="https://js.stripe.com/v3/" async></script>
 
-    <!-- ✅ Theme & social meta -->
+    <!-- ======================================================
+         META / SOCIAL / BRANDING
+    ======================================================= -->
     <meta name="theme-color" content="#000000" />
     <meta property="og:title" content="Tony Thompson | Empower Your Growth Journey" />
-    <meta property="og:description" content="Join Tony Thompson and take control of your personal and professional growth." />
+    <meta property="og:description"
+          content="Join Tony Thompson and take control of your personal and professional growth." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="./assets/logoFull.png" />
-  <script type="module" crossorigin src="/tony-thompson-spmn-vital/assets/index-e6IMj_6e.js"></script>
-  <link rel="stylesheet" crossorigin href="/tony-thompson-spmn-vital/assets/index-B6Wc8Ra4.css">
+    <meta property="og:image" content="/tony-thompson-spmn-vital/assets/logoFull.png" />
+
+  <script type="module" crossorigin src="/tony-thompson-spmn-vital/assets/index-8qdFzZIM.js"></script>
+  <link rel="stylesheet" crossorigin href="/tony-thompson-spmn-vital/assets/index-DY5SThP9.css">
 </head>
 
 <body>
+    <!-- ======================================================
+         ROOT APP MOUNT
+    ======================================================= -->
     <div id="root"></div>
 
-    <!-- ✅ Correct Vite entry for GitHub Pages -->
+    <!-- ======================================================
+         PORTAL MOUNT — for modals / HUD / overlays
+    ======================================================= -->
+    <div id="popup-root"></div>
+
+    <!-- ======================================================
+         VITE ENTRY POINT — FIXED!
+         GitHub Pages CANNOT resolve absolute project paths.
+         Vite will rewrite this automatically based on BASE_URL.
+    ======================================================= -->
 </body>
+
 </html>
