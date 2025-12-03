@@ -1,11 +1,15 @@
+// ✅ Optimized BookTonySection.jsx (with correct public video handling + preload + poster)
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useAnimation, useScroll, useTransform } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useVideoModal } from "../context/VideoModalContext";
 import { ArrowRight } from "lucide-react";
 
-const base = import.meta.env.BASE_URL || "/";
-const bookTonyVideo = `${base}videos/programsVideo.mp4`;
+// ⭐ Optimized: Public video path (no BASE, no env vars)
+const bookTonyVideo = "/tony-thompson-spmn-vital/videos/programsVideo.mp4";
+
+// ⭐ Poster for instant paint (add file in public/videos)
+const bookTonyPoster = "/tony-thompson-spmn-vital/videos/programsVideo_poster.webp";
 
 export default function BookTonySection() {
     const { openVideo, closeVideo, videoSrc } = useVideoModal();
@@ -61,7 +65,7 @@ export default function BookTonySection() {
         return () => observer.disconnect();
     }, [hasPlayed, isMobile, controls]);
 
-    // Video Autoplay Observer (Desktop Only)
+    // ⭐ Desktop autoplay visibility observer
     useEffect(() => {
         if (isMobile) return;
         const v = videoRef.current;
@@ -124,6 +128,7 @@ export default function BookTonySection() {
         }, 150);
     };
 
+    // ⭐ WIN NOW Overlay Portal
     const renderWinNowOverlay =
         typeof document !== "undefined" &&
         videoSrc &&
@@ -173,31 +178,28 @@ export default function BookTonySection() {
             <section
                 id="book-tony"
                 ref={sectionRef}
-                // ⭐ OPTIMIZATION: 
-                // Mobile: min-h-[85dvh] (Reduced from 100dvh to remove empty space)
-                // Desktop: md:h-[110vh] (Strictly Original)
                 className="relative w-full min-h-[85dvh] md:h-[110vh] overflow-hidden flex items-center justify-center bg-[#050505]"
             >
                 {!isMobile ? (
-                    /* --- DESKTOP: VIDEO --- */
+                    /* ⭐ Desktop background video (optimized load) */
                     <video
                         ref={videoRef}
                         className="absolute inset-0 w-full h-full object-cover opacity-60 grayscale-[40%] scale-[1.05]"
                         src={bookTonyVideo}
+                        poster={bookTonyPoster}
                         muted
                         playsInline
-                        preload="auto"
+                        preload="metadata"
                         loop
                     />
                 ) : (
-                    /* --- MOBILE: GRADIENT --- */
                     <>
                         <div className="absolute inset-0 bg-gradient-to-b from-[#1a051d] via-[#2c0536] to-[#000]" />
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(155,38,182,0.15),transparent_70%)]" />
                     </>
                 )}
 
-                {/* Overlays */}
+                {/* Gradient overlays */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-[#2a0530]/30 to-black/90 z-[1]" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.7)_100%)] z-[1]" />
 
@@ -208,6 +210,7 @@ export default function BookTonySection() {
                     initial="hidden"
                     animate={controls}
                 >
+                    {/* TOP TEXT */}
                     <motion.div variants={itemVariants} className="mb-4">
                         <div className="flex items-center gap-6 opacity-90">
                             <div className="h-[1px] w-[40px] md:w-[80px] bg-[#9b26b6]" />
@@ -218,8 +221,8 @@ export default function BookTonySection() {
                         </div>
                     </motion.div>
 
+                    {/* WIN HEADER */}
                     <motion.div variants={itemVariants} className="relative">
-                        {/* ⭐ OPTIMIZATION: Increased mobile clamp to 7rem to fill visual void */}
                         <h1
                             className="font-['Bebas_Neue'] text-[clamp(7rem,18vw,22rem)] leading-[0.85] text-white tracking-tighter"
                             style={{
@@ -232,6 +235,7 @@ export default function BookTonySection() {
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-[#9b26b6]/25 blur-[120px] -z-10 mix-blend-screen" />
                     </motion.div>
 
+                    {/* START / WINNING BUTTON */}
                     <motion.div variants={itemVariants} className="mt-10 md:mt-14">
                         <div
                             onClick={handleOpenVideo}
@@ -282,8 +286,8 @@ export default function BookTonySection() {
                         </div>
                     </motion.div>
 
+                    {/* SIGNATURE */}
                     <motion.div
-                        // ⭐ OPTIMIZATION: Reduced mobile margin (mt-12) to tighten content cluster
                         className="mt-12 md:mt-20 opacity-80 flex items-start justify-center relative"
                         style={{ y: ySig }}
                         variants={itemVariants}
