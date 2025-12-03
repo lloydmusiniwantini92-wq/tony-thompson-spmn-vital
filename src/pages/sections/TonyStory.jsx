@@ -1,6 +1,6 @@
 // ⭐ TonyStory.jsx — Cinematic Universe Entry Hero
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Hash, ScanLine, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -9,24 +9,20 @@ import aboutHero from "../../assets/images/AboutHero.png";
 import tonyWinMP4 from "../../assets/videos/tonywin_optimized.mp4";
 import tonyWinWEBM from "../../assets/videos/tonywin_optimized.webm";
 
-/* --- Sub-component: The Tetris Block Effect (Formerly Starfield) --- */
+/* --- Sub-component: The Tetris Block Effect --- */
 const TetrisField = () => {
-    // Generate random blocks with varying aspect ratios to look like tiny Tetris pieces (squares and lines)
     const blocks = Array.from({ length: 18 }).map((_, i) => {
-        const baseSize = Math.random() * 1.5 + 1; // Base unit size roughly 1px-2.5px
+        const baseSize = Math.random() * 1.5 + 1;
         const shapeType = Math.random();
         let width, height;
 
         if (shapeType < 0.4) {
-            // Square block (like O-piece)
             width = baseSize * 2;
             height = baseSize * 2;
         } else if (shapeType < 0.7) {
-            // Horizontal line block (like I-piece)
             width = baseSize * 3.5;
             height = baseSize;
         } else {
-            // Vertical line block (like I-piece)
             width = baseSize;
             height = baseSize * 3.5;
         }
@@ -37,7 +33,7 @@ const TetrisField = () => {
             left: `${Math.random() * 100}%`,
             width: width,
             height: height,
-            duration: Math.random() * 3 + 2, // Slightly slower duration for blocks
+            duration: Math.random() * 3 + 2,
         };
     });
 
@@ -46,7 +42,6 @@ const TetrisField = () => {
             {blocks.map((block) => (
                 <motion.div
                     key={block.id}
-                    // UPDATED: Removed rounded-full to make them sharp blocks
                     className="absolute bg-white/90 shadow-[0_0_3px_white] rounded-none"
                     style={{
                         top: block.top,
@@ -54,16 +49,15 @@ const TetrisField = () => {
                         width: block.width,
                         height: block.height,
                     }}
-                    // UPDATED Animation: Added slight rotation for Tetris feel
                     animate={{
                         opacity: [0.1, 0.8, 0.1],
                         scale: [1, 1.2, 1],
-                        rotate: [0, 90, 180, 270, 360] // Slow rotation
+                        rotate: [0, 90, 180, 270, 360]
                     }}
                     transition={{
                         duration: block.duration,
                         repeat: Infinity,
-                        ease: "linear", // Linear ease for rotation
+                        ease: "linear",
                         times: [0, 0.25, 0.5, 0.75, 1]
                     }}
                 />
@@ -75,20 +69,32 @@ const TetrisField = () => {
 export default function TonyStory() {
     const navigate = useNavigate();
 
-    /* ===== VIDEO PLAYBACK LOGIC ===== */
+    // ⭐ MOBILE DETECTION STATE
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    /* ===== VIDEO PLAYBACK LOGIC (Desktop Only) ===== */
     const videoRef = useRef(null);
     const isVideoInView = useInView(videoRef, { amount: 0.2 });
 
     useEffect(() => {
-        const video = videoRef.current;
-        if (video) {
-            if (isVideoInView) {
-                video.play().catch((error) => console.log("Video play interrupted:", error));
-            } else {
-                video.pause();
+        if (!isMobile) {
+            const video = videoRef.current;
+            if (video) {
+                if (isVideoInView) {
+                    video.play().catch((error) => console.log("Video play interrupted:", error));
+                } else {
+                    video.pause();
+                }
             }
         }
-    }, [isVideoInView]);
+    }, [isVideoInView, isMobile]);
 
     useEffect(() => {
         const img = new Image();
@@ -120,16 +126,16 @@ export default function TonyStory() {
 
     /* ===== FUSED BUTTON LOGIC ===== */
     const btnContainerVariants = {
-        rest: { gap: "0px" },
+        rest: { gap: isMobile ? "6px" : "0px" },
         hover: { gap: "6px", transition: { duration: 0.4, ease: "backOut" } }
     };
 
     const btnLeftVariants = {
         rest: {
-            width: "100%",
-            borderTopRightRadius: "0.75rem",
-            borderBottomRightRadius: "0.75rem",
-            backgroundColor: "rgba(74, 16, 90, 0.9)"
+            width: isMobile ? "55%" : "100%",
+            borderTopRightRadius: isMobile ? "0.25rem" : "0.75rem",
+            borderBottomRightRadius: isMobile ? "0.25rem" : "0.75rem",
+            backgroundColor: isMobile ? "rgba(155, 38, 182, 1)" : "rgba(74, 16, 90, 0.9)"
         },
         hover: {
             width: "55%",
@@ -141,7 +147,11 @@ export default function TonyStory() {
     };
 
     const btnRightVariants = {
-        rest: { width: "0%", opacity: 0, x: -10 },
+        rest: {
+            width: isMobile ? "45%" : "0%",
+            opacity: isMobile ? 1 : 0,
+            x: isMobile ? 0 : -10
+        },
         hover: {
             width: "45%",
             opacity: 1,
@@ -151,7 +161,11 @@ export default function TonyStory() {
     };
 
     const contentRevealVariants = {
-        rest: { opacity: 0, y: 10, filter: "blur(5px)" },
+        rest: {
+            opacity: isMobile ? 1 : 0,
+            y: isMobile ? 0 : 10,
+            filter: isMobile ? "blur(0px)" : "blur(5px)"
+        },
         hover: {
             opacity: 1,
             y: 0,
@@ -174,20 +188,36 @@ export default function TonyStory() {
         <>
             <section
                 id="meet-tony"
-                className="relative w-full min-h-[105vh] flex flex-col md:flex-row bg-[#0b080e] text-white overflow-hidden"
+                className="relative w-full min-h-[100dvh] md:min-h-[105vh] flex flex-col md:flex-row bg-[#0b080e] text-white overflow-hidden"
             >
                 <style>
                     {`@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');`}
                 </style>
 
-                {/* --- SEAMLESS BLENDING MASKS (SUBTLE) --- */}
-                <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-[#0b080e]/60 to-transparent z-40 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-[#0b080e]/60 to-transparent z-40 pointer-events-none" />
+                {/* --- SEAMLESS BLENDING MASKS --- */}
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#0b080e] to-transparent z-40 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#0b080e] to-transparent z-40 pointer-events-none" />
 
-                {/* LEFT SIDE — THE MAN */}
-                <div className="relative w-full md:w-[48%] flex flex-col justify-end md:justify-center px-8 md:px-12 lg:px-20 py-24 z-10 border-r border-white/5 overflow-hidden">
-                    {/* BACKGROUND IMAGE */}
-                    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                {/* ================= LEFT SIDE — THE MAN ================= */}
+                {/* ⭐ UPDATED: 
+                    - 'justify-start' moves content to top.
+                    - 'pt-44' (mobile) / 'pt-48' (desktop) adds the ~5cm margin top.
+                    - 'flex-grow' ensures it fills space to push the button container down naturally on mobile.
+                */}
+                <div className="relative w-full flex-grow md:flex-grow-0 md:w-[48%] flex flex-col justify-start px-6 md:px-12 lg:px-20 pt-44 md:pt-48 pb-10 z-10 overflow-hidden">
+
+                    {/* BACKGROUND IMAGE LAYER */}
+                    <div
+                        className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
+                        style={{
+                            maskImage: isMobile
+                                ? "linear-gradient(to bottom, black 60%, transparent 100%)"
+                                : "linear-gradient(to right, black 40%, transparent 100%)",
+                            WebkitMaskImage: isMobile
+                                ? "linear-gradient(to bottom, black 60%, transparent 100%)"
+                                : "linear-gradient(to right, black 40%, transparent 100%)"
+                        }}
+                    >
                         <motion.div
                             initial={{ scale: 1.1, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -198,16 +228,16 @@ export default function TonyStory() {
                                 src={aboutHero}
                                 alt="Tony Thompson"
                                 style={{ transform: "translateY(-0.5cm)", height: "calc(100% + 0.5cm)" }}
-                                className="w-full object-cover opacity-[0.9] object-top"
+                                className="w-full h-full object-cover opacity-[0.9] object-top"
                             />
+                            {/* Texture Overlays */}
                             <div className="absolute inset-0 bg-[#0b080e]/20 mix-blend-multiply" />
                             <div className="absolute inset-0 bg-[#4a105a]/20 mix-blend-soft-light" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0b080e] via-[#0b080e]/40 to-transparent" />
-                            <div className="absolute inset-0 bg-gradient-to-r from-[#0b080e]/95 via-[#0b080e]/40 to-transparent" />
                         </motion.div>
                     </div>
 
-                    {/* TEXT */}
+                    {/* TEXT CONTENT */}
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
@@ -217,7 +247,7 @@ export default function TonyStory() {
                         <MonoLabel icon={ScanLine}>The Origin Story</MonoLabel>
 
                         <motion.div variants={itemVariants}>
-                            <h1 className="text-[clamp(3.5rem,6vw,5.6rem)] font-black leading-[0.9] drop-shadow-2xl">
+                            <h1 className="text-[clamp(3rem,6vw,5.6rem)] font-black leading-[0.9] drop-shadow-2xl">
                                 ABOUT
                                 <br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f3d4ff] via-white to-[#f3d4ff]">
@@ -229,7 +259,7 @@ export default function TonyStory() {
 
                         <motion.p
                             variants={itemVariants}
-                            className="text-[1.1rem] md:text-[1.25rem] leading-[1.7] font-light text-gray-100 mt-8 mb-8 max-w-lg drop-shadow-md"
+                            className="text-[1rem] md:text-[1.25rem] leading-[1.7] font-light text-gray-100 mt-8 mb-8 max-w-lg drop-shadow-md"
                         >
                             Tony Thompson is a catalyst for transformation—merging
                             <span className="font-semibold text-white border-b border-[#9b26b6]"> purpose</span>,
@@ -239,39 +269,49 @@ export default function TonyStory() {
                     </motion.div>
                 </div>
 
-                {/* RIGHT SIDE — THE UNIVERSE */}
-                <div className="relative flex-1 overflow-hidden bg-[#0f0b13] flex items-end justify-center pb-10 md:pb-14">
+                {/* ================= RIGHT SIDE (Button Area) ================= */}
+                {/* ⭐ RESTORED: 
+                    - 'items-end' and 'pb-12 md:pb-14' restores the ORIGINAL button position (bottom).
+                    - No translation logic applied.
+                */}
+                <div className="relative w-full flex-none h-auto md:h-auto md:flex-1 overflow-hidden bg-[#0b080e] flex items-end justify-center pb-12 md:pb-14 pt-0">
 
-                    {/* VIDEO BACKGROUND */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1.5 }}
-                        className="absolute inset-0 z-0"
-                    >
-                        <video
-                            ref={videoRef}
-                            className="absolute inset-0 w-full h-full object-cover opacity-90 contrast-[1.1] brightness-[1.1] saturate-[1.15]"
-                            loop
-                            muted
-                            playsInline
-                            preload="auto"
+                    {/* VIDEO: DESKTOP ONLY */}
+                    {!isMobile && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 1.5 }}
+                            className="absolute inset-0 z-0"
+                            style={{
+                                maskImage: "linear-gradient(to right, transparent 0%, black 60%)",
+                                WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 60%)"
+                            }}
                         >
-                            <source src={tonyWinWEBM} type="video/webm" />
-                            <source src={tonyWinMP4} type="video/mp4" />
-                        </video>
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0b080e] via-transparent to-[#0b080e]/10" />
-                        <div className="absolute inset-0 bg-gradient-to-l from-[#0b080e] to-transparent" />
-                    </motion.div>
+                            <video
+                                ref={videoRef}
+                                className="absolute inset-0 w-full h-full object-cover opacity-90 contrast-[1.1] brightness-[1.1] saturate-[1.15]"
+                                loop
+                                muted
+                                playsInline
+                                preload="auto"
+                            >
+                                <source src={tonyWinWEBM} type="video/webm" />
+                                <source src={tonyWinMP4} type="video/mp4" />
+                            </video>
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0b080e] via-transparent to-[#0b080e]/10" />
+                        </motion.div>
+                    )}
 
                     {/* ⭐ FUSED BUTTON ⭐ */}
                     <motion.button
                         onClick={handleExploreJourney}
                         initial="rest"
                         whileHover="hover"
+                        animate={isMobile ? "hover" : "rest"}
                         whileTap={{ scale: 0.98 }}
                         variants={btnContainerVariants}
-                        className="relative group w-[360px] h-[86px] flex items-stretch cursor-pointer z-30 perspective-1000"
+                        className="relative group w-[90%] max-w-[340px] md:max-w-none md:w-[360px] h-[64px] md:h-[86px] flex items-stretch cursor-pointer z-30 perspective-1000 mx-auto md:mx-0"
                     >
                         {/* GLOW UNDERLAY */}
                         <div className="absolute -inset-2 bg-gradient-to-r from-[#9b26b6] to-[#4a105a] rounded-xl opacity-20 blur-xl group-hover:opacity-50 transition duration-500" />
@@ -287,9 +327,9 @@ export default function TonyStory() {
                         >
                             <div className="absolute inset-0 w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.05)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 animate-[pulse_2s_infinite]" />
 
-                            <span className="relative z-10 text-white font-['Press_Start_2P'] text-[14px] tracking-[0.2em] flex items-center gap-4">
+                            <span className="relative z-10 text-white font-['Press_Start_2P'] text-[12px] md:text-[14px] tracking-[0.2em] flex items-center gap-3 md:gap-4">
                                 STEP
-                                <ArrowRight className="h-5 w-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300 ease-out text-[#f0c9ff] drop-shadow-[0_0_8px_#f0c9ff]" />
+                                <ArrowRight className="h-4 w-4 md:h-5 md:w-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300 ease-out text-[#f0c9ff] drop-shadow-[0_0_8px_#f0c9ff]" />
                             </span>
                         </motion.div>
 
@@ -303,15 +343,14 @@ export default function TonyStory() {
                                 borderBottomRightRadius: "0.75rem"
                             }}
                         >
-                            {/* UPDATED: Uses TetrisField instead of Starfield */}
                             <TetrisField />
 
-                            <div className="relative z-10 flex flex-col items-center justify-center pointer-events-none min-w-[140px]">
+                            <div className="relative z-10 flex flex-col items-center justify-center pointer-events-none min-w-[100px] md:min-w-[140px]">
                                 <motion.div variants={contentRevealVariants} className="flex flex-col items-center">
-                                    <span className="text-gray-400 text-[8px] font-mono uppercase tracking-[0.2em] leading-none mb-2 mt-1">
+                                    <span className="text-gray-400 text-[7px] md:text-[8px] font-mono uppercase tracking-[0.2em] leading-none mb-1 md:mb-2 mt-1">
                                         Into His
                                     </span>
-                                    <span className="text-[#e0aaff] text-[10px] font-['Press_Start_2P'] uppercase tracking-widest leading-none drop-shadow-[0_0_10px_rgba(224,170,255,0.8)]">
+                                    <span className="text-[#e0aaff] text-[9px] md:text-[10px] font-['Press_Start_2P'] uppercase tracking-widest leading-none drop-shadow-[0_0_10px_rgba(224,170,255,0.8)]">
                                         UNIVERSE
                                     </span>
                                 </motion.div>

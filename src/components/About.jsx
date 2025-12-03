@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -8,6 +8,16 @@ export default function About() {
     const sectionRef = useRef(null);
     const videoRef = useRef(null);
     const navigate = useNavigate();
+
+    // ⭐ MOBILE DETECTION STATE
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     const lastTime = useRef(0);
 
@@ -21,6 +31,9 @@ export default function About() {
     const bloomOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.8], [0, 0.6, 0]);
 
     useEffect(() => {
+        // ⭐ OPTIMIZATION: If mobile, videoRef might be null, so we skip this logic safely
+        if (isMobile) return;
+
         const section = sectionRef.current;
         const video = videoRef.current;
         if (!section || !video) return;
@@ -42,29 +55,37 @@ export default function About() {
 
         observer.observe(section);
         return () => observer.disconnect();
-    }, []);
+    }, [isMobile]); // Re-run if mobile state changes
 
     return (
         <section
             ref={sectionRef}
             id="about"
-            className="relative w-full h-[110vh] flex items-center justify-center overflow-hidden bg-black perspective-[1000px]"
+            // ⭐ OPTIMIZATION: min-h-[100dvh] fixes mobile browser bar jumping. 
+            // md:h-[110vh] preserves your exact desktop layout.
+            className="relative w-full min-h-[100dvh] md:h-[110vh] flex items-center justify-center overflow-hidden bg-black perspective-[1000px]"
         >
-            {/* BACKGROUND VIDEO */}
+            {/* BACKGROUND VIDEO LAYER */}
             <motion.div
                 className="absolute inset-0 w-full h-[120%] top-[-10%]"
                 style={{ y: yVideo }}
             >
-                <video
-                    ref={videoRef}
-                    className="w-full h-full object-cover opacity-60 grayscale-[20%] scale-105"
-                    src={tonyVideo}
-                    muted
-                    playsInline
-                    preload="metadata"
-                    decoding="async"
-                    loop
-                />
+                {/* ⭐ OPTIMIZATION: Only render heavy video tag on Desktop */}
+                {!isMobile ? (
+                    <video
+                        ref={videoRef}
+                        className="w-full h-full object-cover opacity-60 grayscale-[20%] scale-105"
+                        src={tonyVideo}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        decoding="async"
+                        loop
+                    />
+                ) : (
+                    /* ⭐ OPTIMIZATION: Lightweight CSS Gradient for Mobile (0 bandwidth) */
+                    <div className="w-full h-full bg-gradient-to-b from-[#0a0a0a] via-[#1a0520] to-[#0a0a0a] opacity-60" />
+                )}
 
                 <div
                     className="absolute inset-0 opacity-[0.06] pointer-events-none"
@@ -112,7 +133,7 @@ export default function About() {
                 {/* Bloom */}
                 <motion.div
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                    w-[500px] h-[300px] bg-[#9b26b6] blur-[120px] -z-10 rounded-full mix-blend-screen"
+                    w-[300px] md:w-[500px] h-[300px] bg-[#9b26b6] blur-[80px] md:blur-[120px] -z-10 rounded-full mix-blend-screen"
                     style={{ opacity: bloomOpacity }}
                 />
 
@@ -127,7 +148,10 @@ export default function About() {
                             transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
                         },
                     }}
-                    className="text-[clamp(5rem,15vw,11rem)] font-['Bebas_Neue'] font-black text-white leading-[0.85] tracking-tighter drop-shadow-2xl"
+                    // ⭐ OPTIMIZATION: Updated Clamp values
+                    // Mobile: starts at 3.8rem to fit screen. 
+                    // Desktop (md): Reverts to your original 5rem -> 11rem scaling.
+                    className="text-[clamp(3.8rem,14vw,6rem)] md:text-[clamp(5rem,15vw,11rem)] font-['Bebas_Neue'] font-black text-white leading-[0.85] tracking-tighter drop-shadow-2xl"
                     style={{ WebkitTextStroke: "1px rgba(255,255,255,0.1)" }}
                 >
                     EMPOWER
@@ -144,7 +168,8 @@ export default function About() {
                             transition: { duration: 1.4, ease: [0.19, 1, 0.22, 1] },
                         },
                     }}
-                    className="text-[clamp(1rem,3vw,1.8rem)] font-sans font-bold text-white/90 tracking-[0.4em] uppercase drop-shadow-lg mt-6 mb-14"
+                    // ⭐ OPTIMIZATION: Adjusted tracking/size slightly for mobile legibility
+                    className="text-[clamp(0.9rem,3vw,1.8rem)] md:text-[clamp(1rem,3vw,1.8rem)] font-sans font-bold text-white/90 tracking-[0.25em] md:tracking-[0.4em] uppercase drop-shadow-lg mt-6 mb-14"
                 >
                     Your Growth Journey
                 </motion.h3>
@@ -163,7 +188,7 @@ export default function About() {
                     onClick={() => navigate("/quiz-intro")}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.97 }}
-                    className="mt-16 group cursor-pointer relative"
+                    className="mt-8 md:mt-16 group cursor-pointer relative"
                 >
                     <div
                         className="relative flex justify-center items-center w-[260px] h-[56px] gap-3

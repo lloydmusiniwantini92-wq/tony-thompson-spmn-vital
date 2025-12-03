@@ -1,4 +1,6 @@
-/* FULL UPDATED & CLEANED App.jsx */
+/* =========================================
+   ⭐ src/App.jsx — FIXED HEADER LOGIC
+========================================= */
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,7 +12,6 @@ import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
 
 import StackBuilder from "./pages/StackBuilder/StackBuilder.jsx";
-
 import LetsWin from "./pages/LetsWin";
 import AboutTony from "./pages/AboutTony";
 import Shop from "./pages/Shop";
@@ -22,10 +23,8 @@ const Terms = lazy(() => import("./pages/Terms"));
 
 import { VideoModalProvider } from "./context/VideoModalContext";
 import { QuizOverlayProvider } from "./context/QuizOverlayContext";
-
 import useDeviceTier from "./hooks/useDeviceTier";
 import BookTonyForm from "./pages/BookTonyForm";
-
 import HomePage from "./pages/HomePage";
 
 // QUIZ
@@ -33,27 +32,32 @@ import QuizIntro from "./pages/Quiz/QuizIntro.jsx";
 import Quiz from "./pages/Quiz/Quiz.jsx";
 import QuizResults from "./pages/Quiz/QuizResults.jsx";
 
-// ⭐ NEW — FULL STACKED UNIVERSE PAGE
+// FULL UNIVERSE PAGE
 import MeetTonyPage from "./pages/MeetTonyPage";
-
 
 export default function App() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [heroVisible, setHeroVisible] = useState(true);
 
     const location = useLocation();
+
+    // Check if we are on the main landing page
     const isHome =
         location.pathname === "/" ||
         location.pathname.endsWith("/tony-thompson-spmn-vital/");
 
-    const heroVisibleForOverlay = isHome && heroVisible;
+    /* ⭐ FIX: HEADER VISIBILITY LOGIC
+       1. If on Home: Use the scroll observer (heroVisible).
+       2. If on ANY OTHER PAGE (Shop, Quiz, etc.): FORCE VISIBLE (true).
+    */
+    const heroVisibleForOverlay = isHome ? heroVisible : true;
 
     const deviceTier = useDeviceTier();
     const isLowDevice = deviceTier === "low";
 
-    /* ====================================================
-       ⭐ Lenis Smooth Scroll Setup
-    ==================================================== */
+    /* ================================
+       Lenis Smooth Scroll
+    ================================ */
     useEffect(() => {
         if (isLowDevice) return;
 
@@ -69,7 +73,6 @@ export default function App() {
 
         const initLenis = () => {
             enableScroll();
-
             lenis = new Lenis({
                 duration: 1.05,
                 easing: (t) => 1 - Math.pow(1 - t, 3),
@@ -93,61 +96,61 @@ export default function App() {
         return () => cancelAnimationFrame(rafId);
     }, [isLowDevice]);
 
-    /* ====================================================
-       ⭐ Fade Scroll override logic
-    ==================================================== */
+    /* ================================
+       Fade Scroll (Cross-Page Nav)
+    ================================ */
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const targetParam = params.get("target");
         if (!targetParam) return;
 
-        if (window.__fadeScrollRan) return;
-        window.__fadeScrollRan = true;
+        // Prevent double-firing
+        if (window.__fadeScrollRan === targetParam) return;
+        window.__fadeScrollRan = targetParam;
 
         const cleanTarget = targetParam.replace(/^#/, "").trim();
 
         const doFadeScroll = async () => {
             const { smoothFadeScroll } = await import("./utils/smoothFadeScroll.js");
 
-            const waitForLenis = async () => {
+            // Wait for DOM content to be ready
+            const waitForContent = async () => {
                 let tries = 0;
-                while (
-                    (!window.lenis || !document.getElementById(cleanTarget)) &&
-                    tries < 40
-                ) {
-                    await new Promise((r) => setTimeout(r, 200));
+                while (!document.getElementById(cleanTarget) && tries < 50) {
+                    await new Promise((r) => setTimeout(r, 100));
                     tries++;
                 }
             };
 
-            await waitForLenis();
+            await waitForContent();
 
+            // Briefly pause Lenis to force jump
             const savedLenis = window.lenis;
-            window.lenis = null;
+            if (window.lenis) window.lenis.stop();
 
             await smoothFadeScroll(`#${cleanTarget}`);
 
-            window.lenis = savedLenis;
+            if (window.lenis) window.lenis.start();
 
+            // Clean URL without refresh
             window.history.replaceState({}, "", "/");
+            window.__fadeScrollRan = null;
         };
 
-        setTimeout(doFadeScroll, 900);
+        setTimeout(doFadeScroll, 800);
     }, [location.pathname]);
 
-    /* ====================================================
-       ⭐ FOOTER HIDE RULES (FINAL)
-    ==================================================== */
+    /* ================================
+       Footer Logic
+    ================================ */
     const hideFooter =
         location.pathname.includes("quiz") ||
         location.pathname.includes("stackbuilder") ||
         location.pathname.includes("book-tony") ||
         location.pathname.includes("about-tony") ||
+        location.pathname.includes("shop") ||
         location.pathname.startsWith("/meet-tony");
 
-    /* ====================================================
-       ⭐ RENDER
-    ==================================================== */
     return (
         <VideoModalProvider>
             <QuizOverlayProvider>
@@ -168,7 +171,6 @@ export default function App() {
 
                     {!isLowDevice && <ScrollFog />}
 
-                    {/* ROUTE TRANSITIONS */}
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={location.pathname}
@@ -179,36 +181,20 @@ export default function App() {
                         >
                             <Suspense fallback={<div className="h-screen bg-black" />}>
                                 <Routes location={location} key={location.pathname}>
-
-                                    {/* HOME */}
-                                    <Route
-                                        path="/"
-                                        element={<HomePage setHeroVisible={setHeroVisible} />}
-                                    />
-
-                                    {/* STATIC ROUTES */}
+                                    <Route path="/" element={<HomePage setHeroVisible={setHeroVisible} />} />
                                     <Route path="/lets-win" element={<LetsWin />} />
                                     <Route path="/about-tony" element={<AboutTony />} />
                                     <Route path="/shop" element={<Shop />} />
                                     <Route path="/thank-you" element={<ThankYou />} />
                                     <Route path="/go" element={<Go />} />
-
-                                    {/* ⭐ FULL UNIVERSE PAGE */}
                                     <Route path="/meet-tony" element={<MeetTonyPage />} />
-
-                                    {/* META */}
                                     <Route path="/terms" element={<Terms />} />
                                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
-                                    {/* BOOKING */}
                                     <Route path="/stackbuilder" element={<StackBuilder />} />
                                     <Route path="/book-tony" element={<BookTonyForm />} />
-
-                                    {/* QUIZ */}
                                     <Route path="/quiz-intro" element={<QuizIntro />} />
                                     <Route path="/quiz" element={<Quiz />} />
                                     <Route path="/quiz/results" element={<QuizResults />} />
-
                                 </Routes>
                             </Suspense>
                         </motion.div>

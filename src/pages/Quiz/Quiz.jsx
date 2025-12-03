@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, ChevronLeft, Check, User, Mail, Phone } from "lucide-react";
+import { ArrowRight, ChevronLeft, Check, User, Mail, Phone, X } from "lucide-react";
 
 // Images (Keep these in src/assets as they are processed by Vite/Webpack)
 import step1Img from "../../assets/quiz/step1.jpg";
@@ -85,7 +85,7 @@ export default function Quiz() {
     const [stepIndex, setStepIndex] = useState(0);
     const [selected, setSelected] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", phone: "" });
-    const [, setAnswers] = useState([]); // Kept setter, removed unused 'answers' read
+    const [, setAnswers] = useState([]);
 
     // === Form Validation ===
     const [errors, setErrors] = useState({});
@@ -126,7 +126,6 @@ export default function Quiz() {
     // === Form Handlers ===
     const handleInputChange = useCallback((key, value) => {
         setForm(prev => ({ ...prev, [key]: value }));
-        // Only trigger state update for errors if an error actually exists for this key
         setErrors(prev => {
             if (prev[key]) {
                 const newErrors = { ...prev };
@@ -173,13 +172,12 @@ export default function Quiz() {
         const link = document.createElement("a");
         link.href = PDF_DOWNLOAD_URL;
         link.download = "Mortgage-Broker-Business-Growth-Blueprint.pdf";
-        link.target = "_blank"; // Opens in new tab if download is blocked
+        link.target = "_blank";
         link.rel = "noopener noreferrer";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        // Toast + Scroll Lock
         // Toast + Scroll Lock
         setShowToast(true);
         document.body.style.overflow = "hidden";
@@ -451,24 +449,32 @@ export default function Quiz() {
                             {/* Glow Effect */}
                             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[200px] bg-[#9b26b6]/30 blur-[100px]" />
 
+                            <button
+                                onClick={() => setShowPopup(false)}
+                                className="absolute top-5 right-5 p-2 text-white/50 hover:text-white transition-colors z-30"
+                            >
+                                <X size={20} />
+                            </button>
+
                             {!success ? (
                                 <>
+                                    {/* === FIX APPLIED HERE: COPY UPDATED TO MATCH BLUEPRINT REWARD === */}
                                     <h2 className="text-[2.5rem] font-['Bebas_Neue'] text-white mb-4 relative z-10 leading-none">
-                                        YOU QUALIFY FOR{" "}
+                                        YOUR GROWTH <br />
                                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d48bf7] to-[#9b26b6]">
-                                            ELEVATE
+                                            BLUEPRINT IS READY
                                         </span>
                                     </h2>
 
                                     <p className="text-white/70 mb-10 relative z-10 leading-relaxed">
-                                        Only 1 in 50 participants reach this level. Let's chat today and explore your next step.
+                                        Based on your responses, we've identified the specific frameworks you need to scale. Access your 120-day growth roadmap below.
                                     </p>
 
                                     <button
                                         onClick={handleClaim}
                                         className="w-full py-5 rounded-xl bg-white text-black font-bold tracking-widest uppercase hover:bg-[#e0b0ff] transition-colors relative z-10 shadow-lg"
                                     >
-                                        DOWNLOAD BLUEPRINT
+                                        UNLOCK MY STRATEGY
                                     </button>
                                 </>
                             ) : (

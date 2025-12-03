@@ -3,7 +3,6 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import TonyPartners from "./TonyPartners";
 
-
 // Base path
 const BASE = "/tony-thompson-spmn-vital";
 
@@ -44,7 +43,7 @@ const AmbientOrb = ({ color, top, left, delay }) => (
 export default function TonyVoices() {
     const containerRef = useRef(null);
 
-    // Scroll physics for parallax
+    // Scroll physics
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start end", "end start"],
@@ -54,7 +53,7 @@ export default function TonyVoices() {
     const yHeading = useTransform(scrollYProgress, [0, 0.5], ["50px", "-50px"]);
     const opacityHeading = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
-    // === FINAL TESTIMONIALS (Client-correct copy) ===
+    // === UPDATED TESTIMONIALS ARRAY ===
     const testimonials = [
         {
             img: `${BASE}/assets/images/Fratantoni.jpg`,
@@ -68,6 +67,14 @@ export default function TonyVoices() {
             author: "LINDSI FLYNN, CMO, US MORTGAGE CORPORATION",
             align: "right",
         },
+
+        // ⭐ NEW TESTIMONIAL INSERTED HERE ⭐
+        {
+            img: `${BASE}/assets/images/LeTran.jpg`,
+            quote: `“TONY THOMPSON HAS A GIFT FOR CONNECTING WITH HIS AUDIENCE—EVERY WORD INSPIRES ACTION.”`,
+            author: "LE TRAN, PRESIDENT, OKLAHOMA MBA",
+            align: "left",
+        },
     ];
 
     return (
@@ -76,16 +83,14 @@ export default function TonyVoices() {
             id="tony-voices"
             className="relative w-full min-h-[140vh] bg-white text-black overflow-hidden flex flex-col items-center py-32"
         >
-            {/* === LAYER 0: Atmospheric FX === */}
             <NoiseOverlay />
+
             <motion.div style={{ y: yBackground }} className="absolute inset-0 w-full h-full">
                 <AmbientOrb color="bg-[#f3e6f5]" top="-20%" left="-10%" delay={0} />
                 <AmbientOrb color="bg-[#eaddf0]" top="40%" left="60%" delay={2} />
             </motion.div>
 
-            {/* === LAYER 1: Content === */}
             <div className="relative z-10 w-full px-6">
-                {/* PARTNERS SECTION */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -95,7 +100,7 @@ export default function TonyVoices() {
                     <TonyPartners />
                 </motion.div>
 
-                {/* TYPE 7 HEADER */}
+                {/* HEADER */}
                 <div className="relative w-full flex justify-center items-center mb-40">
                     <motion.div
                         initial={{ height: 0 }}
@@ -109,7 +114,7 @@ export default function TonyVoices() {
                         style={{ y: yHeading, opacity: opacityHeading }}
                         className="text-center text-[clamp(3.5rem,9vw,10rem)] font-black uppercase tracking-tighter leading-[0.85]"
                     >
-                        <span className="block bg-gradient-to-b from-[#7d1f97] to-[#2a0a33] text-transparent bg-clip-text mix-blend-hard-light drop-shadow-2xl">
+                        <span className="block bg-gradient-to-b from-[#7d1f97] to-[#2a0a33] text-transparent bg-clip-text">
                             HEAR THE
                         </span>
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#7d1f97] via-[#b04cc9] to-[#7d1f97] opacity-80">
@@ -151,7 +156,6 @@ function TestimonialCard({ data, index }) {
             className={`flex flex-col md:flex-row ${isEven ? "" : "md:flex-row-reverse"
                 } items-center gap-12 md:gap-24 relative`}
         >
-            {/* Connector Line */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-[120vw] h-[1px] bg-gradient-to-r from-transparent via-[#7d1f97]/20 to-transparent -z-10" />
 
             {/* Avatar */}

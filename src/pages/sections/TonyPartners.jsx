@@ -1,4 +1,3 @@
-// ✅ src/pages/sections/PartnersShowcase.jsx — Top padding = 2cm, optimized spacing
 import React, { useRef } from "react";
 import {
     motion,
@@ -45,22 +44,38 @@ export default function PartnersShowcase() {
 
                 .partners-section {
                     background: white;
-                    /* 🔥 TOP PADDING NOW EXACTLY 2CM (~75px) */
-                    padding: 15px 2rem 8rem 2rem;
+                    /* 🔥 TOP PADDING: 2cm on desktop, adjusted for mobile flow */
+                    padding: 75px 2rem 8rem 2rem;
                     color: black;
                     text-align: center;
                     perspective: 1000px;
                     position: relative;
                 }
 
-                /* 🔥 Heading slight lift (~50px) */
-                .heading-lift {
-                    margin-top: -50px;
+                @media (max-width: 768px) {
+                    .partners-section {
+                        padding: 60px 1.5rem 6rem 1.5rem;
+                    }
                 }
 
-                /* 🔥 Logos major lift (~200px) */
+                /* 🔥 Heading Lift */
+                .heading-lift {
+                    margin-top: -30px;
+                }
+                @media (min-width: 768px) {
+                    .heading-lift { margin-top: -50px; }
+                }
+
+                /* 🔥 Logos Lift */
+                /* Mobile: less negative margin to prevent overlap with title */
                 .logos-lift {
-                    margin-top: -200px;
+                    margin-top: 0px;
+                }
+                @media (min-width: 768px) {
+                    .logos-lift { margin-top: -100px; }
+                }
+                @media (min-width: 1024px) {
+                    .logos-lift { margin-top: -200px; }
                 }
 
                 .spotlight-overlay {
@@ -112,11 +127,11 @@ export default function PartnersShowcase() {
 
                 .main-title {
                     font-family: 'Arial Black', sans-serif;
-                    font-size: clamp(2.4rem, 6vw, 4rem);
+                    font-size: clamp(1.8rem, 5vw, 4rem);
                     margin-top: 1.5rem;
                     text-transform: uppercase;
-                    letter-spacing: -2px;
-                    line-height: 1;
+                    letter-spacing: -1px;
+                    line-height: 1.1;
                 }
 
                 .main-title span {
@@ -136,9 +151,9 @@ export default function PartnersShowcase() {
 
             <div className="grid-lines" />
 
-            {/* === HEADING (slightly lifted) === */}
+            {/* === HEADING === */}
             <div
-                className="heading-lift relative section-header"
+                className="heading-lift relative section-header mb-12 md:mb-0"
                 style={{ zIndex: 9999 }}
             >
                 <div className="status-indicator">
@@ -157,14 +172,14 @@ export default function PartnersShowcase() {
                 </motion.h2>
             </div>
 
-            {/* === LOGOS GRID (strong upward shift) === */}
+            {/* === LOGOS GRID === */}
             <div
                 className="
                     logos-lift 
-                    grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4
-                    gap-12 md:gap-16
+                    grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4
+                    gap-6 md:gap-16
                     justify-items-center
-                    w-full max-w-7xl mx-auto mt-16
+                    w-full max-w-7xl mx-auto mt-0 md:mt-16
                     relative z-10
                 "
             >
@@ -174,25 +189,31 @@ export default function PartnersShowcase() {
                         href={partner.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         initial={{ opacity: 0, y: 50 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1, duration: 0.8 }}
                         viewport={{ once: true }}
                         className="
                             flex items-center justify-center 
-                            w-[260px] md:w-[320px]
-                            h-[150px] md:h-[170px]
+                            w-full max-w-[300px] md:max-w-[320px]
+                            h-[130px] md:h-[170px]
                             bg-white rounded-2xl 
                             shadow-[0_0_25px_rgba(0,0,0,0.05)]
                             hover:shadow-[0_0_50px_rgba(155,38,182,0.25)]
+                            border border-gray-100
                             transition-all duration-500 overflow-hidden
                         "
                     >
                         <img
                             src={partner.logo}
                             alt={partner.name}
-                            className="object-contain w-[90%] h-[90%]"
+                            loading="lazy"
+                            className={`object-contain ${partner.name.includes("NAMB")
+                                ? "w-[70%] md:w-[80%] h-auto scale-100 translate-y-0"
+                                : "w-[65%] md:w-[75%] h-auto"
+                                }`}
                         />
                     </motion.a>
                 ))}

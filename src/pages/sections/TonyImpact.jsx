@@ -32,7 +32,7 @@ export default function TonyImpact() {
 
     const stats = [
         { label: "Featured Publications", value: 45, suffix: "+" },
-        { label: "Professionals Reached Nationwide", value: 10000, suffix: "+" },
+        { label: "Professionals Reached Nationwide", value: 75000, suffix: "+" },
         { label: "Scotsman Guide Originators Coached", value: 3, suffix: "+" },
         { label: "Speaking Engagements", value: 200, suffix: "+" },
     ];
@@ -216,13 +216,9 @@ const InteractiveExternal = ({ href, children }) => (
    FIXED — GROWTH PLATFORM (now identical behavior to CTA)
 ====================================================== */
 
-/* ======================================================
-   FIXED — GROWTH PLATFORM (now identical behavior to CTA)
-====================================================== */
-
 const GrowthPlatformLink = () => {
     const goToPrograms = () => {
-        const base = import.meta.env.BASE_URL;
+        const base = "/";
 
         // EXACT MATCH with CTA behavior
         window.location.href = `${base}?target=programs`;
@@ -240,4 +236,3 @@ const GrowthPlatformLink = () => {
         </span>
     );
 };
-

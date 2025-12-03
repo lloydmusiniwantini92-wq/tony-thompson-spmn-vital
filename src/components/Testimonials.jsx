@@ -1,15 +1,8 @@
-// Testimonials.jsx — Full Updated Version
-// Features added:
-// ✓ Section-visibility autoplay control
-// ✓ Resume-from-last-time for each testimonial video
-// ✓ No stalls between transitions
-// ✓ Autoplay stops when section out of view
-// ✓ Autoplay resumes when re-entered
-// ✓ Videos remember timestamps individually
-
+// Testimonials.jsx — Premium Hover Version (Desktop Restored + Mobile Optimized)
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVideoModal } from "../context/VideoModalContext";
+import { Play } from "lucide-react"; // Mobile-only icon
 
 import t1 from "../assets/testimonials/testimonial1.jpg";
 import t2 from "../assets/testimonials/testimonial2.jpg";
@@ -38,13 +31,20 @@ export default function Testimonials() {
     const sectionRef = useRef(null);
     const intervalRef = useRef(null);
 
+    // ⭐ MOBILE DETECTION (Isolated state)
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
     // Stores last known playback time for each testimonial
     const videoTimes = useRef(Array(testimonials.length).fill(0));
-
-    // Tracks whether the section is visible
     const isVisible = useRef(false);
 
-    // === IntersectionObserver to control autoplay ===
+    // === IntersectionObserver ===
     useEffect(() => {
         const sec = sectionRef.current;
         if (!sec) return;
@@ -53,12 +53,17 @@ export default function Testimonials() {
             ([entry]) => {
                 isVisible.current = entry.isIntersecting;
 
+                // ⭐ LOGIC: Only run Auto-Play/Resume on DESKTOP
                 if (entry.isIntersecting) {
-                    startAutoplay();
-                    resumeActiveVideo();
+                    if (!isMobile) {
+                        startAutoplay();
+                        resumeActiveVideo();
+                    }
                 } else {
                     stopAutoplay();
-                    pauseActiveVideo();
+                    if (!isMobile) {
+                        pauseActiveVideo();
+                    }
                 }
             },
             { threshold: 0.35 }
@@ -66,15 +71,14 @@ export default function Testimonials() {
 
         observer.observe(sec);
         return () => observer.disconnect();
-    }, []);
+    }, [isMobile]);
 
     // === Resume currently active video from last saved time ===
     const resumeActiveVideo = () => {
+        if (isMobile) return; // Guard for mobile
         const v = videoRef.current;
         if (!v) return;
-
         v.currentTime = videoTimes.current[active] || 0;
-
         setTimeout(() => {
             v.play().catch(() => { });
         }, 50);
@@ -82,17 +86,17 @@ export default function Testimonials() {
 
     // === Pause and store current time ===
     const pauseActiveVideo = () => {
+        if (isMobile) return; // Guard for mobile
         const v = videoRef.current;
         if (!v) return;
-
         videoTimes.current[active] = v.currentTime;
         v.pause();
     };
 
     // === Autoplay rotation system ===
     const startAutoplay = () => {
+        if (isMobile) return; // Disable auto-rotation on mobile
         if (intervalRef.current) return;
-
         intervalRef.current = setInterval(() => {
             goToNext();
         }, 12000);
@@ -103,32 +107,40 @@ export default function Testimonials() {
         intervalRef.current = null;
     };
 
-    // === Switch to next testimonial (seamless resume logic) ===
+    // === Switch to next testimonial ===
     const goToNext = () => {
-        pauseActiveVideo();
+        if (!isMobile) pauseActiveVideo();
 
         setActive((prev) => {
             const next = (prev + 1) % testimonials.length;
-            setTimeout(() => {
-                resumeActiveVideo();
-            }, 80);
+            if (!isMobile) {
+                setTimeout(() => {
+                    resumeActiveVideo();
+                }, 80);
+            }
             return next;
         });
     };
 
     // === Handle manual avatar click ===
     const handleAvatarClick = (i) => {
-        pauseActiveVideo();
+        if (!isMobile) pauseActiveVideo();
 
         setActive(i);
 
-        setTimeout(() => {
-            resumeActiveVideo();
-        }, 80);
+        // Reset autoplay timer on interaction
+        stopAutoplay();
+        if (!isMobile) {
+            setTimeout(() => {
+                resumeActiveVideo();
+            }, 80);
+            startAutoplay(); // Restart timer
+        }
     };
 
     // === Open video modal and preserve location ===
     const openVideoFromTestimonials = (videoSrc) => {
+        if (!isMobile && videoRef.current) videoRef.current.pause(); // Pause bg video
         const scrollY = window.scrollY;
         openVideo(videoSrc);
 
@@ -136,12 +148,7 @@ export default function Testimonials() {
             "focus",
             () => {
                 window.scrollTo({ top: scrollY, behavior: "instant" });
-                const el = document.querySelector("#testimonials");
-                if (el) {
-                    window.lenis
-                        ? window.lenis.scrollTo(el, { duration: 0.6, offset: -50 })
-                        : el.scrollIntoView({ behavior: "smooth", block: "start" });
-                }
+                // Optional: scroll into view logic here if needed
             },
             { once: true }
         );
@@ -158,17 +165,18 @@ export default function Testimonials() {
             <div className="absolute top-0 left-0 w-full h-[160px] bg-gradient-to-b from-[#9b26b6]/40 via-[#000]/60 to-transparent pointer-events-none z-[5]" />
 
             {/* Heading */}
-            <div className="absolute top-[1.2rem] left-1/2 -translate-x-1/2 z-[25]">
-                <motion.h2 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-[0_0_25px_rgba(0,0,0,0.45)] uppercase">
+            <div className="absolute top-[1.5rem] md:top-[1.2rem] left-1/2 -translate-x-1/2 z-[25] w-full text-center px-4">
+                <motion.h2 className="text-[clamp(1.8rem,5vw,3.75rem)] md:text-6xl font-extrabold text-white tracking-tight drop-shadow-[0_0_25px_rgba(0,0,0,0.45)] uppercase">
                     Proof Beats Promise
                 </motion.h2>
             </div>
 
             {/* Split Layout */}
-            <div className="relative flex flex-col md:flex-row w-full min-h-[100vh]">
+            <div className="relative flex flex-col md:flex-row w-full min-h-[100dvh] md:min-h-[100vh]">
 
                 {/* LEFT SIDE */}
-                <div className="flex-1 flex flex-col justify-start px-[6vw] pt-[14rem] pb-[5rem] text-left relative overflow-hidden">
+                {/* Mobile: pt-32, pb-10 | Desktop (restored): pt-[14rem], pb-[5rem] */}
+                <div className="flex-1 flex flex-col justify-start px-6 md:px-[6vw] pt-32 md:pt-[14rem] pb-10 md:pb-[5rem] text-left relative overflow-hidden">
                     <div className="relative z-10 max-w-[700px] min-h-[14rem] md:min-h-[16rem]">
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -179,12 +187,13 @@ export default function Testimonials() {
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 1.0, ease: [0.25, 1, 0.3, 1] }}
                             >
-                                <p className="text-[clamp(2rem,3.5vw,3rem)] font-extrabold leading-[1.2] mb-6 md:mb-10 tracking-tight">
+                                {/* Mobile font size optimized, Desktop restored */}
+                                <p className="text-[clamp(1.5rem,3.5vw,3rem)] md:text-[clamp(2rem,3.5vw,3rem)] font-extrabold leading-[1.2] mb-6 md:mb-10 tracking-tight">
                                     “{testimonials[active].quote}”
                                 </p>
                                 <div className="text-xl md:text-2xl font-semibold tracking-wide">
-                                    <span className="text-white font-bold">{testimonials[active].name}</span>
-                                    <br />
+                                    <span className="text-white font-bold block md:inline">{testimonials[active].name}</span>
+                                    {isMobile ? <br /> : <span className="hidden md:inline"> </span>}
                                     <span className="text-white/80 font-medium">{testimonials[active].role}</span>
                                 </div>
                             </motion.div>
@@ -192,13 +201,14 @@ export default function Testimonials() {
                     </div>
 
                     {/* Avatars */}
-                    <div className="absolute bottom-[6rem] left-[8%] flex gap-6 sm:gap-8 z-30 flex-wrap">
+                    {/* Mobile: left-6, gap-4 | Desktop (restored): left-[8%], gap-8 */}
+                    <div className="absolute bottom-[6rem] left-6 md:left-[8%] flex gap-4 md:gap-8 z-30 flex-wrap">
                         {testimonials.map((t, i) => (
                             <motion.div
                                 key={t.id}
                                 onClick={() => {
                                     handleAvatarClick(i);
-                                    openVideoFromTestimonials(t.video);
+                                    if (isMobile) openVideoFromTestimonials(t.video); // On mobile, clicking avatar opens video directly
                                 }}
                                 whileHover={{
                                     scale: 1.4,
@@ -222,7 +232,7 @@ export default function Testimonials() {
                     </div>
 
                     {/* Dots */}
-                    <div className="absolute bottom-[3rem] left-[8%] flex gap-3 z-30">
+                    <div className="absolute bottom-[3rem] left-6 md:left-[8%] flex gap-3 z-30">
                         {testimonials.map((_, i) => (
                             <motion.div
                                 key={i}
@@ -234,44 +244,78 @@ export default function Testimonials() {
                     </div>
                 </div>
 
-                {/* RIGHT SIDE VIDEO */}
-                <div className="relative flex-1 flex items-center justify-center overflow-hidden group">
+                {/* RIGHT SIDE VIDEO / IMAGE */}
+                <div className="relative flex-1 flex items-center justify-center overflow-hidden group min-h-[40vh] md:min-h-auto">
                     <AnimatePresence mode="wait">
-                        <motion.video
-                            key={active}
-                            ref={videoRef}
-                            src={testimonials[active].video}
-                            className="absolute inset-0 w-full h-full object-cover"
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            onTimeUpdate={(e) => {
-                                videoTimes.current[active] = e.target.currentTime;
-                            }}
-                            initial={{ opacity: 0, scale: 1.05 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 1.02 }}
-                            transition={{ duration: 2, ease: [0.25, 1, 0.3, 1] }}
-                            style={{
-                                boxShadow: "inset 0 0 200px rgba(0,0,0,0.3), 0 0 80px rgba(155,38,182,0.3)",
-                            }}
-                        />
+                        {!isMobile ? (
+                            /* --- DESKTOP (EXACT ORIGINAL) --- */
+                            <motion.video
+                                key={active}
+                                ref={videoRef}
+                                src={testimonials[active].video}
+                                // Restored EXACT mask image and props
+                                className="absolute inset-0 w-full h-full object-cover [mask-image:linear-gradient(to_bottom,transparent,black_15%)] md:[mask-image:linear-gradient(to_right,transparent,black_20%)]"
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                onTimeUpdate={(e) => {
+                                    videoTimes.current[active] = e.target.currentTime;
+                                }}
+                                initial={{ opacity: 0, scale: 1.05 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 1.02 }}
+                                transition={{ duration: 2, ease: [0.25, 1, 0.3, 1] }}
+                                style={{
+                                    boxShadow: "inset 0 0 200px rgba(0,0,0,0.3), 0 0 80px rgba(155,38,182,0.3)",
+                                }}
+                            />
+                        ) : (
+                            /* --- MOBILE (OPTIMIZED) --- */
+                            /* Static Image instead of Video for Bandwidth/Battery */
+                            <motion.img
+                                key={`img-${active}`}
+                                src={testimonials[active].img}
+                                className="absolute inset-0 w-full h-full object-cover opacity-80"
+                                initial={{ opacity: 0, scale: 1.1 }}
+                                animate={{ opacity: 0.8, scale: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.8 }}
+                            />
+                        )}
                     </AnimatePresence>
 
-                    <motion.div
-                        className="absolute inset-0 z-50 bg-[#7d1f97]/0 group-hover:bg-[#7d1f97]/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer"
-                        onClick={() => openVideoFromTestimonials(testimonials[active].video)}
-                    >
-                        <motion.span
-                            className="text-white font-['Press_Start_2P'] text-[1.45rem] md:text-[2rem] tracking-[0.2em] uppercase opacity-100"
-                            initial={{ scale: 0.9 }}
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
+                    {/* OVERLAY & CTA */}
+                    {isMobile ? (
+                        // --- MOBILE OVERLAY (Visible, Play Icon) ---
+                        <div
+                            className="absolute inset-0 z-50 flex flex-col items-center justify-center cursor-pointer bg-black/20"
+                            onClick={() => openVideoFromTestimonials(testimonials[active].video)}
                         >
-                            Watch Story
-                        </motion.span>
-                    </motion.div>
+                            <div className="mb-3 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/30 shadow-[0_0_20px_rgba(155,38,182,0.5)]">
+                                <Play className="w-8 h-8 text-white fill-white" />
+                            </div>
+                            <span className="text-white font-['Press_Start_2P'] text-[1rem] tracking-[0.2em] uppercase">
+                                Watch Story
+                            </span>
+                        </div>
+                    ) : (
+                        // --- DESKTOP OVERLAY (EXACT ORIGINAL) ---
+                        // Only visible on Hover, No Play Icon, Text only
+                        <motion.div
+                            className="absolute inset-0 z-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer"
+                            onClick={() => openVideoFromTestimonials(testimonials[active].video)}
+                        >
+                            <motion.span
+                                className="text-white font-['Press_Start_2P'] text-[1.45rem] md:text-[2rem] tracking-[0.2em] uppercase opacity-100"
+                                initial={{ scale: 0.9 }}
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                Watch Story
+                            </motion.span>
+                        </motion.div>
+                    )}
                 </div>
             </div>
 

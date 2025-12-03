@@ -1,33 +1,27 @@
-// ✅ src/components/TetrisCountdown.jsx — FINAL FIXED VERSION
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function TetrisCountdown({ targetDate }) {
     const [timeLeft, setTimeLeft] = useState({
-        days: "--",
-        hours: "--",
-        minutes: "--",
-        seconds: "--",
+        days: "00",
+        hours: "00",
+        minutes: "00",
+        seconds: "00",
     });
 
-    // === Ensure countdown starts ONLY when targetDate exists ===
     useEffect(() => {
-        if (!targetDate) return; // ⛔ Prevent NaN freeze
+        if (!targetDate) return;
 
+        // Force ensure date is valid
         const end = new Date(targetDate).getTime();
-        if (isNaN(end)) return;   // ⛔ Additional safety
+        if (isNaN(end)) return;
 
         const update = () => {
             const now = Date.now();
             const distance = end - now;
 
             if (distance <= 0) {
-                setTimeLeft({
-                    days: "00",
-                    hours: "00",
-                    minutes: "00",
-                    seconds: "00",
-                });
+                setTimeLeft({ days: "00", hours: "00", minutes: "00", seconds: "00" });
                 return;
             }
 
@@ -44,59 +38,59 @@ export default function TetrisCountdown({ targetDate }) {
             });
         };
 
-        update(); // ← run immediately on mount
+        update();
         const interval = setInterval(update, 1000);
-
         return () => clearInterval(interval);
     }, [targetDate]);
 
+    // Reusable Block Component with FIXED White/Bold Styling
     const Block = ({ label, value, pulse }) => (
         <motion.div
             animate={{
-                scale: pulse ? [1, 1.08, 1] : 1,
+                scale: pulse ? [1, 1.05, 1] : 1,
                 boxShadow: pulse
                     ? [
                         "0 0 0px rgba(155,38,182,0)",
-                        "0 0 14px rgba(155,38,182,0.6)",
+                        "0 0 15px rgba(155,38,182,0.5)",
                         "0 0 0px rgba(155,38,182,0)",
                     ]
                     : "none",
             }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="flex flex-col items-center justify-center bg-[#111]/70 border border-[#7d1f97]/40
-                       rounded-md px-[0.4rem] py-[0.3rem] min-w-[2ch]"
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="flex flex-col items-center justify-center bg-[#111] border border-[#9b26b6]/30
+                       rounded-lg px-3 py-2 min-w-[3.5rem] md:min-w-[4rem] backdrop-blur-md"
         >
-            <span className="text-[1rem] sm:text-[1.2rem] font-semibold leading-none text-white">
+            <span className="text-xl md:text-2xl font-bold text-white leading-none">
                 {value}
             </span>
-            <span className="text-[0.5rem] uppercase tracking-widest text-[#7d1f97]/80 mt-[2px]">
+            {/* Hardcoded White/Bold Labels for maximum legibility */}
+            <span className="text-[0.6rem] font-black uppercase tracking-widest text-white/80 mt-1">
                 {label}
             </span>
         </motion.div>
     );
 
     return (
-        <div className="flex items-end justify-center gap-[0.4rem] text-white font-mono">
+        <div className="flex items-center justify-center gap-2 md:gap-3">
+            <Block label="DAYS" value={timeLeft.days} />
+            <span className="text-[#9b26b6] text-xl font-bold pb-4">:</span>
 
-            <Block label="D" value={timeLeft.days} />
-            <span className="text-[#7d1f97] text-[1rem]">:</span>
+            <Block label="HRS" value={timeLeft.hours} />
+            <span className="text-[#9b26b6] text-xl font-bold pb-4">:</span>
 
-            <Block label="H" value={timeLeft.hours} />
-            <span className="text-[#7d1f97] text-[1rem]">:</span>
+            <Block label="MINS" value={timeLeft.minutes} />
+            <span className="text-[#9b26b6] text-xl font-bold pb-4">:</span>
 
-            <Block label="M" value={timeLeft.minutes} />
-            <span className="text-[#7d1f97] text-[1rem]">:</span>
-
-            {/* Seconds — animated flip */}
+            {/* popLayout prevents the '5th box' glitch by removing the old element from flow immediately */}
             <AnimatePresence mode="popLayout">
                 <motion.div
-                    key={timeLeft.seconds} // ← ensures motion flip each second
-                    initial={{ y: 6, opacity: 0 }}
+                    key={timeLeft.seconds}
+                    initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -6, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: [0.65, 0.05, 0, 1] }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                 >
-                    <Block label="S" value={timeLeft.seconds} pulse />
+                    <Block label="SECS" value={timeLeft.seconds} pulse />
                 </motion.div>
             </AnimatePresence>
         </div>

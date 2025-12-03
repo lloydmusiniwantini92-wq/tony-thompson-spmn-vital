@@ -1,15 +1,9 @@
-// ⭐ src/pages/HomePage.jsx — UPDATED TO USE TonyStory INSTEAD OF MeetTony
+// ⭐ src/pages/HomePage.jsx — FIXED WITH PROPER TARGET IDS
 
 import React, { useEffect } from "react";
 
 import Hero from "../components/Hero";
-
-// ❌ REMOVED MeetTony
-// import MeetTony from "../components/MeetTony";
-
-// ✅ CINEMATIC UNIVERSE ENTRY
 import TonyStory from "./sections/TonyStory";
-
 import About from "../components/About";
 import Testimonials from "../components/Testimonials";
 import TrustSection from "../components/TrustSection";
@@ -41,8 +35,8 @@ export default function HomePage({ setHeroVisible }) {
         const params = new URLSearchParams(window.location.search);
         const target = params.get("target");
 
-        if (target === "programs") {
-            const el = document.querySelector("#programs");
+        if (target) {
+            const el = document.getElementById(target);
             setTimeout(() => {
                 if (el) {
                     window.scrollTo({
@@ -61,28 +55,44 @@ export default function HomePage({ setHeroVisible }) {
         <div className="flex flex-col w-full">
 
             {/* 1 — HERO */}
-            <Hero id="home" />
+            <section id="home">
+                <Hero />
+            </section>
 
-            {/* 2 — TONY STORY (cinematic universe preview) */}
-            <TonyStory />
+            {/* 2 — TONY STORY */}
+            <section id="meet-tony">
+                <TonyStory />
+            </section>
 
-            {/* 3 — ABOUT / QUIZ INTRO */}
-            <About />
+            {/* 3 — ABOUT */}
+            <section id="about">
+                <About />
+            </section>
 
             {/* 4 — TESTIMONIALS */}
-            <Testimonials />
+            <section id="testimonials">
+                <Testimonials />
+            </section>
 
             <div className="h-[8vh] w-full bg-gradient-to-b from-transparent via-[#9b26b6]/20 to-black"></div>
 
             {/* 5 — TRUST */}
-            <TrustSection />
+            <section id="trust">
+                <TrustSection />
+            </section>
 
             {/* 6 — BOOK TONY */}
-            <BookTonySection />
+            <section id="book-tony">
+                <BookTonySection />
+            </section>
 
             {/* 7 — PROGRAMS (TierList) */}
-            <TierList />
+            <section id="programs">
+                <TierList />
+            </section>
 
+            {/* 8 — CONTACT (DO YOU HAVE THIS SECTION?) */}
+            <section id="contact" />
         </div>
     );
 }

@@ -46,7 +46,7 @@ const Socials = () => (
             <a
                 key={i}
                 href="#"
-                className="text-black/40 hover:text-brandPurple hover:scale-125 transition-all duration-300"
+                className="text-black/40 hover:text-brandPurple hover:scale-125 transition-all duration-300 cursor-pointer"
             >
                 <Icon size={18} />
             </a>
@@ -108,7 +108,7 @@ const Tile = ({ data, delay, isMobile, onClick, setFocused }) => {
                 <img
                     src={data.src}
                     alt=""
-                    className="w-full h-full object-cover grayscale contrast-125 brightness-75 group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-110 group-hover:scale-110 transition-all duration-700"
                 />
             </div>
 
@@ -266,7 +266,7 @@ const Modal = ({ data, onClose, isMobile }) => {
                         <div className="relative aspect-square w-full overflow-hidden border border-brandPurple/40 rounded-md">
                             <img
                                 src={data.src}
-                                className="w-full h-full object-cover grayscale contrast-125"
+                                className="w-full h-full object-cover contrast-110"
                                 alt="Subject"
                             />
                             <div className="absolute bottom-0 left-0 w-full bg-white/80 backdrop-blur-md p-2 flex justify-between items-center border-t border-brandPurple/40">
@@ -289,7 +289,9 @@ const Modal = ({ data, onClose, isMobile }) => {
                                 <span className="block text-[8px] font-mono text-black/40 mb-1">
                                     DIVISION
                                 </span>
-                                <span className="text-xs font-bold text-black">{data.location}</span>
+                                <span className="text-xs font-bold text-black">
+                                    {data.location}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -318,7 +320,9 @@ const Modal = ({ data, onClose, isMobile }) => {
 
                             <div>
                                 <h4 className="text-black font-bold uppercase">{data.name}</h4>
-                                <p className="text-brandPurple text-xs font-mono">{data.role}</p>
+                                <p className="text-brandPurple text-xs font-mono">
+                                    {data.role}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -376,24 +380,22 @@ export default function TonyCTA() {
                     </div>
                 )}
 
-                {/* =====================================================
-                    LAYOUT: Left Cluster — Center CTA — Right Cluster
-                    ===================================================== */}
+                {/* LAYOUT */}
                 <div className="relative w-full flex flex-col md:block items-center justify-center">
                     {/* LEFT CLUSTER */}
                     <div
                         className={`z-10 ${isMobile
-                            ? "scale-90 mb-8"
-                            : "absolute left-[5%] bottom-[-1%] -rotate-3 scale-90 opacity-90"
+                                ? "scale-[1.125] mb-8"
+                                : "absolute left-[5%] bottom-[-180px] -rotate-3 scale-[1.125] opacity-90"
                             }`}
                     >
+
                         <Cluster data={top} isMobile={isMobile} onClick={setActiveData} />
                     </div>
 
-                    {/* =====================================================
-                        CENTER CTA
-                        ===================================================== */}
-                    <div className="z-20 text-center flex flex-col items-center my-4 md:my-0 md:-mt-24">
+                    {/* CENTER CTA */}
+                    <div className="z-20 text-center flex flex-col items-center my-4 md:my-0 md:-mt-48">
+
                         <div className="font-black uppercase text-[2.5rem] md:text-[7rem] leading-[0.9] tracking-tighter text-black mb-8 md:mb-12">
                             WHAT THE
                             <span
@@ -416,7 +418,6 @@ export default function TonyCTA() {
                             )}
                         </div>
 
-                        {/* === CTA BUTTON ROUTES DIRECTLY TO PROGRAMS === */}
                         <Reactor
                             onClick={() => {
                                 window.location.href = `${import.meta.env.BASE_URL}?target=programs`;
@@ -424,31 +425,17 @@ export default function TonyCTA() {
                             isMobile={isMobile}
                         />
 
-                        <div className="mt-12 flex flex-col items-center">
-                            <div className="flex items-center gap-4 mb-6 opacity-60">
-                                <div className="h-[1px] w-12 bg-black" />
-                                <p className="font-mono text-brandPurple text-xs tracking-[0.4em] uppercase">
-                                    SYSTEMS.ONLINE
-                                </p>
-                                <div className="h-[1px] w-12 bg-black" />
-                            </div>
-
-                            <Socials />
-
-                            <div className="font-black text-2xl tracking-tighter opacity-50 mt-6">
-                                TONY
-                                <span className="text-brandPurple">THOMPSON</span>
-                            </div>
-                        </div>
+                        {/* REMOVED: Footer was here */}
                     </div>
 
                     {/* RIGHT CLUSTER */}
                     <div
                         className={`z-10 ${isMobile
-                            ? "scale-90 mt-8"
-                            : "absolute right-[5%] bottom-[-1%] rotate-3 scale-90 opacity-90"
+                                ? "scale-[1.125] mt-8"
+                                : "absolute right-[5%] bottom-[-180px] rotate-3 scale-[1.125] opacity-90"
                             }`}
                     >
+
                         <Cluster
                             data={bottom}
                             isMobile={isMobile}
@@ -457,97 +444,132 @@ export default function TonyCTA() {
                         />
                     </div>
                 </div>
+
+                {/* ✅ NEW FOOTER LOCATION: Absolute Bottom Middle */}
+                <div className="absolute bottom-14 left-1/2 -translate-x-1/2 flex flex-col items-center z-40 w-full">
+                    <div className="flex items-center gap-4 mb-4 opacity-60">
+                        <div className="h-[1px] w-12 bg-black" />
+                        <p className="font-mono text-brandPurple text-xs tracking-[0.4em] uppercase">
+                            SYSTEMS.ONLINE
+                        </p>
+                        <div className="h-[1px] w-12 bg-black" />
+                    </div>
+
+                    <Socials />
+
+                    <div className="font-black text-2xl tracking-tighter opacity-50 mt-4">
+                        TONY <span className="text-brandPurple">THOMPSON</span>
+                    </div>
+                </div>
+
             </div>
         </section>
     );
 }
 
 // =========================================================
-// 🔥 FINAL SECTION — ASSETS + SECTOR_DATA
+// 🔥 FINAL SECTION — ASSETS + SECTOR_DATA (REAL TESTIMONIALS)
 // =========================================================
 
 const ASSETS = {
-    k1: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800",
-    k2: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800",
-    i3: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400",
-    i4: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400",
-    t1: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800",
-    t2: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800",
-    t3: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800",
-    i2: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400",
+    fratantoni: `${BASE}/assets/images/Fratantoni.jpg`,
+    gene: `${BASE}/assets/images/Gene Frazier.jpeg`,
+    heidi: `${BASE}/assets/images/Heidi Iverson.jpeg`,
+    jonna: `${BASE}/assets/images/Jonna Johnson.jpeg`,
+    lindsi: `${BASE}/assets/images/LINDSI.jpeg`,
+    rosie: `${BASE}/assets/images/Rosie Anne Solorzano, CFE.jpeg`,
+    steven: `${BASE}/assets/images/Steven Templeton.jpeg`,
+    wayne: `${BASE}/assets/images/Wayne Thompson.jpeg`,
 };
 
 export const SECTOR_DATA = [
     {
-        id: "REC-01",
-        src: ASSETS.k1,
-        name: "Sarah Jenkins",
-        role: "Loan Officer",
-        location: "Division A",
-        level: "Executive Contributor",
-        quote: "Tony helped me eliminate noise and operate with precision.",
+        id: "Jonna Johnson",
+        src: ASSETS.jonna,
+        name: "Jonna Johnson",
+        role: "Strategic Markets Mortgage Loan Officer — US Bank Home Mortgage",
+        location: "National",
+        level: "Sales Leadership",
+        quote:
+            "Tony Thompson has a rare ability to turn leadership development into measurable results. After his session with our team, not only did morale rise, but our sales performance saw a clear uptick. Tony doesn’t just inspire growth—he activates it.",
     },
+
     {
-        id: "REC-02",
-        src: ASSETS.k2,
-        name: "David Peterson",
-        role: "Branch Manager",
-        location: "Division B",
+        id: "Steven Templeton",
+        src: ASSETS.steven,
+        name: "Steven Templeton",
+        role: "Branch Manager — Northstar Mortgage Advisors",
+        location: "Regional",
         level: "Leadership Tier 1",
-        quote: "Tony sharpened the way I lead and execute.",
+        quote:
+            "Tony gives teams a blueprint for winning. His consumer insights helped us rethink our approach, and within weeks our sales team was closing more deals with greater confidence. He doesn’t just motivate—he drives outcomes.",
     },
+
     {
-        id: "REC-03",
-        src: ASSETS.i3,
-        name: "Lisa Kwon",
-        role: "Regional VP",
-        location: "Division C",
-        level: "Executive Leader",
-        quote: "He doesn't hype you—he restructures how you think.",
+        id: "Rosie Anne Solorzano",
+        src: ASSETS.rosie,
+        name: "Rosie Anne Solorzano, CFE",
+        role: "Financial Services Leader — Expert in Banking Operations, Servicing, Compliance, Risk & Fraud Management",
+        location: "Corporate",
+        level: "Executive Contributor",
+        quote:
+            "Tony connects with audiences on a level that’s both authentic and culturally aware. His message on personal growth empowered our team to operate with more clarity and purpose, which directly translated into stronger sales results.",
     },
+
     {
-        id: "REC-04",
-        src: ASSETS.i4,
-        name: "Chris Thompson",
-        role: "Executive",
-        location: "Corporate HQ",
-        level: "Leadership Tier 2",
-        quote: "I became significantly more intentional and decisive.",
+        id: "Wayne Thompson",
+        src: ASSETS.wayne,
+        name: "Wayne Thompson",
+        role: "Sales Manager — Homeowners Financial Group USA, LLC",
+        location: "Division",
+        level: "Sales Leader",
+        quote:
+            "I’ve worked with many leaders, but Tony stands out. His strategies helped us tighten our team communication and sharpen our sales process. The lift in production afterward was undeniable.",
     },
+
     {
-        id: "REC-05",
-        src: ASSETS.t1,
-        name: "Marcus Reid",
-        role: "Entrepreneur",
-        location: "Field Ops",
-        level: "Owner Tier",
-        quote: "I stopped wasting effort and started driving results.",
+        id: "Gene Frazier",
+        src: ASSETS.gene,
+        name: "Gene Frazier",
+        role: "Vice President, Producing Area Manager — Highlands Residential",
+        location: "Executive",
+        level: "VP / Producing Manager",
+        quote:
+            "Tony’s leadership perspective is powerful because it’s real-world tested. His insights into consumer behavior helped our team understand our market more clearly—and we saw increased sales activity almost immediately.",
     },
+
     {
-        id: "REC-06",
-        src: ASSETS.t2,
-        name: "Elena Rodriguez",
-        role: "Sales Director",
-        location: "Division D",
-        level: "Top Performer",
-        quote: "Tony simplifies the complex and accelerates execution.",
-    },
-    {
-        id: "REC-07",
-        src: ASSETS.t3,
-        name: "James O’Connell",
-        role: "Senior Agent",
-        location: "West Division",
-        level: "Top 10% Producer",
-        quote: "I finally understood what consistent excellence looks like.",
-    },
-    {
-        id: "REC-08",
-        src: ASSETS.i2,
-        name: "Dr. Aris Thorne",
-        role: "Consultant",
-        location: "Advisory Group",
+        id: "Heidi Iverson",
+        src: ASSETS.heidi,
+        name: "Heidi Iverson",
+        role: "Builder of High-Performance Teams Organizations • Connector of People • Fractional Exec",
+        location: "Advisory",
         level: "Executive Advisor",
-        quote: "The clarity alone pays for itself.",
+        quote:
+            "Every session with Tony feels like a breakthrough. After implementing the tactics he shared, our team became more unified, more focused, and more productive. The growth in our sales numbers spoke for itself.",
+    },
+
+    // 🔥 UPDATED: lowercase, natural casing
+    {
+        id: "Michael Fratantoni",
+        src: ASSETS.fratantoni,
+        name: "Michael Fratantoni, Ph.D",
+        role: "Chief Economist, Senior VP — MBA",
+        location: "National",
+        level: "Executive Economist",
+        quote:
+            "When Tony speaks, he doesn’t just deliver a message—he moves people.",
+    },
+
+    // 🔥 UPDATED: lowercase, natural casing
+    {
+        id: "Lindsi Flynn",
+        src: ASSETS.lindsi,
+        name: "Lindsi Flynn",
+        role: "Chief Marketing Officer — US Mortgage Corporation",
+        location: "Corporate",
+        level: "CMO",
+        quote:
+            "Tony is one of the most powerful and engaging speakers in the industry.",
     },
 ];
