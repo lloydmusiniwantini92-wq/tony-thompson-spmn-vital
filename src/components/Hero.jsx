@@ -246,7 +246,7 @@ export default function Hero({ setHeroVisible }) {
             {/* VIDEO WIDGET (desktop only) */}
             {!isMobile && (
                 <div
-                    className="video-widget group absolute bottom-[2rem] right-[2rem] z-[900003] cursor-pointer select-none"
+                    className="video-widget group absolute bottom-[3rem] right-[2rem] z-[900003] cursor-pointer select-none"
                     onClick={() => openVideo(verticallo)}
                 >
                     <div
